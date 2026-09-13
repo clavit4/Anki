@@ -18,6 +18,16 @@ const COUNT_OPTIONS = [10, 25, 50, 100];
 // The four grading buttons, worst to best.
 const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 
+// Deck-preview sort cycle: original CSV order -> weakest cards first
+// -> strongest cards first -> back to original. Each label is the
+// action a click will perform *next*, not the currently-active mode.
+const SORT_MODES = ['original', 'weakest', 'strongest'];
+const SORT_LABELS = {
+  original: 'Weakest first',
+  weakest: 'Strongest first',
+  strongest: 'Original order',
+};
+
 // How many of a card's most recent graded attempts to average when
 // deciding "how good am I at this" for the deck-preview color.
 const HISTORY_WINDOW = 7;
@@ -176,7 +186,7 @@ const state = {
   correct: 0,
   missed: [],
   flipped: false,
-  previewSortByScore: false, // toggled by the "Weakest first" button
+  previewSort: 'original', // 'original' | 'weakest' | 'strongest'
 };
 
 /* ============================================================
@@ -261,9 +271,9 @@ const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-re
 function openCountScreen(deck) {
   state.activeDeck = deck;
   countDeckNameEl.textContent = deck.name;
-  state.previewSortByScore = false;
+  state.previewSort = 'original';
   sortToggleEl.classList.remove('is-active');
-  sortToggleEl.textContent = 'Weakest first';
+  sortToggleEl.textContent = SORT_LABELS.original;
 
   const total = state.decks[deck.id].cards.length;
   countGridEl.innerHTML = '';
@@ -282,15 +292,15 @@ function renderDeckPreview(deck) {
   // Score once up front so sorting doesn't recompute per comparison.
   const withScores = cards.map(card => ({ card, score: cardScore(deck.id, card) }));
 
-  if (state.previewSortByScore) {
-    // Weakest first. Never-studied cards have no weakness signal yet
-    // (they're not "bad", just untested), so they sort after anything
-    // that's actually been graded.
+  if (state.previewSort === 'weakest' || state.previewSort === 'strongest') {
+    // Weakest/strongest first by score. Never-studied cards have no
+    // signal either way, so they always sort to the bottom.
+    const direction = state.previewSort === 'weakest' ? 1 : -1;
     withScores.sort((a, b) => {
       if (a.score === null && b.score === null) return 0;
       if (a.score === null) return 1;
       if (b.score === null) return -1;
-      return a.score - b.score;
+      return (a.score - b.score) * direction;
     });
   }
 
@@ -321,9 +331,10 @@ function renderDeckPreview(deck) {
 }
 
 sortToggleEl.addEventListener('click', () => {
-  state.previewSortByScore = !state.previewSortByScore;
-  sortToggleEl.classList.toggle('is-active', state.previewSortByScore);
-  sortToggleEl.textContent = state.previewSortByScore ? 'Original order' : 'Weakest first';
+  const currentIndex = SORT_MODES.indexOf(state.previewSort);
+  state.previewSort = SORT_MODES[(currentIndex + 1) % SORT_MODES.length];
+  sortToggleEl.textContent = SORT_LABELS[state.previewSort];
+  sortToggleEl.classList.toggle('is-active', state.previewSort !== 'original');
   renderDeckPreview(state.activeDeck);
 });
 
