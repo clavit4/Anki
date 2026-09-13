@@ -156,61 +156,50 @@ code {
 }
 
 /* ============================================================
-   Deck select
+   Deck select / upload
    ============================================================ */
-.deck-list {
+.upload-wrap {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.deck-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 10px;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px dashed var(--border);
   border-radius: var(--radius);
-  padding: 18px 20px;
-  text-align: left;
+  padding: 24px 20px;
+}
+
+.upload-btn {
+  background: var(--mint);
+  border: 1px solid var(--mint);
+  color: #0a0d0c;
+  font-size: 0.98rem;
+  font-weight: 600;
+  padding: 13px 22px;
+  border-radius: var(--radius);
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: filter 0.15s ease;
 }
 
-.deck-btn:hover,
-.deck-btn:focus-visible {
-  border-color: var(--mint-dim);
-  background: var(--surface-2);
+.upload-btn:hover,
+.upload-btn:focus-visible {
+  filter: brightness(1.08);
 }
 
-.deck-btn:active {
+.upload-btn:active {
   transform: translateY(1px);
 }
 
-.deck-btn-name {
-  font-size: 1.05rem;
-  font-weight: 600;
-}
-
-.deck-btn-count {
+.upload-hint {
+  margin: 0;
   color: var(--text-muted);
-  font-size: 0.88rem;
-  white-space: nowrap;
+  font-size: 0.86rem;
 }
 
-.deck-btn.is-error {
-  border-color: var(--rose);
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.deck-btn.is-error:hover {
-  background: var(--surface);
-}
-
-.deck-btn.is-error .deck-btn-count {
+.upload-error {
+  margin: 0;
   color: var(--rose);
+  font-size: 0.86rem;
 }
 
 /* ============================================================
@@ -474,6 +463,14 @@ code {
   min-height: 320px;
   transform-style: preserve-3d;
   transition: transform 0.5s cubic-bezier(0.4, 0.1, 0.2, 1);
+}
+
+/* Used for one frame while resetting the card for the next
+   question, so the reset is instant instead of animating back
+   through the flip (which would briefly reveal the back face —
+   already showing the next card's answer by that point). */
+.card-inner.no-anim {
+  transition: none !important;
 }
 
 .card.flipped .card-inner {
