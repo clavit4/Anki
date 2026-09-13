@@ -17,6 +17,12 @@
   --rose: #d1495b;
   --rose-glow: rgba(209, 73, 91, 0.16);
 
+  --amber: #d18a4f;
+  --amber-glow: rgba(209, 138, 79, 0.16);
+
+  --lime: #c3d14f;
+  --lime-glow: rgba(195, 209, 79, 0.16);
+
   --text: #e9f3ee;
   --text-muted: #8fa89d;
   --text-faint: #506059;
@@ -281,12 +287,27 @@ code {
 }
 
 .preview-list li {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 12px 14px 12px 22px;
   font-size: 0.92rem;
   line-height: 1.4;
+}
+
+/* Left-edge stripe showing average recall grade (last 7 attempts),
+   rose -> amber -> lime -> mint. Falls back to a neutral gray when
+   the card has never been graded — see --score-color in app.js. */
+.preview-list li::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--score-color, var(--text-faint));
 }
 
 .preview-front {
@@ -462,7 +483,7 @@ code {
 .action-row {
   position: relative;
   margin-top: 8px;
-  min-height: 58px;
+  min-height: 132px;
 }
 
 .flip-btn {
@@ -475,7 +496,7 @@ code {
   height: 100%;
   border: none;
   border-radius: var(--radius);
-  background: linear-gradient(to right, var(--rose) 50%, var(--mint) 50%);
+  background: linear-gradient(to right, var(--rose) 25%, var(--amber) 25% 50%, var(--lime) 50% 75%, var(--mint) 75%);
   cursor: pointer;
   padding: 0;
 }
@@ -500,7 +521,8 @@ code {
   inset: 0;
   display: none;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
 }
 
 .action-row.is-flipped .flip-btn {
@@ -544,6 +566,28 @@ code {
 .grade-miss:focus-visible {
   background: var(--rose-glow);
   border-color: var(--rose);
+}
+
+.grade-hard {
+  color: var(--amber);
+  border-color: color-mix(in srgb, var(--amber) 35%, var(--border));
+}
+
+.grade-hard:hover,
+.grade-hard:focus-visible {
+  background: var(--amber-glow);
+  border-color: var(--amber);
+}
+
+.grade-almost {
+  color: var(--lime);
+  border-color: color-mix(in srgb, var(--lime) 35%, var(--border));
+}
+
+.grade-almost:hover,
+.grade-almost:focus-visible {
+  background: var(--lime-glow);
+  border-color: var(--lime);
 }
 
 .grade-hit {
