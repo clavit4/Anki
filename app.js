@@ -60,6 +60,80 @@ function shuffle(arr) {
 }
 
 /* ============================================================
+   Mastery tracking — per-card grade history, persisted in
+   localStorage so it survives reloads. Cards are identified by
+   "<deck name>::<front text>" since uploaded decks have no
+   stable id across sessions; re-uploading the same CSV (same
+   filename, same front text) picks up the same history.
+   ============================================================ */
+const MASTERY_STORAGE_KEY = 'recall:mastery:v1';
+const MASTERY_WINDOW = 7; // only the last N attempts count toward the score
+const GRADE_VALUES = { miss: 0, hard: 1, almost: 2, hit: 3 };
+
+// rose -> amber -> lime -> mint, matching the grade button colors,
+// interpolated smoothly across the 0..3 average-grade range.
+const MASTERY_COLOR_STOPS = ['#d1495b', '#d18a4f', '#c3d14f', '#4fd1a5'].map(hexToRgb);
+
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function rgbToHex(rgb) {
+  return '#' + rgb.map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('');
+}
+
+function colorForScore(score) {
+  const clamped = Math.max(0, Math.min(3, score));
+  const idx = Math.min(2, Math.floor(clamped));
+  const t = clamped - idx;
+  const [r1, g1, b1] = MASTERY_COLOR_STOPS[idx];
+  const [r2, g2, b2] = MASTERY_COLOR_STOPS[idx + 1];
+  return rgbToHex([r1 + (r2 - r1) * t, g1 + (g2 - g1) * t, b1 + (b2 - b1) * t]);
+}
+
+function loadMasteryStore() {
+  try {
+    const raw = localStorage.getItem(MASTERY_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (err) {
+    return {}; // private-browsing / storage disabled — app still works, just without persistence
+  }
+}
+
+function saveMasteryStore(store) {
+  try {
+    localStorage.setItem(MASTERY_STORAGE_KEY, JSON.stringify(store));
+  } catch (err) {
+    // quota exceeded or storage disabled — fail silently, nothing else depends on this succeeding
+  }
+}
+
+function masteryKey(deckName, card) {
+  return deckName + '::' + card.front;
+}
+
+function recordGrade(deckName, card, gradeKey) {
+  const value = GRADE_VALUES[gradeKey];
+  const store = loadMasteryStore();
+  const key = masteryKey(deckName, card);
+  const history = store[key] || [];
+  history.push(value);
+  while (history.length > MASTERY_WINDOW) history.shift();
+  store[key] = history;
+  saveMasteryStore(store);
+}
+
+// Returns the average of the last MASTERY_WINDOW grades (0..3), or
+// null if the card has never been graded.
+function getMasteryScore(deckName, card) {
+  const store = loadMasteryStore();
+  const history = store[masteryKey(deckName, card)];
+  if (!history || history.length === 0) return null;
+  return history.reduce((a, b) => a + b, 0) / history.length;
+}
+
+/* ============================================================
    State
    ============================================================ */
 const state = {
@@ -71,6 +145,8 @@ const state = {
   missed: [],
   flipped: false,
 };
+
+let previewSortMode = 'default'; // 'default' | 'weakest'
 
 /* ============================================================
    Screen switching
@@ -136,6 +212,9 @@ csvInputEl.addEventListener('change', () => {
 const countGridEl = document.getElementById('countGrid');
 const countDeckNameEl = document.getElementById('countDeckName');
 const previewListEl = document.getElementById('previewList');
+const sortToggleEl = document.getElementById('sortToggle');
+
+const COUNT_OPTIONS = [10, 25, 50, 100];
 
 function openCountScreen(deck) {
   state.activeDeck = deck;
@@ -148,16 +227,27 @@ function openCountScreen(deck) {
   options.forEach(n => countGridEl.appendChild(makeCountButton(n, `${n} cards`, total)));
   countGridEl.appendChild(makeCountButton(total, `All (${total})`, total, true));
 
+  // Reset the sort toggle each time a deck is opened fresh.
+  previewSortMode = 'default';
+  sortToggleEl.textContent = 'Weakest first';
+  sortToggleEl.classList.remove('is-active');
+
   renderDeckPreview(deck);
   showScreen('screen-count');
 }
 
-const COUNT_OPTIONS = [10, 25, 50, 100];
-
 function renderDeckPreview(deck) {
   const cards = state.decks[deck.id].cards;
+  const scored = cards.map(card => ({ card, score: getMasteryScore(deck.name, card) }));
+
+  if (previewSortMode === 'weakest') {
+    // Never-graded cards need attention just as much as low scorers,
+    // so they sort to the front alongside them.
+    scored.sort((a, b) => (a.score === null ? -1 : a.score) - (b.score === null ? -1 : b.score));
+  }
+
   previewListEl.innerHTML = '';
-  cards.forEach(card => {
+  scored.forEach(({ card, score }) => {
     const li = document.createElement('li');
     const front = document.createElement('div');
     front.className = 'preview-front';
@@ -167,9 +257,17 @@ function renderDeckPreview(deck) {
     back.textContent = card.back;
     li.appendChild(front);
     li.appendChild(back);
+    if (score !== null) li.style.setProperty('--score-color', colorForScore(score));
     previewListEl.appendChild(li);
   });
 }
+
+sortToggleEl.addEventListener('click', () => {
+  previewSortMode = previewSortMode === 'default' ? 'weakest' : 'default';
+  sortToggleEl.textContent = previewSortMode === 'weakest' ? 'Original order' : 'Weakest first';
+  sortToggleEl.classList.toggle('is-active', previewSortMode === 'weakest');
+  renderDeckPreview(state.activeDeck);
+});
 
 function makeCountButton(n, label, total, isAll) {
   const btn = document.createElement('button');
@@ -196,7 +294,6 @@ const scoreHitEl = document.getElementById('scoreHitCount');
 const scoreMissEl = document.getElementById('scoreMissCount');
 const actionRowEl = document.getElementById('actionRow');
 const flipBtnEl = document.getElementById('flipBtn');
-const gradeRowEl = document.getElementById('gradeRow');
 const tapHintEl = document.getElementById('tapHint');
 
 function startSession(count) {
@@ -248,16 +345,24 @@ function flipCard() {
   tapHintEl.textContent = '';
 }
 
-function gradeCard(gotIt) {
+// gradeKey is one of 'miss' | 'hard' | 'almost' | 'hit'.
+// Session tally stays binary (miss = wrong, everything else = recalled
+// it), matching the score shown mid-session and the missed-cards list.
+// The finer-grained grade is what actually drives long-term mastery —
+// it's recorded per card and is what colors the deck preview stripe.
+function gradeCard(gradeKey) {
   if (!state.flipped) return;
   const card = state.sessionCards[state.index];
-  if (gotIt) {
-    state.correct++;
-    scoreHitEl.textContent = String(state.correct);
-  } else {
+
+  if (gradeKey === 'miss') {
     state.missed.push(card);
     scoreMissEl.textContent = String(state.missed.length);
+  } else {
+    state.correct++;
+    scoreHitEl.textContent = String(state.correct);
   }
+
+  recordGrade(state.activeDeck.name, card, gradeKey);
 
   if (state.index + 1 >= state.sessionCards.length) {
     finishSession();
@@ -276,14 +381,20 @@ document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); flipCard(); }
     return;
   }
-  if (e.code === 'ArrowLeft') gradeCard(false);
-  if (e.code === 'ArrowRight') gradeCard(true);
+  if (e.key === '1' || e.code === 'ArrowLeft') gradeCard('miss');
+  else if (e.key === '2') gradeCard('hard');
+  else if (e.key === '3') gradeCard('almost');
+  else if (e.key === '4' || e.code === 'ArrowRight') gradeCard('hit');
 });
 
-document.getElementById('gradeMiss').addEventListener('click', () => gradeCard(false));
-document.getElementById('gradeHit').addEventListener('click', () => gradeCard(true));
+document.getElementById('gradeMiss').addEventListener('click', () => gradeCard('miss'));
+document.getElementById('gradeHard').addEventListener('click', () => gradeCard('hard'));
+document.getElementById('gradeAlmost').addEventListener('click', () => gradeCard('almost'));
+document.getElementById('gradeHit').addEventListener('click', () => gradeCard('hit'));
 
 document.getElementById('quitQuiz').addEventListener('click', () => {
+  // Mastery data may have changed mid-session — reflect it if they land back on the preview.
+  if (state.activeDeck) renderDeckPreview(state.activeDeck);
   showScreen('screen-count');
 });
 
