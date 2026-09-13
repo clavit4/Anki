@@ -176,6 +176,7 @@ const state = {
   correct: 0,
   missed: [],
   flipped: false,
+  previewSortByScore: false, // toggled by the "Weakest first" button
 };
 
 /* ============================================================
@@ -253,10 +254,16 @@ async function loadDeck(deck) {
 const countGridEl = document.getElementById('countGrid');
 const countDeckNameEl = document.getElementById('countDeckName');
 const previewListEl = document.getElementById('previewList');
+const sortToggleEl = document.getElementById('sortToggle');
+const scrollTopBtnEl = document.getElementById('scrollTopBtn');
+const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function openCountScreen(deck) {
   state.activeDeck = deck;
   countDeckNameEl.textContent = deck.name;
+  state.previewSortByScore = false;
+  sortToggleEl.classList.remove('is-active');
+  sortToggleEl.textContent = 'Weakest first';
 
   const total = state.decks[deck.id].cards.length;
   countGridEl.innerHTML = '';
@@ -271,11 +278,26 @@ function openCountScreen(deck) {
 
 function renderDeckPreview(deck) {
   const cards = state.decks[deck.id].cards;
+
+  // Score once up front so sorting doesn't recompute per comparison.
+  const withScores = cards.map(card => ({ card, score: cardScore(deck.id, card) }));
+
+  if (state.previewSortByScore) {
+    // Weakest first. Never-studied cards have no weakness signal yet
+    // (they're not "bad", just untested), so they sort after anything
+    // that's actually been graded.
+    withScores.sort((a, b) => {
+      if (a.score === null && b.score === null) return 0;
+      if (a.score === null) return 1;
+      if (b.score === null) return -1;
+      return a.score - b.score;
+    });
+  }
+
   previewListEl.innerHTML = '';
-  cards.forEach(card => {
+  withScores.forEach(({ card, score }) => {
     const li = document.createElement('li');
 
-    const score = cardScore(deck.id, card);
     if (score === null) {
       li.title = 'Not studied yet';
     } else {
@@ -293,7 +315,25 @@ function renderDeckPreview(deck) {
     li.appendChild(back);
     previewListEl.appendChild(li);
   });
+
+  previewListEl.scrollTop = 0;
+  scrollTopBtnEl.classList.remove('is-visible');
 }
+
+sortToggleEl.addEventListener('click', () => {
+  state.previewSortByScore = !state.previewSortByScore;
+  sortToggleEl.classList.toggle('is-active', state.previewSortByScore);
+  sortToggleEl.textContent = state.previewSortByScore ? 'Original order' : 'Weakest first';
+  renderDeckPreview(state.activeDeck);
+});
+
+previewListEl.addEventListener('scroll', () => {
+  scrollTopBtnEl.classList.toggle('is-visible', previewListEl.scrollTop > 150);
+});
+
+scrollTopBtnEl.addEventListener('click', () => {
+  previewListEl.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+});
 
 function makeCountButton(n, label, total, isAll) {
   const btn = document.createElement('button');

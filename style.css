@@ -261,6 +261,7 @@ code {
 }
 
 .deck-preview {
+  position: relative;
   flex: 1;
   min-height: 0;
   display: flex;
@@ -268,10 +269,83 @@ code {
   margin-top: 24px;
 }
 
+.preview-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
 .preview-heading {
   color: var(--text-faint);
   font-size: 0.82rem;
-  margin: 0 0 10px;
+  margin: 0;
+}
+
+.sort-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  padding: 5px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.sort-toggle:hover,
+.sort-toggle:focus-visible {
+  border-color: var(--mint-dim);
+  color: var(--text);
+}
+
+.sort-toggle.is-active {
+  border-color: var(--mint-dim);
+  background: var(--mint-glow);
+  color: var(--mint-strong);
+}
+
+/* Soft floating "back to top" button — hidden until you've
+   scrolled a bit into the (potentially very long) card list. */
+.scroll-top-btn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface-2) 88%, transparent);
+  color: var(--text-muted);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.15s ease, color 0.15s ease;
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.5);
+}
+
+.scroll-top-btn.is-visible {
+  opacity: 0.85;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.scroll-top-btn:hover,
+.scroll-top-btn:focus-visible {
+  opacity: 1;
+  border-color: var(--mint-dim);
+  color: var(--mint-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-top-btn { transition: opacity 0.2s ease; }
 }
 
 .preview-list {
