@@ -191,9 +191,14 @@ document.getElementById('backToDeck').addEventListener('click', () => showScreen
 const cardEl = document.getElementById('card');
 const cardInnerEl = document.getElementById('cardInner');
 const cardFrontTextEl = document.getElementById('cardFrontText');
+const cardBackFrontTextEl = document.getElementById('cardBackFrontText');
 const cardBackTextEl = document.getElementById('cardBackText');
 const progressCountEl = document.getElementById('progressCount');
 const progressFillEl = document.getElementById('progressFill');
+const scoreHitEl = document.getElementById('scoreHitCount');
+const scoreMissEl = document.getElementById('scoreMissCount');
+const actionRowEl = document.getElementById('actionRow');
+const flipBtnEl = document.getElementById('flipBtn');
 const gradeRowEl = document.getElementById('gradeRow');
 const tapHintEl = document.getElementById('tapHint');
 
@@ -203,6 +208,8 @@ function startSession(count) {
   state.index = 0;
   state.correct = 0;
   state.missed = [];
+  scoreHitEl.textContent = '0';
+  scoreMissEl.textContent = '0';
   showScreen('screen-quiz');
   renderCurrentCard();
 }
@@ -214,10 +221,11 @@ function renderCurrentCard() {
   state.flipped = false;
   cardEl.classList.remove('flipped');
   cardEl.setAttribute('aria-pressed', 'false');
-  gradeRowEl.classList.remove('is-visible');
+  actionRowEl.classList.remove('is-flipped');
   tapHintEl.textContent = 'Tap the card, or press space, to reveal the answer';
 
   cardFrontTextEl.textContent = card.front;
+  cardBackFrontTextEl.textContent = card.front;
   cardBackTextEl.textContent = card.back;
 
   progressCountEl.textContent = `${state.index + 1} / ${total}`;
@@ -229,7 +237,7 @@ function flipCard() {
   state.flipped = true;
   cardEl.classList.add('flipped');
   cardEl.setAttribute('aria-pressed', 'true');
-  gradeRowEl.classList.add('is-visible');
+  actionRowEl.classList.add('is-flipped');
   tapHintEl.textContent = '';
 }
 
@@ -238,8 +246,10 @@ function gradeCard(gotIt) {
   const card = state.sessionCards[state.index];
   if (gotIt) {
     state.correct++;
+    scoreHitEl.textContent = String(state.correct);
   } else {
     state.missed.push(card);
+    scoreMissEl.textContent = String(state.missed.length);
   }
 
   if (state.index + 1 >= state.sessionCards.length) {
@@ -251,19 +261,20 @@ function gradeCard(gotIt) {
 }
 
 cardEl.addEventListener('click', flipCard);
-cardEl.addEventListener('keydown', (e) => {
-  if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); flipCard(); }
+flipBtnEl.addEventListener('click', flipCard);
+
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('screen-quiz').classList.contains('active')) return;
+  if (!state.flipped) {
+    if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); flipCard(); }
+    return;
+  }
+  if (e.code === 'ArrowLeft') gradeCard(false);
+  if (e.code === 'ArrowRight') gradeCard(true);
 });
 
 document.getElementById('gradeMiss').addEventListener('click', () => gradeCard(false));
 document.getElementById('gradeHit').addEventListener('click', () => gradeCard(true));
-
-document.addEventListener('keydown', (e) => {
-  if (!document.getElementById('screen-quiz').classList.contains('active')) return;
-  if (!state.flipped) return;
-  if (e.code === 'ArrowLeft') gradeCard(false);
-  if (e.code === 'ArrowRight') gradeCard(true);
-});
 
 document.getElementById('quitQuiz').addEventListener('click', () => {
   showScreen('screen-count');

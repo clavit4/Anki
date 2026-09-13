@@ -54,6 +54,10 @@
       <div class="progress-fill" id="progressFill"></div>
     </div>
 
+    <p class="score-live" id="scoreLive">
+      <span class="score-hit" id="scoreHitCount">0</span> got it<span class="score-sep">&middot;</span><span class="score-miss" id="scoreMissCount">0</span> missed
+    </p>
+
     <div class="card-stage">
       <div class="card" id="card" tabindex="0" role="button" aria-pressed="false" aria-label="Flashcard, tap to reveal the answer">
         <div class="card-inner" id="cardInner">
@@ -62,7 +66,7 @@
             <p class="card-text" id="cardFrontText"></p>
           </div>
           <div class="card-face card-back">
-            <p class="card-eyebrow"></p>
+            <p class="card-front-recap" id="cardBackFrontText"></p>
             <p class="card-text card-text-back" id="cardBackText"></p>
           </div>
         </div>
@@ -70,13 +74,18 @@
       <p class="tap-hint" id="tapHint"></p>
     </div>
 
-    <div class="grade-row" id="gradeRow">
-      <button class="grade-btn grade-miss" id="gradeMiss" type="button">
-        <span class="grade-key">&larr;</span> Missed it
+    <div class="action-row" id="actionRow">
+      <button class="flip-btn" id="flipBtn" type="button">
+        <span class="flip-btn-label">Flip</span>
       </button>
-      <button class="grade-btn grade-hit" id="gradeHit" type="button">
-        Got it <span class="grade-key">&rarr;</span>
-      </button>
+      <div class="grade-row" id="gradeRow">
+        <button class="grade-btn grade-miss" id="gradeMiss" type="button">
+          <span class="grade-key">&larr;</span> Missed it
+        </button>
+        <button class="grade-btn grade-hit" id="gradeHit" type="button">
+          Got it <span class="grade-key">&rarr;</span>
+        </button>
+      </div>
     </div>
   </section>
 
