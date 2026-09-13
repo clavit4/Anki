@@ -254,6 +254,50 @@ code {
   grid-column: 1 / -1;
 }
 
+.deck-preview {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+}
+
+.preview-heading {
+  color: var(--text-faint);
+  font-size: 0.82rem;
+  margin: 0 0 10px;
+}
+
+.preview-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.preview-list li {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.preview-front {
+  color: var(--text);
+}
+
+.preview-back {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 /* ============================================================
    Quiz
    ============================================================ */

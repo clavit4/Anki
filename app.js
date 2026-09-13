@@ -159,6 +159,7 @@ async function loadDeck(deck) {
    ============================================================ */
 const countGridEl = document.getElementById('countGrid');
 const countDeckNameEl = document.getElementById('countDeckName');
+const previewListEl = document.getElementById('previewList');
 
 function openCountScreen(deck) {
   state.activeDeck = deck;
@@ -171,7 +172,25 @@ function openCountScreen(deck) {
   options.forEach(n => countGridEl.appendChild(makeCountButton(n, `${n} cards`, total)));
   countGridEl.appendChild(makeCountButton(total, `All (${total})`, total, true));
 
+  renderDeckPreview(deck);
   showScreen('screen-count');
+}
+
+function renderDeckPreview(deck) {
+  const cards = state.decks[deck.id].cards;
+  previewListEl.innerHTML = '';
+  cards.forEach(card => {
+    const li = document.createElement('li');
+    const front = document.createElement('div');
+    front.className = 'preview-front';
+    front.textContent = card.front;
+    const back = document.createElement('div');
+    back.className = 'preview-back';
+    back.textContent = card.back;
+    li.appendChild(front);
+    li.appendChild(back);
+    previewListEl.appendChild(li);
+  });
 }
 
 function makeCountButton(n, label, total, isAll) {
