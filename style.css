@@ -475,12 +475,20 @@ code {
   display: none;
 }
 
-/* Soft floating "back to top" button — hidden until you've
-   scrolled a bit into the (potentially very long) card list. */
+/* Floating "back to top" arrow, shared by the deck-select and
+   card-preview screens — hidden until you've scrolled down a bit.
+   Fixed to the viewport rather than absolute-within-its-screen:
+   neither screen's own content actually scrolls in its own bounded
+   container (.app only sets min-height, so it just grows past the
+   viewport and the window itself scrolls), so viewport-fixed is
+   what actually keeps this anchored to a screen corner as you
+   scroll. See the button's placement in index.html for why it
+   lives outside every .screen element. */
 .scroll-top-btn {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
+  position: fixed;
+  right: 20px;
+  bottom: 24px;
+  z-index: 20;
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -514,16 +522,6 @@ code {
 
 @media (prefers-reduced-motion: reduce) {
   .scroll-top-btn { transition: opacity 0.2s ease; }
-}
-
-/* Same floating arrow, but anchored to the viewport instead of a
-   scrollable list — used on the deck-select screen, which scrolls
-   the whole page rather than an inner container. */
-.scroll-top-btn-fixed {
-  position: fixed;
-  right: 20px;
-  bottom: 24px;
-  z-index: 20;
 }
 
 .preview-list {

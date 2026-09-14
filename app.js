@@ -425,9 +425,11 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
-  // Lives outside the .screen elements (see index.html), so it doesn't
-  // get hidden along with screen-deck automatically — clear it here.
-  if (id !== 'screen-deck') deckScrollTopBtnEl.classList.remove('is-visible');
+  // The scroll-top arrow lives outside every .screen (see index.html)
+  // so it isn't hidden automatically by switching screens, and
+  // window.scrollTo(0,0) above won't fire a 'scroll' event if we were
+  // already at the top — re-check its visibility explicitly.
+  updateScrollTopVisibility();
 }
 
 /* ============================================================
@@ -511,7 +513,6 @@ document.addEventListener('keydown', (e) => {
    Deck select screen
    ============================================================ */
 const deckListEl = document.getElementById('deckList');
-const deckScrollTopBtnEl = document.getElementById('deckScrollTopBtn');
 const deckUploadBtnEl = document.getElementById('deckUploadBtn');
 const deckFileInputEl = document.getElementById('deckFileInput');
 const deckUploadErrorEl = document.getElementById('deckUploadError');
@@ -693,18 +694,6 @@ async function deleteCustomDeck(deckId) {
   renderDeckList();
 }
 
-// The deck list scrolls the whole page rather than an inner container
-// (there's no fixed-height wrapper around it), so this tracks window
-// scroll instead of a list element's own scrollTop.
-window.addEventListener('scroll', () => {
-  if (!document.getElementById('screen-deck').classList.contains('active')) return;
-  deckScrollTopBtnEl.classList.toggle('is-visible', window.scrollY > 150);
-});
-
-deckScrollTopBtnEl.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-});
-
 async function loadDeck(deck) {
   if (state.decks[deck.id]) return state.decks[deck.id];
   if (deck.custom) {
@@ -818,7 +807,7 @@ function renderDeckPreview(deck) {
     li.textContent = EMPTY_FILTER_MESSAGES[state.previewSort] || 'No cards match this filter.';
     previewListEl.appendChild(li);
     previewListEl.scrollTop = 0;
-    scrollTopBtnEl.classList.remove('is-visible');
+    updateScrollTopVisibility();
     updateUnselectAllAvailability(deck);
     return;
   }
@@ -880,7 +869,7 @@ function renderDeckPreview(deck) {
   });
 
   previewListEl.scrollTop = 0;
-  scrollTopBtnEl.classList.remove('is-visible');
+  updateScrollTopVisibility();
   updateUnselectAllAvailability(deck);
 }
 
@@ -938,12 +927,23 @@ playFilteredBtnEl.addEventListener('click', () => {
   startSessionWithCards(shuffle(state.previewVisibleCards));
 });
 
-previewListEl.addEventListener('scroll', () => {
-  scrollTopBtnEl.classList.toggle('is-visible', previewListEl.scrollTop > 150);
-});
+// Shared "back to top" arrow for both this screen and the deck-select
+// one. Neither screen's content actually scrolls inside its own
+// bounded container — .app only sets min-height, so it just grows
+// taller than the viewport and the window itself scrolls — so this
+// tracks window scroll rather than any element's own scrollTop.
+const SCROLL_TOP_THRESHOLD = 80;
+
+function updateScrollTopVisibility() {
+  const onScrollableScreen = document.getElementById('screen-deck').classList.contains('active')
+    || document.getElementById('screen-count').classList.contains('active');
+  scrollTopBtnEl.classList.toggle('is-visible', onScrollableScreen && window.scrollY > SCROLL_TOP_THRESHOLD);
+}
+
+window.addEventListener('scroll', updateScrollTopVisibility);
 
 scrollTopBtnEl.addEventListener('click', () => {
-  previewListEl.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+  window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
 });
 
 function makeCountButton(n, label, total, isAll) {
