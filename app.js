@@ -135,6 +135,25 @@ function recordGrade(deckId, card, grade) {
   }
 }
 
+// Removes the most recent recorded attempt for a card — the other
+// half of recordGrade(), used when Undo needs to take back a grade
+// instead of layering a correction on top of the mistaken one.
+function removeLastGradeRecord(deckId, card) {
+  const key = cardStorageKey(deckId, card);
+  const history = loadCardHistory(deckId, card);
+  if (history.length === 0) return;
+  history.pop();
+  try {
+    if (history.length === 0) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, JSON.stringify(history));
+    }
+  } catch (err) {
+    // Storage unavailable — nothing to clean up in that case anyway.
+  }
+}
+
 // Average of a card's last HISTORY_WINDOW graded attempts, as a 0–3
 // number. null means "never studied" — nothing to average yet.
 function cardScore(deckId, card) {
@@ -187,6 +206,7 @@ const state = {
   missed: [],
   flipped: false,
   previewSort: 'original', // 'original' | 'weakest' | 'strongest'
+  history: [],           // stack of { index, grade } — one entry per graded card, for Undo
 };
 
 /* ============================================================
@@ -373,6 +393,8 @@ const actionRowEl = document.getElementById('actionRow');
 const flipBtnEl = document.getElementById('flipBtn');
 const gradeRowEl = document.getElementById('gradeRow');
 const tapHintEl = document.getElementById('tapHint');
+const undoBtnEl = document.getElementById('undoBtn');
+const undoFromResultsEl = document.getElementById('undoFromResults');
 
 function startSession(count) {
   const allCards = state.decks[state.activeDeck.id].cards;
@@ -380,8 +402,10 @@ function startSession(count) {
   state.index = 0;
   state.correct = 0;
   state.missed = [];
+  state.history = [];
   scoreHitEl.textContent = '0';
   scoreMissEl.textContent = '0';
+  updateUndoAvailability();
   showScreen('screen-quiz');
   renderCurrentCard();
 }
@@ -391,6 +415,16 @@ function renderCurrentCard() {
   const card = state.sessionCards[state.index];
 
   state.flipped = false;
+
+  // Reset to the front INSTANTLY (no rotate transition) before the new
+  // card's text goes in. Without this, removing "flipped" here plays the
+  // normal 0.5s flip-back animation while the back face already holds the
+  // *new* card's answer underneath — so for a moment you're looking at
+  // the next answer mid-spin, and the animation itself reads as a "lag"
+  // before the card is ready. Killing the transition just for this reset
+  // (then restoring it right after) means only a manual tap-to-flip ever
+  // animates.
+  cardInnerEl.classList.add('snap');
   cardEl.classList.remove('flipped');
   cardEl.setAttribute('aria-pressed', 'false');
   actionRowEl.classList.remove('is-flipped');
@@ -402,6 +436,12 @@ function renderCurrentCard() {
 
   progressCountEl.textContent = `${state.index + 1} / ${total}`;
   progressFillEl.style.width = `${(state.index / total) * 100}%`;
+
+  // Force the browser to apply the transition-less reset above before we
+  // remove "snap" — otherwise the two class changes could get batched
+  // into one style pass and the reset would end up animated after all.
+  void cardInnerEl.offsetHeight;
+  cardInnerEl.classList.remove('snap');
 }
 
 function flipCard() {
@@ -416,6 +456,7 @@ function flipCard() {
 function gradeCard(grade) {
   if (!state.flipped) return;
   const card = state.sessionCards[state.index];
+  const gradedIndex = state.index;
 
   recordGrade(state.activeDeck.id, card, grade);
 
@@ -427,19 +468,67 @@ function gradeCard(grade) {
     scoreHitEl.textContent = String(state.correct);
   }
 
-  if (state.index + 1 >= state.sessionCards.length) {
+  state.history.push({ index: gradedIndex, grade });
+  updateUndoAvailability();
+
+  if (gradedIndex + 1 >= state.sessionCards.length) {
     finishSession();
   } else {
-    state.index++;
+    state.index = gradedIndex + 1;
     renderCurrentCard();
   }
 }
 
+function updateUndoAvailability() {
+  const hasHistory = state.history.length > 0;
+  undoBtnEl.disabled = !hasHistory;
+  undoFromResultsEl.disabled = !hasHistory;
+}
+
+// Jump back to the card you just graded and let you re-grade it — for
+// when you fat-finger "Missed" on a card you actually knew. Rolls back
+// both the live session score AND the saved per-card history entry, so
+// the correction replaces the mistake instead of stacking on top of it.
+function undoLastGrade() {
+  if (state.history.length === 0) return;
+  const last = state.history.pop();
+  const card = state.sessionCards[last.index];
+
+  removeLastGradeRecord(state.activeDeck.id, card);
+
+  if (last.grade === GRADE.MISSED) {
+    state.missed.pop();
+    scoreMissEl.textContent = String(state.missed.length);
+  } else {
+    state.correct = Math.max(0, state.correct - 1);
+    scoreHitEl.textContent = String(state.correct);
+  }
+
+  state.index = last.index;
+  updateUndoAvailability();
+
+  showScreen('screen-quiz');
+  renderCurrentCard();
+  flipCard(); // show the answer right away so you can just tap the right grade
+}
+
 cardEl.addEventListener('click', flipCard);
 flipBtnEl.addEventListener('click', flipCard);
+undoBtnEl.addEventListener('click', undoLastGrade);
+undoFromResultsEl.addEventListener('click', undoLastGrade);
 
 document.addEventListener('keydown', (e) => {
-  if (!document.getElementById('screen-quiz').classList.contains('active')) return;
+  const quizActive = document.getElementById('screen-quiz').classList.contains('active');
+  const resultsActive = document.getElementById('screen-results').classList.contains('active');
+
+  if (e.key === 'Backspace' && (quizActive || resultsActive)) {
+    e.preventDefault();
+    undoLastGrade();
+    return;
+  }
+
+  if (!quizActive) return;
+
   if (!state.flipped) {
     if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); flipCard(); }
     return;

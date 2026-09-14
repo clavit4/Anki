@@ -400,16 +400,52 @@ code {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .quiz-top .back-link {
   margin-bottom: 0;
 }
 
+.quiz-top-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .progress-count {
   color: var(--text-muted);
   font-size: 0.86rem;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Small pill button that jumps back to the last graded card so you
+   can fix a misclick (e.g. hit "Missed" on a card you actually knew). */
+.undo-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  padding: 5px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.undo-btn:hover:not(:disabled),
+.undo-btn:focus-visible:not(:disabled) {
+  border-color: var(--mint-dim);
+  color: var(--mint-strong);
+}
+
+.undo-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .progress-track {
@@ -478,6 +514,13 @@ code {
 
 .card.flipped .card-inner {
   transform: rotateY(180deg);
+}
+
+/* Used for a split second when a new card is loaded in, so the reset
+   to front-facing is instant instead of animated — see the comment
+   above renderCurrentCard() in app.js for why this exists. */
+.card-inner.snap {
+  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -568,26 +611,30 @@ code {
   justify-content: center;
   width: 100%;
   height: 100%;
-  border: none;
+  border: 1px solid color-mix(in srgb, var(--mint) 35%, var(--border));
   border-radius: var(--radius);
-  background: linear-gradient(to right, var(--rose) 25%, var(--amber) 25% 50%, var(--lime) 50% 75%, var(--mint) 75%);
+  background: var(--bg-elevated);
+  color: var(--mint-strong);
   cursor: pointer;
   padding: 0;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.flip-btn:hover,
+.flip-btn:focus-visible {
+  background: var(--mint-glow);
+  border-color: var(--mint);
+}
+
+.flip-btn:active {
+  transform: translateY(1px);
 }
 
 .flip-btn-label {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-size: 0.95rem;
+  color: inherit;
+  font-size: 1rem;
   font-weight: 600;
-  padding: 8px 22px;
-  border-radius: 999px;
-}
-
-.flip-btn:hover .flip-btn-label,
-.flip-btn:focus-visible .flip-btn-label {
-  border-color: var(--mint-dim);
+  letter-spacing: 0.02em;
 }
 
 .grade-row {
@@ -694,6 +741,31 @@ code {
   margin: 0;
   color: var(--text-muted);
   font-size: 0.95rem;
+}
+
+.undo-link {
+  display: inline-block;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 12px;
+  padding: 4px 2px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+.undo-link:hover:not(:disabled),
+.undo-link:focus-visible:not(:disabled) {
+  color: var(--mint-strong);
+}
+
+.undo-link:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: none;
 }
 
 .missed-wrap {
