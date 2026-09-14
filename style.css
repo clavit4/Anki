@@ -425,7 +425,8 @@ code {
 }
 
 .sort-toggle,
-.unselect-btn {
+.unselect-btn,
+.play-filtered-btn {
   background: none;
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -451,7 +452,21 @@ code {
   color: var(--mint-strong);
 }
 
-.unselect-btn:disabled {
+/* Always mint-tinted, not just on hover — unlike the other two
+   pills here (which just filter/toggle), this one launches a
+   session, so it should read as the "go" action of the group. */
+.play-filtered-btn {
+  border-color: var(--mint-dim);
+  color: var(--mint-strong);
+}
+
+.play-filtered-btn:hover:not(:disabled),
+.play-filtered-btn:focus-visible:not(:disabled) {
+  background: var(--mint-glow);
+}
+
+.unselect-btn:disabled,
+.play-filtered-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
 }
