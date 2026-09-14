@@ -223,6 +223,23 @@ function idSortKey(card) {
   return Number.isFinite(n) ? n : Infinity;
 }
 
+// A fresh id for a manually added (or newly-assigned-on-edit) card:
+// one past the highest existing numeric id in the deck, bumped
+// further if that string somehow collides with an existing one
+// (e.g. a deck with sparse or non-numeric ids).
+function nextCardId(cards) {
+  let max = 0;
+  cards.forEach(c => {
+    if (c.id === null || c.id === undefined) return; // Number(null) is 0 — would corrupt the max
+    const n = Number(c.id);
+    if (Number.isFinite(n) && n > max) max = n;
+  });
+  let candidate = max + 1;
+  const existingIds = new Set(cards.map(c => String(c.id)));
+  while (existingIds.has(String(candidate))) candidate++;
+  return String(candidate);
+}
+
 /* ============================================================
    Active/inactive overrides — a checkbox in the deck preview lets
    you bench a card without touching the CSV. Stored per device,
@@ -433,37 +450,53 @@ function showScreen(id) {
 }
 
 /* ============================================================
-   Confirm modal — small "are you sure?" dialog reused for any
-   destructive-ish action. showConfirm() resolves true/false.
+   Confirm modal — small dialog reused for three things:
+   showConfirm() (message + Yes/Cancel, resolves true/false),
+   showPrompt() (message + one text field, resolves the trimmed
+   string or null), and showCardForm() (message + Front/Back
+   fields, resolves {front, back} or null).
    ============================================================ */
 const confirmOverlayEl = document.getElementById('confirmOverlay');
 const confirmMessageEl = document.getElementById('confirmMessage');
 const confirmInputEl = document.getElementById('confirmInput');
+const confirmCardFieldsEl = document.getElementById('confirmCardFields');
+const confirmFrontEl = document.getElementById('confirmFront');
+const confirmBackEl = document.getElementById('confirmBack');
 const confirmCancelBtnEl = document.getElementById('confirmCancelBtn');
 const confirmOkBtnEl = document.getElementById('confirmOkBtn');
 let resolveModal = null;
 
-// The one dialog behind both showConfirm() (message + Yes/Cancel,
-// resolves true/false) and showPrompt() (message + a text field,
-// resolves the trimmed string or null). Passing `inputValue` (even
-// as '') is what tells it to show the text field, pre-filled with
-// that value.
-function openModal({ message, inputValue = null, okLabel = 'Yes, do it', cancelLabel = 'Cancel' }) {
+// The one dialog behind showConfirm()/showPrompt()/showCardForm().
+// `inputValue` (even as '') shows the single text field; `cardFields`
+// shows the Front/Back pair instead — the two are mutually exclusive,
+// and every call resets both regions so no state leaks in from a
+// previous, differently-shaped use of the dialog. `showCancel: false`
+// hides the Cancel button, for a plain one-button "OK" alert where a
+// second dismiss button would just be a redundant twin of the first.
+function openModal({ message, inputValue = null, cardFields = null, okLabel = 'Yes, do it', cancelLabel = 'Cancel', showCancel = true }) {
   confirmMessageEl.textContent = message;
   confirmOkBtnEl.textContent = okLabel;
   confirmCancelBtnEl.textContent = cancelLabel;
+  confirmCancelBtnEl.hidden = !showCancel;
 
-  if (inputValue !== null) {
+  confirmInputEl.hidden = true;
+  confirmInputEl.value = '';
+  confirmCardFieldsEl.hidden = true;
+  confirmOkBtnEl.disabled = false;
+
+  if (cardFields !== null) {
+    confirmCardFieldsEl.hidden = false;
+    confirmFrontEl.value = cardFields.front || '';
+    confirmBackEl.value = cardFields.back || '';
+    updateCardFormValidity();
+    requestAnimationFrame(() => { confirmFrontEl.focus(); confirmFrontEl.select(); });
+  } else if (inputValue !== null) {
     confirmInputEl.hidden = false;
     confirmInputEl.value = inputValue;
     confirmOkBtnEl.disabled = inputValue.trim().length === 0;
     // Wait a tick so the browser lays out the just-unhidden field
     // before focusing/selecting it.
     requestAnimationFrame(() => { confirmInputEl.focus(); confirmInputEl.select(); });
-  } else {
-    confirmInputEl.hidden = true;
-    confirmInputEl.value = '';
-    confirmOkBtnEl.disabled = false;
   }
 
   confirmOverlayEl.hidden = false;
@@ -479,8 +512,8 @@ function closeModal(result) {
   }
 }
 
-function showConfirm(message, okLabel = 'Yes, do it') {
-  return openModal({ message, okLabel }).then(result => result === true);
+function showConfirm(message, okLabel = 'Yes, do it', { showCancel = true } = {}) {
+  return openModal({ message, okLabel, showCancel }).then(result => result === true);
 }
 
 function showPrompt(message, defaultValue) {
@@ -488,10 +521,25 @@ function showPrompt(message, defaultValue) {
     .then(result => (result === false ? null : result));
 }
 
+function showCardForm(message, { front = '', back = '' } = {}, okLabel = 'Save') {
+  return openModal({ message, cardFields: { front, back }, okLabel })
+    .then(result => (result === false ? null : result));
+}
+
+function updateCardFormValidity() {
+  confirmOkBtnEl.disabled = confirmFrontEl.value.trim().length === 0 || confirmBackEl.value.trim().length === 0;
+}
+
 confirmCancelBtnEl.addEventListener('click', () => closeModal(false));
 confirmOkBtnEl.addEventListener('click', () => {
   if (confirmOkBtnEl.disabled) return;
-  closeModal(confirmInputEl.hidden ? true : confirmInputEl.value.trim());
+  if (!confirmCardFieldsEl.hidden) {
+    closeModal({ front: confirmFrontEl.value.trim(), back: confirmBackEl.value.trim() });
+  } else if (!confirmInputEl.hidden) {
+    closeModal(confirmInputEl.value.trim());
+  } else {
+    closeModal(true);
+  }
 });
 confirmOverlayEl.addEventListener('click', (e) => {
   if (e.target === confirmOverlayEl) closeModal(false);
@@ -505,6 +553,8 @@ confirmInputEl.addEventListener('keydown', (e) => {
     closeModal(confirmInputEl.value.trim());
   }
 });
+confirmFrontEl.addEventListener('input', updateCardFormValidity);
+confirmBackEl.addEventListener('input', updateCardFormValidity);
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && !confirmOverlayEl.hidden) closeModal(false);
 });
@@ -568,7 +618,13 @@ function renderDeckList() {
 
     mainBtn.addEventListener('click', () => {
       const loaded = state.decks[deck.id];
-      if (!loaded || loaded.error || loaded.cards.length === 0) return;
+      if (!loaded || loaded.error) return;
+      // A built-in deck with zero cards is just broken — nothing to
+      // do about that from the UI. A custom deck can legitimately
+      // reach zero cards (deleted them all, or an intentionally
+      // empty upload) and must stay openable, or "Add a card" would
+      // be permanently unreachable.
+      if (loaded.cards.length === 0 && !deck.custom) return;
       openCountScreen(deck);
     });
 
@@ -577,8 +633,12 @@ function renderDeckList() {
         rowEl.classList.add('is-error');
         countEl.textContent = 'Could not load';
       } else if (result.cards.length === 0) {
-        rowEl.classList.add('is-error');
-        countEl.textContent = 'No cards found';
+        if (deck.custom) {
+          countEl.textContent = 'Empty — tap to add cards';
+        } else {
+          rowEl.classList.add('is-error');
+          countEl.textContent = 'No cards found';
+        }
       } else {
         const activeCount = getActiveCards(deck.id).length;
         countEl.textContent = `${activeCount}/${result.cards.length}`;
@@ -685,6 +745,76 @@ async function deleteCustomDeck(deckId) {
   renderDeckList();
 }
 
+/* ============================================================
+   Editing a custom deck's cards — add/edit/delete individual
+   cards, only ever shown for decks the visitor uploaded
+   themselves (deck.custom). All three save to localStorage
+   *before* touching state.decks[deck.id].cards, mirroring the
+   upload flow's ordering, so a failed write never leaves
+   in-memory state ahead of what's actually persisted.
+   ============================================================ */
+async function addCardToDeck(deck) {
+  const result = await showCardForm('Add a card:', { front: '', back: '' }, 'Add');
+  if (result === null) return;
+
+  const cards = state.decks[deck.id].cards;
+  const newCard = { front: result.front, back: result.back, id: nextCardId(cards), activeDefault: true };
+  const updated = cards.concat([newCard]);
+
+  if (!saveCustomDeckCards(deck.id, updated)) {
+    await showConfirm('Could not save this card — storage is full.', 'OK', { showCancel: false });
+    return;
+  }
+  state.decks[deck.id].cards = updated;
+  renderCountGrid(deck);
+  renderDeckPreview(deck);
+}
+
+async function editCard(deck, card) {
+  const result = await showCardForm('Edit this card:', { front: card.front, back: card.back }, 'Save');
+  if (result === null) return;
+
+  const cards = state.decks[deck.id].cards;
+  // A card with no id is keyed by a hash of its own text
+  // (cardStorageKey) — leaving it id-less here would re-orphan its
+  // history on every future edit, not just this one, since the hash
+  // changes along with the text. Give it a real id now to stop that.
+  const needsId = card.id === null || card.id === undefined;
+  const updated = cards.map(c => c === card
+    ? { ...c, front: result.front, back: result.back, id: needsId ? nextCardId(cards) : c.id }
+    : c);
+
+  if (!saveCustomDeckCards(deck.id, updated)) {
+    await showConfirm('Could not save this change — storage is full.', 'OK', { showCancel: false });
+    return;
+  }
+  state.decks[deck.id].cards = updated;
+  renderCountGrid(deck);
+  renderDeckPreview(deck);
+}
+
+async function removeCardFromDeck(deck, card) {
+  const confirmed = await showConfirm('Delete this card? This also erases its study history.', 'Delete');
+  if (!confirmed) return;
+
+  const cards = state.decks[deck.id].cards;
+  const updated = cards.filter(c => c !== card);
+
+  if (!saveCustomDeckCards(deck.id, updated)) {
+    await showConfirm('Could not save this change — storage is full.', 'OK', { showCancel: false });
+    return;
+  }
+  state.decks[deck.id].cards = updated;
+  // Only sweep this one card's own keys after the save actually
+  // succeeds — unlike deleteDeckStorage's broad prefix sweep (whole-
+  // deck delete), a failed save here must not orphan-clean history
+  // for a card that's still actually in the deck.
+  localStorage.removeItem(cardStorageKey(deck.id, card));
+  localStorage.removeItem(cardActiveKey(deck.id, card));
+  renderCountGrid(deck);
+  renderDeckPreview(deck);
+}
+
 async function loadDeck(deck) {
   if (state.decks[deck.id]) return state.decks[deck.id];
   if (deck.custom) {
@@ -716,6 +846,7 @@ const previewListEl = document.getElementById('previewList');
 const sortToggleEl = document.getElementById('sortToggle');
 const unselectAllBtnEl = document.getElementById('unselectAllBtn');
 const playFilteredBtnEl = document.getElementById('playFilteredBtn');
+const addCardBtnEl = document.getElementById('addCardBtn');
 const scrollTopBtnEl = document.getElementById('scrollTopBtn');
 const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -723,18 +854,36 @@ function openCountScreen(deck) {
   state.activeDeck = deck;
   countDeckNameEl.textContent = deck.name;
   state.previewSort = 'original';
+  addCardBtnEl.hidden = !deck.custom;
 
   renderCountGrid(deck);
   renderDeckPreview(deck);
   showScreen('screen-count');
 }
 
+addCardBtnEl.addEventListener('click', () => {
+  const deck = state.activeDeck;
+  if (!deck) return;
+  addCardToDeck(deck);
+});
+
 // Rebuilt any time a card gets checked/unchecked below, since the
 // available session sizes and the "All" count depend on how many
 // cards are currently active.
 function renderCountGrid(deck) {
+  const allCards = state.decks[deck.id].cards;
   const total = getActiveCards(deck.id).length;
   countGridEl.innerHTML = '';
+
+  if (allCards.length === 0) {
+    const msg = document.createElement('p');
+    msg.className = 'count-empty';
+    msg.textContent = deck.custom
+      ? 'No cards yet — use "Add a card" below to get started.'
+      : 'This deck has no cards.';
+    countGridEl.appendChild(msg);
+    return;
+  }
 
   if (total === 0) {
     const msg = document.createElement('p');
@@ -825,6 +974,16 @@ function renderDeckPreview(deck) {
     content.appendChild(front);
     content.appendChild(back);
 
+    if (deck.custom) {
+      li.classList.add('is-editable');
+      content.setAttribute('role', 'button');
+      content.tabIndex = 0;
+      content.addEventListener('click', () => editCard(deck, card));
+      content.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editCard(deck, card); }
+      });
+    }
+
     const toggleLabel = document.createElement('label');
     toggleLabel.className = 'preview-toggle';
     toggleLabel.title = 'Skip this card in quiz sessions';
@@ -857,6 +1016,15 @@ function renderDeckPreview(deck) {
 
     li.appendChild(content);
     li.appendChild(toggleLabel);
+    if (deck.custom) {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'preview-delete';
+      deleteBtn.type = 'button';
+      deleteBtn.setAttribute('aria-label', `Delete card "${card.front}"`);
+      deleteBtn.textContent = '×';
+      deleteBtn.addEventListener('click', () => removeCardFromDeck(deck, card));
+      li.appendChild(deleteBtn);
+    }
     previewListEl.appendChild(li);
   });
 

@@ -324,6 +324,13 @@ code {
   line-height: 1;
 }
 
+/* Sits before the card list rather than after a list (like
+   .deck-upload-btn's own margin-top assumes), so only the spacing
+   needs to change — everything else, hover included, is inherited. */
+.add-card-btn {
+  margin: 0 0 12px;
+}
+
 .deck-upload-error {
   margin: 10px 2px 0;
   color: var(--rose);
@@ -615,6 +622,40 @@ code {
   margin: 0;
   accent-color: var(--rose);
   cursor: pointer;
+}
+
+/* Custom decks only: tapping a card's own text edits it. */
+.preview-list li.is-editable:hover,
+.preview-list li.is-editable:focus-within {
+  border-color: var(--mint-dim);
+  background: var(--surface-2);
+}
+
+.preview-list li.is-editable .preview-content {
+  cursor: pointer;
+}
+
+.preview-delete {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-faint);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.preview-delete:hover,
+.preview-delete:focus-visible {
+  background: var(--rose-glow);
+  color: var(--rose);
 }
 
 .preview-empty {
@@ -1141,6 +1182,8 @@ code {
 .modal-box {
   width: 100%;
   max-width: 360px;
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1172,6 +1215,24 @@ code {
 
 .modal-input[hidden] {
   display: none;
+}
+
+.modal-field-label {
+  display: block;
+  margin: 0 0 4px;
+  color: var(--text-faint);
+  font-size: 0.78rem;
+}
+
+.modal-card-fields[hidden] {
+  display: none;
+}
+
+.modal-textarea {
+  resize: vertical;
+  min-height: 64px;
+  font-family: inherit;
+  line-height: 1.4;
 }
 
 .modal-actions {
