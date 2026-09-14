@@ -2,30 +2,30 @@
    Tokens
    ============================================================ */
 :root {
-  --bg: #0a0d0c;
-  --bg-elevated: #101412;
-  --surface: #151b18;
-  --surface-2: #1b2320;
-  --border: #22322a;
-  --border-soft: #1a2420;
+  --bg: #12191b;
+  --bg-elevated: #182022;
+  --surface: #1d2729;
+  --surface-2: #253032;
+  --border: #2f3c3e;
+  --border-soft: #253032;
 
-  --mint: #4fd1a5;
-  --mint-strong: #6fe6bb;
-  --mint-dim: #2f8f6d;
-  --mint-glow: rgba(79, 209, 165, 0.16);
+  --mint: #7ad9c4;
+  --mint-strong: #9ce8d8;
+  --mint-dim: #4f9c8a;
+  --mint-glow: rgba(122, 217, 196, 0.18);
 
-  --rose: #d1495b;
-  --rose-glow: rgba(209, 73, 91, 0.16);
+  --rose: #e08098;
+  --rose-glow: rgba(224, 128, 152, 0.16);
 
-  --amber: #d18a4f;
-  --amber-glow: rgba(209, 138, 79, 0.16);
+  --amber: #e0ab7c;
+  --amber-glow: rgba(224, 171, 124, 0.16);
 
-  --lime: #c3d14f;
-  --lime-glow: rgba(195, 209, 79, 0.16);
+  --lime: #d6da8e;
+  --lime-glow: rgba(214, 218, 142, 0.16);
 
-  --text: #e9f3ee;
-  --text-muted: #8fa89d;
-  --text-faint: #506059;
+  --text: #eef6f3;
+  --text-muted: #a0b5b0;
+  --text-faint: #62716d;
 
   --font-display: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
   --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;

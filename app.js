@@ -392,10 +392,10 @@ function getAllDeckConfigs() {
 // Rose (Missed) -> Amber (Hard) -> Lime (Almost) -> Mint (Got it!),
 // interpolated continuously rather than snapped to four hard buckets.
 const SCORE_COLOR_STOPS = [
-  [209, 73, 91],   // 0
-  [209, 138, 79],  // 1
-  [195, 209, 79],  // 2
-  [79, 209, 165],  // 3
+  [224, 128, 152], // 0
+  [224, 171, 124], // 1
+  [214, 218, 142], // 2
+  [122, 217, 196], // 3
 ];
 
 function scoreToColor(score) {
@@ -935,9 +935,16 @@ function renderDeckPreview(deck) {
 
   // What "Play these" will study if clicked — kept in sync here so
   // the button doesn't need to recompute or re-filter anything.
-  state.previewVisibleCards = visible.map(({ card }) => card);
+  // Skipped cards stay in the *list* (dimmed) for every filter, but
+  // shouldn't sneak into the *play pool* — except on "Non-active"
+  // itself, whose whole point is letting you drill exactly your
+  // skipped cards without reactivating them.
+  const playable = state.previewSort === 'nonactive'
+    ? visible
+    : visible.filter(({ card }) => isCardActive(deck.id, card));
+  state.previewVisibleCards = playable.map(({ card }) => card);
   updateSortToggleLabel(visible.length);
-  updatePlayFilteredButton(visible.length);
+  updatePlayFilteredButton(playable.length);
 
   previewListEl.innerHTML = '';
 
