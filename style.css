@@ -271,9 +271,10 @@ code {
 
 .preview-head {
   display: flex;
-  align-items: baseline;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px 12px;
   margin-bottom: 10px;
 }
 
@@ -281,9 +282,18 @@ code {
   color: var(--text-faint);
   font-size: 0.82rem;
   margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-.sort-toggle {
+.preview-head-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.sort-toggle,
+.unselect-btn {
   background: none;
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -296,7 +306,9 @@ code {
 }
 
 .sort-toggle:hover,
-.sort-toggle:focus-visible {
+.sort-toggle:focus-visible,
+.unselect-btn:hover,
+.unselect-btn:focus-visible {
   border-color: var(--mint-dim);
   color: var(--text);
 }
@@ -305,6 +317,11 @@ code {
   border-color: var(--mint-dim);
   background: var(--mint-glow);
   color: var(--mint-strong);
+}
+
+.unselect-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 /* Soft floating "back to top" button — hidden until you've

@@ -356,6 +356,7 @@ const countGridEl = document.getElementById('countGrid');
 const countDeckNameEl = document.getElementById('countDeckName');
 const previewListEl = document.getElementById('previewList');
 const sortToggleEl = document.getElementById('sortToggle');
+const unselectAllBtnEl = document.getElementById('unselectAllBtn');
 const scrollTopBtnEl = document.getElementById('scrollTopBtn');
 const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -446,6 +447,7 @@ function renderDeckPreview(deck) {
       li.classList.toggle('is-inactive', !nowActive);
       li.title = nowActive ? scoreNote : `${scoreNote} · skipped`;
       renderCountGrid(deck);
+      updateUnselectAllAvailability(deck);
     });
     toggleLabel.appendChild(checkbox);
 
@@ -456,7 +458,25 @@ function renderDeckPreview(deck) {
 
   previewListEl.scrollTop = 0;
   scrollTopBtnEl.classList.remove('is-visible');
+  updateUnselectAllAvailability(deck);
 }
+
+// Greyed out when nothing in the deck is currently skipped — nothing
+// for it to do yet.
+function updateUnselectAllAvailability(deck) {
+  const cards = state.decks[deck.id].cards;
+  const anyInactive = cards.some(card => !isCardActive(deck.id, card));
+  unselectAllBtnEl.disabled = !anyInactive;
+}
+
+unselectAllBtnEl.addEventListener('click', () => {
+  const deck = state.activeDeck;
+  if (!deck) return;
+  const cards = state.decks[deck.id].cards;
+  cards.forEach(card => setCardActive(deck.id, card, true));
+  renderDeckPreview(deck);
+  renderCountGrid(deck);
+});
 
 sortToggleEl.addEventListener('click', () => {
   const currentIndex = SORT_MODES.indexOf(state.previewSort);
