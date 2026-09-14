@@ -426,31 +426,40 @@ code {
   transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 }
 
-.sort-toggle:hover,
-.sort-toggle:focus-visible,
 .unselect-btn:hover,
 .unselect-btn:focus-visible {
   border-color: var(--mint-dim);
   color: var(--text);
 }
 
-.sort-toggle.is-active {
+/* Always mint-tinted, regardless of which filter is selected —
+   "Original" is just as much a deliberately-chosen filter as any of
+   the others, so it shouldn't look muted/unselected next to them. */
+.sort-toggle {
   border-color: var(--mint-dim);
   background: var(--mint-glow);
   color: var(--mint-strong);
 }
 
-/* Always mint-tinted, not just on hover — unlike the other two
-   pills here (which just filter/toggle), this one launches a
-   session, so it should read as the "go" action of the group. */
+.sort-toggle:hover,
+.sort-toggle:focus-visible {
+  border-color: var(--mint);
+  color: var(--text);
+}
+
+/* Solid background rather than just a tint, so it reads as the
+   clear "go" action of the group — unlike the other two pills here,
+   which just filter/toggle, this one launches a session. */
 .play-filtered-btn {
-  border-color: var(--mint-dim);
-  color: var(--mint-strong);
+  border-color: var(--mint);
+  background: var(--mint);
+  color: #0a0d0c;
+  font-weight: 600;
 }
 
 .play-filtered-btn:hover:not(:disabled),
 .play-filtered-btn:focus-visible:not(:disabled) {
-  background: var(--mint-glow);
+  filter: brightness(1.08);
 }
 
 .unselect-btn:disabled,
