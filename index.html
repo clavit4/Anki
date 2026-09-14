@@ -26,7 +26,6 @@
     <div class="deck-list" id="deckList">
       <!-- deck buttons injected by app.js -->
     </div>
-    <button class="scroll-top-btn scroll-top-btn-fixed" id="deckScrollTopBtn" type="button" aria-label="Back to top">&uarr;</button>
   </section>
 
   <!-- ================= COUNT SELECT ================= -->
@@ -131,6 +130,13 @@
     </div>
   </section>
 
+  <!-- Lives outside every .screen on purpose: each .screen plays a CSS
+       "rise" animation on entry, and animation-fill-mode:both leaves a
+       lingering (identity) transform on it afterwards — which, per the
+       CSS spec, would turn this position:fixed button into something
+       anchored to that screen instead of the real viewport. -->
+  <button class="scroll-top-btn scroll-top-btn-fixed" id="deckScrollTopBtn" type="button" aria-label="Back to top">&uarr;</button>
+
   <!-- ================= CONFIRM MODAL ================= -->
   <div class="modal-overlay" id="confirmOverlay" hidden>
     <div class="modal-box" role="alertdialog" aria-modal="true" aria-labelledby="confirmMessage">
@@ -144,6 +150,6 @@
 
 </div>
 
-<script src="app.js?v=8"></script>
+<script src="app.js?v=9"></script>
 </body>
 </html>
