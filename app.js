@@ -563,11 +563,117 @@ document.addEventListener('keydown', (e) => {
    Deck select screen
    ============================================================ */
 const deckListEl = document.getElementById('deckList');
+const streakCountEl = document.getElementById('streakCount');
+const streakGridEl = document.getElementById('streakGrid');
 const deckUploadBtnEl = document.getElementById('deckUploadBtn');
 const deckFileInputEl = document.getElementById('deckFileInput');
 const deckUploadErrorEl = document.getElementById('deckUploadError');
 
+/* ============================================================
+   Streak calendar — a small "how much have I studied" heatmap on
+   the deck list. Needs no new tracking: recordGrade() never trims
+   a card's history, so every grade ever given, with its real
+   timestamp, is already sitting in localStorage under
+   recall:<deckId>:card:<id>. This just reads it back out.
+   ============================================================ */
+const STREAK_WEEKS = 16;
+
+function dateKey(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+// Every grade, across every deck (built-in or custom), bucketed by
+// the calendar day it was given on. ":card:" only appears in the
+// per-card history keys — not in a custom deck's own "...:cards"
+// key or the "...:active:<id>" override keys — so a plain substring
+// check is enough to pick out exactly the right keys.
+function getDailyReviewCounts() {
+  const counts = new Map();
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith('recall:') || !key.includes(':card:')) continue;
+    let history;
+    try {
+      history = JSON.parse(localStorage.getItem(key));
+    } catch (err) {
+      continue;
+    }
+    if (!Array.isArray(history)) continue;
+    history.forEach(entry => {
+      if (!entry || typeof entry.timestamp !== 'number') return;
+      const day = dateKey(new Date(entry.timestamp));
+      counts.set(day, (counts.get(day) || 0) + 1);
+    });
+  }
+  return counts;
+}
+
+// Consecutive days with at least one review, walking back from
+// today. If today has none yet, that alone shouldn't zero out a
+// streak that's still "alive" until the day actually ends, so the
+// walk starts from yesterday instead in that case.
+function computeCurrentStreak(counts) {
+  const cursor = new Date();
+  cursor.setHours(0, 0, 0, 0);
+  if (!counts.get(dateKey(cursor))) {
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  let streak = 0;
+  while (counts.get(dateKey(cursor))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
+// A GitHub-style level bucket for a day's review count, used to pick
+// how saturated that cell's color is.
+function streakLevel(count) {
+  if (!count) return 0;
+  if (count <= 5) return 1;
+  if (count <= 15) return 2;
+  if (count <= 30) return 3;
+  return 4;
+}
+
+function renderStreakCalendar() {
+  const counts = getDailyReviewCounts();
+  streakCountEl.textContent = String(computeCurrentStreak(counts));
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  // Extend the grid out to the end of the current week (Saturday) so
+  // every column holds a full 7 days — otherwise the last, partial
+  // week would visually compress the grid.
+  const gridEnd = new Date(today);
+  gridEnd.setDate(gridEnd.getDate() + (6 - gridEnd.getDay()));
+  const totalDays = STREAK_WEEKS * 7;
+  const cursor = new Date(gridEnd);
+  cursor.setDate(cursor.getDate() - (totalDays - 1));
+
+  streakGridEl.innerHTML = '';
+  for (let i = 0; i < totalDays; i++) {
+    const cellDate = new Date(cursor);
+    const cell = document.createElement('span');
+    if (cellDate > today) {
+      cell.className = 'streak-cell is-future';
+    } else {
+      const key = dateKey(cellDate);
+      const count = counts.get(key) || 0;
+      cell.className = `streak-cell level-${streakLevel(count)}`;
+      const label = count === 1 ? '1 card' : `${count} cards`;
+      cell.title = `${label} — ${cellDate.toDateString()}`;
+    }
+    streakGridEl.appendChild(cell);
+    cursor.setDate(cursor.getDate() + 1);
+  }
+}
+
 function renderDeckList() {
+  renderStreakCalendar();
   deckListEl.innerHTML = '';
   getAllDeckConfigs().forEach(deck => {
     const leftGroup = document.createElement('span');

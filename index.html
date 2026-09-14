@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0e0d'/%3E%3Crect x='24' y='18' width='52' height='64' rx='8' fill='none' stroke='%234fd1a5' stroke-width='5'/%3E%3Cline x1='34' y1='38' x2='66' y2='38' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3Cline x1='34' y1='52' x2='58' y2='52' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0e0d'/%3E%3Crect x='24' y='18' width='52' height='64' rx='8' fill='none' stroke='%234fd1a5' stroke-width='5'/%3E%3Cline x1='34' y1='38' x2='66' y2='38' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3Cline x1='34' y1='52' x2='58' y2='52' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>A N K I</title>
-<link rel="stylesheet" href="style.css?v=19">
+<link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
 
@@ -22,6 +22,14 @@
       <h1 class="wordmark">Anki</h1>
       <p class="tagline">Deck list.</p>
     </header>
+
+    <div class="streak-widget" id="streakWidget">
+      <div class="streak-top">
+        <span class="streak-count" id="streakCount">0</span>
+        <span class="streak-label">day streak</span>
+      </div>
+      <div class="streak-grid" id="streakGrid"></div>
+    </div>
 
     <div class="deck-list" id="deckList">
       <!-- deck buttons injected by app.js -->
@@ -172,6 +180,6 @@
 
 </div>
 
-<script src="app.js?v=20"></script>
+<script src="app.js?v=21"></script>
 </body>
 </html>
