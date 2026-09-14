@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b0e0d">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0e0d'/%3E%3Crect x='24' y='18' width='52' height='64' rx='8' fill='none' stroke='%234fd1a5' stroke-width='5'/%3E%3Cline x1='34' y1='38' x2='66' y2='38' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3Cline x1='34' y1='52' x2='58' y2='52' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0e0d'/%3E%3Crect x='24' y='18' width='52' height='64' rx='8' fill='none' stroke='%234fd1a5' stroke-width='5'/%3E%3Cline x1='34' y1='38' x2='66' y2='38' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3Cline x1='34' y1='52' x2='58' y2='52' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>A N K I</title>
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 
@@ -19,13 +19,14 @@
   <!-- ================= DECK SELECT ================= -->
   <section class="screen active" id="screen-deck" aria-labelledby="deck-heading">
     <header class="app-header">
-      <h1 class="wordmark">Recall</h1>
+      <h1 class="wordmark">Anki</h1>
       <p class="tagline">Pick a deck to review.</p>
     </header>
 
     <div class="deck-list" id="deckList">
       <!-- deck buttons injected by app.js -->
     </div>
+    <button class="scroll-top-btn scroll-top-btn-fixed" id="deckScrollTopBtn" type="button" aria-label="Back to top">&uarr;</button>
   </section>
 
   <!-- ================= COUNT SELECT ================= -->
@@ -130,8 +131,19 @@
     </div>
   </section>
 
+  <!-- ================= CONFIRM MODAL ================= -->
+  <div class="modal-overlay" id="confirmOverlay" hidden>
+    <div class="modal-box" role="alertdialog" aria-modal="true" aria-labelledby="confirmMessage">
+      <p class="modal-message" id="confirmMessage"></p>
+      <div class="modal-actions">
+        <button class="ghost-btn modal-btn" id="confirmCancelBtn" type="button">Cancel</button>
+        <button class="primary-btn modal-btn" id="confirmOkBtn" type="button">Yes, do it</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<script src="app.js?v=7"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>
