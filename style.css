@@ -362,12 +362,16 @@ code {
 
 .preview-list li {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 12px 14px 12px 22px;
+  padding: 12px 10px 12px 22px;
   font-size: 0.92rem;
   line-height: 1.4;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 /* Left-edge stripe showing average recall grade (last 7 attempts),
@@ -382,6 +386,12 @@ code {
   width: 4px;
   border-radius: 2px;
   background: var(--score-color, var(--text-faint));
+  transition: opacity 0.15s ease;
+}
+
+.preview-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .preview-front {
@@ -391,6 +401,60 @@ code {
 .preview-back {
   color: var(--text-muted);
   font-style: italic;
+}
+
+/* Skipped card — unchecked in the toggle, still listed but out of
+   the running for quiz sessions. Dimmed rather than hidden so it's
+   easy to find and switch back on. */
+.preview-list li.is-inactive {
+  background: var(--bg-elevated);
+  border-color: var(--border-soft);
+}
+
+.preview-list li.is-inactive::before {
+  opacity: 0.3;
+}
+
+.preview-list li.is-inactive .preview-content {
+  opacity: 0.45;
+}
+
+.preview-list li.is-inactive .preview-front {
+  text-decoration: line-through;
+  text-decoration-color: var(--text-faint);
+}
+
+/* Per-card skip toggle. Checked = skipped, so it borrows the same
+   rose used for "missed" elsewhere in the app. */
+.preview-toggle {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.preview-toggle input[type="checkbox"] {
+  width: 19px;
+  height: 19px;
+  margin: 0;
+  accent-color: var(--rose);
+  cursor: pointer;
+}
+
+.count-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 22px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 /* ============================================================
