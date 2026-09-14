@@ -26,13 +26,16 @@ const COUNT_OPTIONS = [10, 25, 50, 100];
 const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 
 // Deck-preview sort cycle: original CSV order -> weakest cards first
-// -> strongest cards first -> back to original. Each label is the
-// action a click will perform *next*, not the currently-active mode.
-const SORT_MODES = ['original', 'weakest', 'strongest'];
+// -> strongest cards first -> active cards first -> non-active cards
+// first -> back to original. Each label names the mode that's
+// *currently* showing (tapping the button advances to the next one).
+const SORT_MODES = ['original', 'weakest', 'strongest', 'active', 'nonactive'];
 const SORT_LABELS = {
-  original: 'Weakest first',
-  weakest: 'Strongest first',
-  strongest: 'Original order',
+  original: 'Original order',
+  weakest: 'Weakest first',
+  strongest: 'Strongest first',
+  active: 'Active first',
+  nonactive: 'Non-active first',
 };
 
 // How many of a card's most recent graded attempts to average when
@@ -273,7 +276,7 @@ const state = {
   correct: 0,
   missed: [],
   flipped: false,
-  previewSort: 'original', // 'original' | 'weakest' | 'strongest'
+  previewSort: 'original', // 'original' | 'weakest' | 'strongest' | 'active' | 'nonactive'
   history: [],           // stack of { index, grade } — one entry per graded card, for Undo
 };
 
@@ -408,6 +411,16 @@ function renderDeckPreview(deck) {
       if (b.score === null) return -1;
       return (a.score - b.score) * direction;
     });
+  } else if (state.previewSort === 'active' || state.previewSort === 'nonactive') {
+    // Group active/inactive cards together. Array.sort is stable, so
+    // each group keeps its own original relative order.
+    const activeFirst = state.previewSort === 'active';
+    withScores.sort((a, b) => {
+      const aActive = isCardActive(deck.id, a.card);
+      const bActive = isCardActive(deck.id, b.card);
+      if (aActive === bActive) return 0;
+      return aActive === activeFirst ? -1 : 1;
+    });
   }
 
   previewListEl.innerHTML = '';
@@ -461,11 +474,12 @@ function renderDeckPreview(deck) {
   updateUnselectAllAvailability(deck);
 }
 
-// Greyed out when nothing in the deck is currently skipped — nothing
-// for it to do yet.
+// Hidden entirely when nothing in the deck is currently skipped —
+// nothing for it to do yet.
 function updateUnselectAllAvailability(deck) {
   const cards = state.decks[deck.id].cards;
   const anyInactive = cards.some(card => !isCardActive(deck.id, card));
+  unselectAllBtnEl.classList.toggle('is-hidden', !anyInactive);
   unselectAllBtnEl.disabled = !anyInactive;
 }
 

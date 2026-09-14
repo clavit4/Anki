@@ -324,6 +324,10 @@ code {
   cursor: not-allowed;
 }
 
+.unselect-btn.is-hidden {
+  display: none;
+}
+
 /* Soft floating "back to top" button — hidden until you've
    scrolled a bit into the (potentially very long) card list. */
 .scroll-top-btn {
