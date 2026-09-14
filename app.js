@@ -889,14 +889,15 @@ unselectAllBtnEl.addEventListener('click', async () => {
   renderCountGrid(deck);
 });
 
-// Text + active-state of the sort/filter button. Takes the count of
-// cards the *current* filter is showing, so e.g. "Weaker (12)" always
-// reflects what's actually on screen — set from renderDeckPreview()
-// right after it finishes filtering, which is the one place that
-// count is known.
+// Text of the sort/filter button. Takes the count of cards the
+// *current* filter is showing, so e.g. "Weaker (12)" always reflects
+// what's actually on screen — set from renderDeckPreview() right
+// after it finishes filtering, which is the one place that count is
+// known. (The button always looks "on" via .sort-toggle's own CSS —
+// every filter, "Original" included, is an equally deliberate choice,
+// not a default/disabled state.)
 function updateSortToggleLabel(count) {
   sortToggleEl.textContent = `${SORT_LABELS[state.previewSort]} (${count})`;
-  sortToggleEl.classList.toggle('is-active', state.previewSort !== 'original');
 }
 
 // Text + disabled-state of the "Play these" button — mirrors
