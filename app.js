@@ -449,8 +449,6 @@ function openCountScreen(deck) {
   state.activeDeck = deck;
   countDeckNameEl.textContent = deck.name;
   state.previewSort = 'original';
-  sortToggleEl.classList.remove('is-active');
-  sortToggleEl.textContent = SORT_LABELS.original;
 
   renderCountGrid(deck);
   renderDeckPreview(deck);
@@ -512,6 +510,8 @@ function renderDeckPreview(deck) {
     visible = withScores.filter(({ card }) => !isCardActive(deck.id, card));
   }
 
+  updateSortToggleLabel(visible.length);
+
   previewListEl.innerHTML = '';
 
   if (visible.length === 0) {
@@ -558,10 +558,21 @@ function renderDeckPreview(deck) {
     checkbox.addEventListener('change', () => {
       const nowActive = !checkbox.checked;
       setCardActive(deck.id, card, nowActive);
-      li.classList.toggle('is-inactive', !nowActive);
-      li.title = nowActive ? scoreNote : `${scoreNote} · skipped`;
       renderCountGrid(deck);
-      updateUnselectAllAvailability(deck);
+
+      if (state.previewSort === 'active' || state.previewSort === 'nonactive') {
+        // This card just left (or joined) the group this filter shows —
+        // a class tweak isn't enough, it needs to actually disappear/
+        // appear from the list. Preserve scroll position since a full
+        // rebuild would otherwise snap back to the top mid-review.
+        const scrollPos = previewListEl.scrollTop;
+        renderDeckPreview(deck);
+        previewListEl.scrollTop = scrollPos;
+      } else {
+        li.classList.toggle('is-inactive', !nowActive);
+        li.title = nowActive ? scoreNote : `${scoreNote} · skipped`;
+        updateUnselectAllAvailability(deck);
+      }
     });
     toggleLabel.appendChild(checkbox);
 
@@ -595,11 +606,19 @@ unselectAllBtnEl.addEventListener('click', async () => {
   renderCountGrid(deck);
 });
 
+// Text + active-state of the sort/filter button. Takes the count of
+// cards the *current* filter is showing, so e.g. "Weaker (12)" always
+// reflects what's actually on screen — set from renderDeckPreview()
+// right after it finishes filtering, which is the one place that
+// count is known.
+function updateSortToggleLabel(count) {
+  sortToggleEl.textContent = `${SORT_LABELS[state.previewSort]} (${count})`;
+  sortToggleEl.classList.toggle('is-active', state.previewSort !== 'original');
+}
+
 sortToggleEl.addEventListener('click', () => {
   const currentIndex = SORT_MODES.indexOf(state.previewSort);
   state.previewSort = SORT_MODES[(currentIndex + 1) % SORT_MODES.length];
-  sortToggleEl.textContent = SORT_LABELS[state.previewSort];
-  sortToggleEl.classList.toggle('is-active', state.previewSort !== 'original');
   renderDeckPreview(state.activeDeck);
 });
 
