@@ -4,9 +4,16 @@
    Config — edit this to point at your own decks.
    Add or remove entries as needed; each needs a unique id,
    a display name, and a path to a CSV file with a
-   "front,back,id" header followed by one card per row.
+   "front,back,id,active" header followed by one card per row.
    The id column is optional — a row without one just won't have
    review history tracked until you give it a number.
+   The active column is optional too. Leave it out (or leave a
+   row's value blank) and the card starts active. Set it to
+   0 / no / false / off / inactive to have the card start
+   deactivated — it'll still show in the deck preview, just
+   grayed out, and won't be picked for quiz sessions until you
+   tap it back on (which is remembered on this device, no need
+   to edit the CSV again).
    ============================================================ */
 const DECKS = [
   { id: 'deck1', name: 'Deck 1', file: 'decks/deck1.csv' },
@@ -18,19 +25,18 @@ const COUNT_OPTIONS = [10, 25, 50, 100];
 // The four grading buttons, worst to best.
 const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 
-// Deck-preview filter cycle: show all cards -> hide everything except
-// weak ones -> hide everything except strong ones -> back to all.
-// This only changes what's *visible* in the preview list — it never
-// touches which cards are in the deck or which get used in a session.
-const FILTER_MODES = ['all', 'weak', 'strong'];
-const FILTER_LABELS = {
-  all: 'All cards',
-  weak: 'Weak only',
-  strong: 'Strong only',
+// Deck-preview sort cycle: original CSV order -> weakest cards first
+// -> strongest cards first -> active cards first -> non-active cards
+// first -> back to original. Each label names the mode that's
+// *currently* showing (tapping the button advances to the next one).
+const SORT_MODES = ['original', 'weakest', 'strongest', 'active', 'nonactive'];
+const SORT_LABELS = {
+  original: 'Original order',
+  weakest: 'Weakest first',
+  strongest: 'Strongest first',
+  active: 'Active first',
+  nonactive: 'Non-active first',
 };
-
-// Score cutoff (0-3 scale) between "weak" and "strong" for that filter.
-const WEAK_THRESHOLD = 1.5;
 
 // How many of a card's most recent graded attempts to average when
 // deciding "how good am I at this" for the deck-preview color.
@@ -68,6 +74,16 @@ function parseCSV(text) {
   return rows.filter(r => r.some(cell => cell.trim().length > 0));
 }
 
+// Reads the optional 4th CSV column. Blank/missing = active. Anything
+// matching one of the "off" words below = starts deactivated.
+const INACTIVE_WORDS = new Set(['0', 'no', 'false', 'off', 'inactive', 'n']);
+function parseActiveDefault(raw) {
+  if (raw === undefined || raw === null) return true;
+  const v = raw.trim().toLowerCase();
+  if (v.length === 0) return true;
+  return !INACTIVE_WORDS.has(v);
+}
+
 function csvToCards(text) {
   const rows = parseCSV(text);
   if (rows.length === 0) return [];
@@ -78,7 +94,7 @@ function csvToCards(text) {
 
   const cards = [];
   for (let i = startIndex; i < rows.length; i++) {
-    const [front, back, id] = rows[i];
+    const [front, back, id, active] = rows[i];
     if (front && front.trim() && back && back.trim()) {
       const trimmedId = (id !== undefined && id !== null) ? id.trim() : '';
       cards.push({
@@ -88,6 +104,9 @@ function csvToCards(text) {
         // content-based key below, so history isn't tracked until
         // you assign one.
         id: trimmedId.length > 0 ? trimmedId : null,
+        // The CSV's starting active/inactive state. A checkbox in the
+        // deck preview can override this per device — see isCardActive().
+        activeDefault: parseActiveDefault(active),
       });
     }
   }
@@ -139,6 +158,25 @@ function recordGrade(deckId, card, grade) {
   }
 }
 
+// Removes the most recent recorded attempt for a card — the other
+// half of recordGrade(), used when Undo needs to take back a grade
+// instead of layering a correction on top of the mistaken one.
+function removeLastGradeRecord(deckId, card) {
+  const key = cardStorageKey(deckId, card);
+  const history = loadCardHistory(deckId, card);
+  if (history.length === 0) return;
+  history.pop();
+  try {
+    if (history.length === 0) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, JSON.stringify(history));
+    }
+  } catch (err) {
+    // Storage unavailable — nothing to clean up in that case anyway.
+  }
+}
+
 // Average of a card's last HISTORY_WINDOW graded attempts, as a 0–3
 // number. null means "never studied" — nothing to average yet.
 function cardScore(deckId, card) {
@@ -147,6 +185,54 @@ function cardScore(deckId, card) {
   const recent = history.slice(-HISTORY_WINDOW);
   const sum = recent.reduce((total, entry) => total + entry.grade, 0);
   return sum / recent.length;
+}
+
+/* ============================================================
+   Active/inactive overrides — a checkbox in the deck preview lets
+   you bench a card without touching the CSV. Stored per device,
+   same key shape as review history. Only *overrides* of the CSV's
+   activeDefault are written, and a toggle back to matching the
+   default removes the override again — so editing the CSV later
+   still "wins" for any card you haven't deliberately flipped.
+   ============================================================ */
+function cardActiveKey(deckId, card) {
+  if (card.id !== null && card.id !== undefined && String(card.id).length > 0) {
+    return `recall:${deckId}:active:${card.id}`;
+  }
+  return `recall:${deckId}:activeTemp:${hashString(card.front + '\u241F' + card.back)}`;
+}
+
+function loadActiveOverride(deckId, card) {
+  try {
+    const raw = localStorage.getItem(cardActiveKey(deckId, card));
+    if (raw === null) return null; // no override — defer to the CSV
+    return raw === '1';
+  } catch (err) {
+    return null;
+  }
+}
+
+function isCardActive(deckId, card) {
+  const override = loadActiveOverride(deckId, card);
+  return override === null ? card.activeDefault : override;
+}
+
+function setCardActive(deckId, card, active) {
+  const key = cardActiveKey(deckId, card);
+  try {
+    if (active === card.activeDefault) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, active ? '1' : '0');
+    }
+  } catch (err) {
+    // Storage full or unavailable — the checkbox still visually
+    // updates for this session, it just won't be remembered.
+  }
+}
+
+function getActiveCards(deckId) {
+  return state.decks[deckId].cards.filter(card => isCardActive(deckId, card));
 }
 
 // Rose (Missed) -> Amber (Hard) -> Lime (Almost) -> Mint (Got it!),
@@ -190,7 +276,8 @@ const state = {
   correct: 0,
   missed: [],
   flipped: false,
-  previewFilter: 'all', // 'all' | 'weak' | 'strong' — display only
+  previewSort: 'original', // 'original' | 'weakest' | 'strongest' | 'active' | 'nonactive'
+  history: [],           // stack of { index, grade } — one entry per graded card, for Undo
 };
 
 /* ============================================================
@@ -239,7 +326,10 @@ function renderDeckList() {
         btn.classList.add('is-error');
         countEl.textContent = 'No cards found';
       } else {
-        countEl.textContent = `${result.cards.length} card${result.cards.length === 1 ? '' : 's'}`;
+        const activeCount = getActiveCards(deck.id).length;
+        countEl.textContent = activeCount === result.cards.length
+          ? `${result.cards.length} card${result.cards.length === 1 ? '' : 's'}`
+          : `${activeCount}/${result.cards.length} active`;
       }
     });
   });
@@ -268,70 +358,85 @@ async function loadDeck(deck) {
 const countGridEl = document.getElementById('countGrid');
 const countDeckNameEl = document.getElementById('countDeckName');
 const previewListEl = document.getElementById('previewList');
-const filterToggleEl = document.getElementById('filterToggle');
+const sortToggleEl = document.getElementById('sortToggle');
+const unselectAllBtnEl = document.getElementById('unselectAllBtn');
 const scrollTopBtnEl = document.getElementById('scrollTopBtn');
 const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function openCountScreen(deck) {
   state.activeDeck = deck;
   countDeckNameEl.textContent = deck.name;
-  state.previewFilter = 'all';
-  filterToggleEl.classList.remove('is-active');
-  filterToggleEl.textContent = FILTER_LABELS.all;
+  state.previewSort = 'original';
+  sortToggleEl.classList.remove('is-active');
+  sortToggleEl.textContent = SORT_LABELS.original;
 
-  const total = state.decks[deck.id].cards.length;
+  renderCountGrid(deck);
+  renderDeckPreview(deck);
+  showScreen('screen-count');
+}
+
+// Rebuilt any time a card gets checked/unchecked below, since the
+// available session sizes and the "All" count depend on how many
+// cards are currently active.
+function renderCountGrid(deck) {
+  const total = getActiveCards(deck.id).length;
   countGridEl.innerHTML = '';
+
+  if (total === 0) {
+    const msg = document.createElement('p');
+    msg.className = 'count-empty';
+    msg.textContent = 'Every card here is switched off — uncheck one below to study it.';
+    countGridEl.appendChild(msg);
+    return;
+  }
 
   const options = COUNT_OPTIONS.filter(n => n < total);
   options.forEach(n => countGridEl.appendChild(makeCountButton(n, `${n} cards`, total)));
   countGridEl.appendChild(makeCountButton(total, `All (${total})`, total, true));
-
-  renderDeckPreview(deck);
-  showScreen('screen-count');
 }
 
 function renderDeckPreview(deck) {
   const cards = state.decks[deck.id].cards;
 
-  // Score once up front; order is always the original CSV order —
-  // the filter hides rows, it never reshuffles them.
+  // Score once up front so sorting doesn't recompute per comparison.
   const withScores = cards.map(card => ({ card, score: cardScore(deck.id, card) }));
 
-  const visible = withScores.filter(({ score }) => {
-    if (state.previewFilter === 'weak') {
-      // Untested cards have no proof they're strong yet, so they
-      // stay visible under "weak" too.
-      return score === null || score < WEAK_THRESHOLD;
-    }
-    if (state.previewFilter === 'strong') {
-      return score !== null && score >= WEAK_THRESHOLD;
-    }
-    return true;
-  });
-
-  previewListEl.innerHTML = '';
-
-  if (visible.length === 0) {
-    const li = document.createElement('li');
-    li.className = 'preview-empty';
-    li.textContent = state.previewFilter === 'weak'
-      ? 'No weak cards right now — nice.'
-      : 'No strong cards yet.';
-    previewListEl.appendChild(li);
-    previewListEl.scrollTop = 0;
-    scrollTopBtnEl.classList.remove('is-visible');
-    return;
+  if (state.previewSort === 'weakest' || state.previewSort === 'strongest') {
+    // Weakest/strongest first by score. Never-studied cards have no
+    // signal either way, so they always sort to the bottom.
+    const direction = state.previewSort === 'weakest' ? 1 : -1;
+    withScores.sort((a, b) => {
+      if (a.score === null && b.score === null) return 0;
+      if (a.score === null) return 1;
+      if (b.score === null) return -1;
+      return (a.score - b.score) * direction;
+    });
+  } else if (state.previewSort === 'active' || state.previewSort === 'nonactive') {
+    // Group active/inactive cards together. Array.sort is stable, so
+    // each group keeps its own original relative order.
+    const activeFirst = state.previewSort === 'active';
+    withScores.sort((a, b) => {
+      const aActive = isCardActive(deck.id, a.card);
+      const bActive = isCardActive(deck.id, b.card);
+      if (aActive === bActive) return 0;
+      return aActive === activeFirst ? -1 : 1;
+    });
   }
 
-  visible.forEach(({ card, score }) => {
+  previewListEl.innerHTML = '';
+  withScores.forEach(({ card, score }) => {
     const li = document.createElement('li');
+    const active = isCardActive(deck.id, card);
+    li.classList.toggle('is-inactive', !active);
 
-    if (score === null) {
-      li.title = 'Not studied yet';
-    } else {
+    const scoreNote = score === null ? 'Not studied yet' : `Average grade ${score.toFixed(1)} / 3`;
+    li.title = active ? scoreNote : `${scoreNote} · skipped`;
+    if (score !== null) {
       li.style.setProperty('--score-color', scoreToColor(score));
-      li.title = `Average grade ${score.toFixed(1)} / 3`;
     }
+
+    const content = document.createElement('div');
+    content.className = 'preview-content';
 
     const front = document.createElement('div');
     front.className = 'preview-front';
@@ -339,20 +444,59 @@ function renderDeckPreview(deck) {
     const back = document.createElement('div');
     back.className = 'preview-back';
     back.textContent = card.back;
-    li.appendChild(front);
-    li.appendChild(back);
+    content.appendChild(front);
+    content.appendChild(back);
+
+    const toggleLabel = document.createElement('label');
+    toggleLabel.className = 'preview-toggle';
+    toggleLabel.title = 'Skip this card in quiz sessions';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = !active;
+    checkbox.setAttribute('aria-label', `Skip "${card.front}" in quiz sessions`);
+    checkbox.addEventListener('change', () => {
+      const nowActive = !checkbox.checked;
+      setCardActive(deck.id, card, nowActive);
+      li.classList.toggle('is-inactive', !nowActive);
+      li.title = nowActive ? scoreNote : `${scoreNote} · skipped`;
+      renderCountGrid(deck);
+      updateUnselectAllAvailability(deck);
+    });
+    toggleLabel.appendChild(checkbox);
+
+    li.appendChild(content);
+    li.appendChild(toggleLabel);
     previewListEl.appendChild(li);
   });
 
   previewListEl.scrollTop = 0;
   scrollTopBtnEl.classList.remove('is-visible');
+  updateUnselectAllAvailability(deck);
 }
 
-filterToggleEl.addEventListener('click', () => {
-  const currentIndex = FILTER_MODES.indexOf(state.previewFilter);
-  state.previewFilter = FILTER_MODES[(currentIndex + 1) % FILTER_MODES.length];
-  filterToggleEl.textContent = FILTER_LABELS[state.previewFilter];
-  filterToggleEl.classList.toggle('is-active', state.previewFilter !== 'all');
+// Hidden entirely when nothing in the deck is currently skipped —
+// nothing for it to do yet.
+function updateUnselectAllAvailability(deck) {
+  const cards = state.decks[deck.id].cards;
+  const anyInactive = cards.some(card => !isCardActive(deck.id, card));
+  unselectAllBtnEl.classList.toggle('is-hidden', !anyInactive);
+  unselectAllBtnEl.disabled = !anyInactive;
+}
+
+unselectAllBtnEl.addEventListener('click', () => {
+  const deck = state.activeDeck;
+  if (!deck) return;
+  const cards = state.decks[deck.id].cards;
+  cards.forEach(card => setCardActive(deck.id, card, true));
+  renderDeckPreview(deck);
+  renderCountGrid(deck);
+});
+
+sortToggleEl.addEventListener('click', () => {
+  const currentIndex = SORT_MODES.indexOf(state.previewSort);
+  state.previewSort = SORT_MODES[(currentIndex + 1) % SORT_MODES.length];
+  sortToggleEl.textContent = SORT_LABELS[state.previewSort];
+  sortToggleEl.classList.toggle('is-active', state.previewSort !== 'original');
   renderDeckPreview(state.activeDeck);
 });
 
@@ -391,15 +535,19 @@ const actionRowEl = document.getElementById('actionRow');
 const flipBtnEl = document.getElementById('flipBtn');
 const gradeRowEl = document.getElementById('gradeRow');
 const tapHintEl = document.getElementById('tapHint');
+const undoBtnEl = document.getElementById('undoBtn');
+const undoFromResultsEl = document.getElementById('undoFromResults');
 
 function startSession(count) {
-  const allCards = state.decks[state.activeDeck.id].cards;
-  state.sessionCards = shuffle(allCards).slice(0, count);
+  const activeCards = getActiveCards(state.activeDeck.id);
+  state.sessionCards = shuffle(activeCards).slice(0, count);
   state.index = 0;
   state.correct = 0;
   state.missed = [];
+  state.history = [];
   scoreHitEl.textContent = '0';
   scoreMissEl.textContent = '0';
+  updateUndoAvailability();
   showScreen('screen-quiz');
   renderCurrentCard();
 }
@@ -409,6 +557,16 @@ function renderCurrentCard() {
   const card = state.sessionCards[state.index];
 
   state.flipped = false;
+
+  // Reset to the front INSTANTLY (no rotate transition) before the new
+  // card's text goes in. Without this, removing "flipped" here plays the
+  // normal 0.5s flip-back animation while the back face already holds the
+  // *new* card's answer underneath — so for a moment you're looking at
+  // the next answer mid-spin, and the animation itself reads as a "lag"
+  // before the card is ready. Killing the transition just for this reset
+  // (then restoring it right after) means only a manual tap-to-flip ever
+  // animates.
+  cardInnerEl.classList.add('snap');
   cardEl.classList.remove('flipped');
   cardEl.setAttribute('aria-pressed', 'false');
   actionRowEl.classList.remove('is-flipped');
@@ -420,6 +578,12 @@ function renderCurrentCard() {
 
   progressCountEl.textContent = `${state.index + 1} / ${total}`;
   progressFillEl.style.width = `${(state.index / total) * 100}%`;
+
+  // Force the browser to apply the transition-less reset above before we
+  // remove "snap" — otherwise the two class changes could get batched
+  // into one style pass and the reset would end up animated after all.
+  void cardInnerEl.offsetHeight;
+  cardInnerEl.classList.remove('snap');
 }
 
 function flipCard() {
@@ -434,6 +598,7 @@ function flipCard() {
 function gradeCard(grade) {
   if (!state.flipped) return;
   const card = state.sessionCards[state.index];
+  const gradedIndex = state.index;
 
   recordGrade(state.activeDeck.id, card, grade);
 
@@ -445,19 +610,67 @@ function gradeCard(grade) {
     scoreHitEl.textContent = String(state.correct);
   }
 
-  if (state.index + 1 >= state.sessionCards.length) {
+  state.history.push({ index: gradedIndex, grade });
+  updateUndoAvailability();
+
+  if (gradedIndex + 1 >= state.sessionCards.length) {
     finishSession();
   } else {
-    state.index++;
+    state.index = gradedIndex + 1;
     renderCurrentCard();
   }
 }
 
+function updateUndoAvailability() {
+  const hasHistory = state.history.length > 0;
+  undoBtnEl.disabled = !hasHistory;
+  undoFromResultsEl.disabled = !hasHistory;
+}
+
+// Jump back to the card you just graded and let you re-grade it — for
+// when you fat-finger "Missed" on a card you actually knew. Rolls back
+// both the live session score AND the saved per-card history entry, so
+// the correction replaces the mistake instead of stacking on top of it.
+function undoLastGrade() {
+  if (state.history.length === 0) return;
+  const last = state.history.pop();
+  const card = state.sessionCards[last.index];
+
+  removeLastGradeRecord(state.activeDeck.id, card);
+
+  if (last.grade === GRADE.MISSED) {
+    state.missed.pop();
+    scoreMissEl.textContent = String(state.missed.length);
+  } else {
+    state.correct = Math.max(0, state.correct - 1);
+    scoreHitEl.textContent = String(state.correct);
+  }
+
+  state.index = last.index;
+  updateUndoAvailability();
+
+  showScreen('screen-quiz');
+  renderCurrentCard();
+  flipCard(); // show the answer right away so you can just tap the right grade
+}
+
 cardEl.addEventListener('click', flipCard);
 flipBtnEl.addEventListener('click', flipCard);
+undoBtnEl.addEventListener('click', undoLastGrade);
+undoFromResultsEl.addEventListener('click', undoLastGrade);
 
 document.addEventListener('keydown', (e) => {
-  if (!document.getElementById('screen-quiz').classList.contains('active')) return;
+  const quizActive = document.getElementById('screen-quiz').classList.contains('active');
+  const resultsActive = document.getElementById('screen-results').classList.contains('active');
+
+  if (e.key === 'Backspace' && (quizActive || resultsActive)) {
+    e.preventDefault();
+    undoLastGrade();
+    return;
+  }
+
+  if (!quizActive) return;
+
   if (!state.flipped) {
     if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); flipCard(); }
     return;

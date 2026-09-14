@@ -1,0 +1,11 @@
+front,back,id,active
+HTML stands for,HyperText Markup Language,1,
+CSS stands for,Cascading Style Sheets,2,
+JS array method to add to the end,push(),3,
+JS keyword to declare a block-scoped variable,let,4,
+"HTTP status code for ""not found""",404,5,
+Git command to save a snapshot,commit,6,
+Symbol used for CSS class selector,.,7,
+Symbol used for CSS id selector,#,8,
+JSON stands for,JavaScript Object Notation,9,
+Default port for HTTPS,443,10,
