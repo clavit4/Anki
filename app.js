@@ -806,7 +806,6 @@ function renderDeckPreview(deck) {
     li.className = 'preview-empty';
     li.textContent = EMPTY_FILTER_MESSAGES[state.previewSort] || 'No cards match this filter.';
     previewListEl.appendChild(li);
-    previewListEl.scrollTop = 0;
     updateScrollTopVisibility();
     updateUnselectAllAvailability(deck);
     return;
@@ -850,11 +849,13 @@ function renderDeckPreview(deck) {
       if (state.previewSort === 'active' || state.previewSort === 'nonactive') {
         // This card just left (or joined) the group this filter shows —
         // a class tweak isn't enough, it needs to actually disappear/
-        // appear from the list. Preserve scroll position since a full
-        // rebuild would otherwise snap back to the top mid-review.
-        const scrollPos = previewListEl.scrollTop;
+        // appear from the list. Preserve scroll position (the *window's*,
+        // since this list doesn't scroll in its own container — see
+        // updateScrollTopVisibility()) since a full rebuild would
+        // otherwise snap back to the top mid-review.
+        const scrollPos = window.scrollY;
         renderDeckPreview(deck);
-        previewListEl.scrollTop = scrollPos;
+        window.scrollTo(0, scrollPos);
       } else {
         li.classList.toggle('is-inactive', !nowActive);
         li.title = nowActive ? scoreNote : `${scoreNote} · skipped`;
@@ -868,7 +869,6 @@ function renderDeckPreview(deck) {
     previewListEl.appendChild(li);
   });
 
-  previewListEl.scrollTop = 0;
   updateScrollTopVisibility();
   updateUnselectAllAvailability(deck);
 }
@@ -889,6 +889,11 @@ unselectAllBtnEl.addEventListener('click', async () => {
   if (!confirmed) return;
   const cards = state.decks[deck.id].cards;
   cards.forEach(card => setCardActive(deck.id, card, true));
+  // If "Non-active" is the current filter, this just emptied it out —
+  // reset to the top first so the page doesn't visibly jump/resize
+  // snapping back from wherever it was scrolled (see the sortToggle
+  // handler above for the same reasoning).
+  window.scrollTo(0, 0);
   renderDeckPreview(deck);
   renderCountGrid(deck);
 });
@@ -914,6 +919,13 @@ function updatePlayFilteredButton(count) {
 sortToggleEl.addEventListener('click', () => {
   const currentIndex = SORT_MODES.indexOf(state.previewSort);
   state.previewSort = SORT_MODES[(currentIndex + 1) % SORT_MODES.length];
+  // Reset to the top *before* re-rendering: switching to a filter
+  // with far fewer (or zero) cards can shrink the page drastically,
+  // and if the window was scrolled deep into the previous filter's
+  // long list, the browser has to forcibly snap the scroll position
+  // back to fit — which looks like the page jumping/resizing oddly.
+  // Doing it ourselves first means there's nothing to snap.
+  window.scrollTo(0, 0);
   renderDeckPreview(state.activeDeck);
 });
 
