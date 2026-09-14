@@ -25,17 +25,30 @@ const COUNT_OPTIONS = [10, 25, 50, 100];
 // The four grading buttons, worst to best.
 const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 
-// Deck-preview sort cycle: original CSV order -> weakest cards first
-// -> strongest cards first -> active cards first -> non-active cards
-// first -> back to original. Each label names the mode that's
-// *currently* showing (tapping the button advances to the next one).
+// Deck-preview filter/sort cycle. Each mode both narrows *which* cards
+// show and the order they show in:
+//   original  - every card, ordered by its id number
+//   weakest   - every card except mastered ("Got it") ones, weakest first
+//   strongest - only "Got it" / "Almost" cards, strongest first
+//   active    - only active (non-skipped) cards
+//   nonactive - only skipped cards
+// Each label names the mode that's *currently* showing (tapping the
+// button advances to the next one).
 const SORT_MODES = ['original', 'weakest', 'strongest', 'active', 'nonactive'];
 const SORT_LABELS = {
   original: 'Original order',
-  weakest: 'Weakest first',
+  weakest: 'Weaker',
   strongest: 'Strongest first',
-  active: 'Active first',
-  nonactive: 'Non-active first',
+  active: 'Active only',
+  nonactive: 'Non-active only',
+};
+
+// Shown in place of the card list when a filter matches nothing.
+const EMPTY_FILTER_MESSAGES = {
+  weakest: 'Every card here is already "Got it" — nothing left to review.',
+  strongest: 'No cards are "Almost" or "Got it" yet — keep studying.',
+  active: 'No active cards — everything here is switched off.',
+  nonactive: 'Nothing is switched off — every card is active.',
 };
 
 // How many of a card's most recent graded attempts to average when
@@ -187,6 +200,21 @@ function cardScore(deckId, card) {
   return sum / recent.length;
 }
 
+// Rounds a card's average score to the nearest grade, so filters like
+// "weakest"/"strongest" can classify it as e.g. "Got it" even though
+// the raw average is rarely a clean integer. null (never studied)
+// passes through unchanged — it isn't any bucket.
+function scoreBucket(score) {
+  return score === null ? null : Math.round(score);
+}
+
+// Sort key for "original order": numeric id ascending, with un-numbered
+// cards (no id yet) pushed after every numbered one.
+function idSortKey(card) {
+  const n = card.id !== null ? Number(card.id) : NaN;
+  return Number.isFinite(n) ? n : Infinity;
+}
+
 /* ============================================================
    Active/inactive overrides — a checkbox in the deck preview lets
    you bench a card without touching the CSV. Stored per device,
@@ -286,12 +314,48 @@ const state = {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
 }
+
+/* ============================================================
+   Confirm modal — small "are you sure?" dialog reused for any
+   destructive-ish action. showConfirm() resolves true/false.
+   ============================================================ */
+const confirmOverlayEl = document.getElementById('confirmOverlay');
+const confirmMessageEl = document.getElementById('confirmMessage');
+const confirmCancelBtnEl = document.getElementById('confirmCancelBtn');
+const confirmOkBtnEl = document.getElementById('confirmOkBtn');
+let resolveConfirm = null;
+
+function showConfirm(message) {
+  confirmMessageEl.textContent = message;
+  confirmOverlayEl.hidden = false;
+  return new Promise(resolve => { resolveConfirm = resolve; });
+}
+
+function closeConfirm(result) {
+  if (confirmOverlayEl.hidden) return;
+  confirmOverlayEl.hidden = true;
+  if (resolveConfirm) {
+    resolveConfirm(result);
+    resolveConfirm = null;
+  }
+}
+
+confirmCancelBtnEl.addEventListener('click', () => closeConfirm(false));
+confirmOkBtnEl.addEventListener('click', () => closeConfirm(true));
+confirmOverlayEl.addEventListener('click', (e) => {
+  if (e.target === confirmOverlayEl) closeConfirm(false);
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !confirmOverlayEl.hidden) closeConfirm(false);
+});
 
 /* ============================================================
    Deck select screen
    ============================================================ */
 const deckListEl = document.getElementById('deckList');
+const deckScrollTopBtnEl = document.getElementById('deckScrollTopBtn');
 
 function renderDeckList() {
   deckListEl.innerHTML = '';
@@ -334,6 +398,18 @@ function renderDeckList() {
     });
   });
 }
+
+// The deck list scrolls the whole page rather than an inner container
+// (there's no fixed-height wrapper around it), so this tracks window
+// scroll instead of a list element's own scrollTop.
+window.addEventListener('scroll', () => {
+  if (!document.getElementById('screen-deck').classList.contains('active')) return;
+  deckScrollTopBtnEl.classList.toggle('is-visible', window.scrollY > 150);
+});
+
+deckScrollTopBtnEl.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+});
 
 async function loadDeck(deck) {
   if (state.decks[deck.id]) return state.decks[deck.id];
@@ -398,33 +474,53 @@ function renderCountGrid(deck) {
 function renderDeckPreview(deck) {
   const cards = state.decks[deck.id].cards;
 
-  // Score once up front so sorting doesn't recompute per comparison.
+  // Score once up front so filtering/sorting doesn't recompute per card.
   const withScores = cards.map(card => ({ card, score: cardScore(deck.id, card) }));
 
-  if (state.previewSort === 'weakest' || state.previewSort === 'strongest') {
-    // Weakest/strongest first by score. Never-studied cards have no
-    // signal either way, so they always sort to the bottom.
-    const direction = state.previewSort === 'weakest' ? 1 : -1;
-    withScores.sort((a, b) => {
+  let visible = withScores;
+
+  if (state.previewSort === 'original') {
+    // By id number rather than raw CSV row order, so re-shuffling rows
+    // in the CSV doesn't change this view. Cards without an id (none
+    // assigned yet) sort after every numbered card.
+    visible = withScores.slice().sort((a, b) => idSortKey(a.card) - idSortKey(b.card));
+  } else if (state.previewSort === 'weakest') {
+    // Every card except ones you've mastered ("Got it"), weakest first.
+    // Never-studied cards have no signal, so they sort to the bottom.
+    visible = withScores.filter(({ score }) => score === null || scoreBucket(score) !== GRADE.GOT_IT);
+    visible.sort((a, b) => {
       if (a.score === null && b.score === null) return 0;
       if (a.score === null) return 1;
       if (b.score === null) return -1;
-      return (a.score - b.score) * direction;
+      return a.score - b.score;
     });
-  } else if (state.previewSort === 'active' || state.previewSort === 'nonactive') {
-    // Group active/inactive cards together. Array.sort is stable, so
-    // each group keeps its own original relative order.
-    const activeFirst = state.previewSort === 'active';
-    withScores.sort((a, b) => {
-      const aActive = isCardActive(deck.id, a.card);
-      const bActive = isCardActive(deck.id, b.card);
-      if (aActive === bActive) return 0;
-      return aActive === activeFirst ? -1 : 1;
+  } else if (state.previewSort === 'strongest') {
+    // Only cards bucketed as "Got it" or "Almost", strongest first.
+    visible = withScores.filter(({ score }) => {
+      const bucket = scoreBucket(score);
+      return bucket === GRADE.GOT_IT || bucket === GRADE.ALMOST;
     });
+    visible.sort((a, b) => b.score - a.score);
+  } else if (state.previewSort === 'active') {
+    visible = withScores.filter(({ card }) => isCardActive(deck.id, card));
+  } else if (state.previewSort === 'nonactive') {
+    visible = withScores.filter(({ card }) => !isCardActive(deck.id, card));
   }
 
   previewListEl.innerHTML = '';
-  withScores.forEach(({ card, score }) => {
+
+  if (visible.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'preview-empty';
+    li.textContent = EMPTY_FILTER_MESSAGES[state.previewSort] || 'No cards match this filter.';
+    previewListEl.appendChild(li);
+    previewListEl.scrollTop = 0;
+    scrollTopBtnEl.classList.remove('is-visible');
+    updateUnselectAllAvailability(deck);
+    return;
+  }
+
+  visible.forEach(({ card, score }) => {
     const li = document.createElement('li');
     const active = isCardActive(deck.id, card);
     li.classList.toggle('is-inactive', !active);
@@ -483,9 +579,11 @@ function updateUnselectAllAvailability(deck) {
   unselectAllBtnEl.disabled = !anyInactive;
 }
 
-unselectAllBtnEl.addEventListener('click', () => {
+unselectAllBtnEl.addEventListener('click', async () => {
   const deck = state.activeDeck;
   if (!deck) return;
+  const confirmed = await showConfirm('Turn every skipped card back on?');
+  if (!confirmed) return;
   const cards = state.decks[deck.id].cards;
   cards.forEach(card => setCardActive(deck.id, card, true));
   renderDeckPreview(deck);
