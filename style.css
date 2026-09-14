@@ -47,8 +47,7 @@ body {
   margin: 0;
   background: var(--bg);
   background-image:
-    radial-gradient(ellipse 900px 500px at 50% -10%, var(--mint-glow), transparent 60%),
-    radial-gradient(ellipse 620px 460px at 100% 100%, var(--rose-glow), transparent 62%);
+    radial-gradient(ellipse 900px 500px at 50% -10%, var(--mint-glow), transparent 60%);
   background-repeat: no-repeat;
   color: var(--text);
   font-family: var(--font-ui);
@@ -127,25 +126,6 @@ code {
   letter-spacing: 0.01em;
   margin: 0 0 6px;
   color: var(--text);
-}
-
-.wordmark::after {
-  content: "\2726";
-  display: inline-block;
-  margin-left: 9px;
-  font-size: 1.05rem;
-  vertical-align: middle;
-  color: var(--rose);
-  animation: twinkle 2.6s ease-in-out infinite;
-}
-
-@keyframes twinkle {
-  0%, 100% { opacity: 0.45; transform: scale(0.8) rotate(0deg); }
-  50%      { opacity: 1;    transform: scale(1.08) rotate(10deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wordmark::after { animation: none; opacity: 0.85; }
 }
 
 .deck-name {
@@ -1125,10 +1105,10 @@ code {
 }
 
 .missed-wrap.is-empty::before {
-  content: "\2661  Perfect run — every card recalled.  \2661";
+  content: "Perfect run — every card recalled.";
   display: block;
   text-align: center;
-  color: var(--rose);
+  color: var(--text-muted);
   padding: 24px 0;
 }
 
