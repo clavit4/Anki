@@ -2,17 +2,17 @@
    Tokens
    ============================================================ */
 :root {
-  --bg: #12191b;
-  --bg-elevated: #182022;
-  --surface: #1d2729;
-  --surface-2: #253032;
-  --border: #2f3c3e;
-  --border-soft: #253032;
+  --bg: #001b1a;
+  --bg-elevated: #012624;
+  --surface: #023634;
+  --surface-2: #034a46;
+  --border: #0c635d;
+  --border-soft: #073f3b;
 
-  --mint: #7ad9c4;
-  --mint-strong: #9ce8d8;
-  --mint-dim: #4f9c8a;
-  --mint-glow: rgba(122, 217, 196, 0.18);
+  --mint: #a3e8d6;
+  --mint-strong: #c7f5e8;
+  --mint-dim: #5cae9c;
+  --mint-glow: rgba(163, 232, 214, 0.18);
 
   --rose: #e08098;
   --rose-glow: rgba(224, 128, 152, 0.16);
