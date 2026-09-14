@@ -528,13 +528,6 @@ function renderDeckList() {
     nameEl.textContent = deck.name;
     leftGroup.appendChild(nameEl);
 
-    if (deck.custom) {
-      const badge = document.createElement('span');
-      badge.className = 'deck-btn-badge';
-      badge.textContent = 'Yours';
-      leftGroup.appendChild(badge);
-    }
-
     const countEl = document.createElement('span');
     countEl.className = 'deck-btn-count';
     countEl.textContent = 'Loading…';
@@ -588,9 +581,7 @@ function renderDeckList() {
         countEl.textContent = 'No cards found';
       } else {
         const activeCount = getActiveCards(deck.id).length;
-        countEl.textContent = activeCount === result.cards.length
-          ? `${result.cards.length} card${result.cards.length === 1 ? '' : 's'}`
-          : `${activeCount}/${result.cards.length} active`;
+        countEl.textContent = `${activeCount}/${result.cards.length}`;
       }
     });
   });
@@ -967,7 +958,13 @@ function makeCountButton(n, label, total, isAll) {
   return btn;
 }
 
-document.getElementById('backToDeck').addEventListener('click', () => showScreen('screen-deck'));
+document.getElementById('backToDeck').addEventListener('click', () => {
+  // The active/N count shown per deck can have changed (cards
+  // toggled on/off in the preview list) since the list was last
+  // rendered — refresh it rather than show a stale count.
+  renderDeckList();
+  showScreen('screen-deck');
+});
 
 /* ============================================================
    Quiz screen
@@ -1192,6 +1189,7 @@ document.getElementById('studyAgain').addEventListener('click', () => {
 });
 
 document.getElementById('newDeck').addEventListener('click', () => {
+  renderDeckList();
   showScreen('screen-deck');
 });
 
