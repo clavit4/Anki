@@ -4,9 +4,16 @@
    Config — edit this to point at your own decks.
    Add or remove entries as needed; each needs a unique id,
    a display name, and a path to a CSV file with a
-   "front,back,id" header followed by one card per row.
+   "front,back,id,active" header followed by one card per row.
    The id column is optional — a row without one just won't have
    review history tracked until you give it a number.
+   The active column is optional too. Leave it out (or leave a
+   row's value blank) and the card starts active. Set it to
+   0 / no / false / off / inactive to have the card start
+   deactivated — it'll still show in the deck preview, just
+   grayed out, and won't be picked for quiz sessions until you
+   tap it back on (which is remembered on this device, no need
+   to edit the CSV again).
    ============================================================ */
 const DECKS = [
   { id: 'deck1', name: 'Deck 1', file: 'decks/deck1.csv' },
@@ -64,6 +71,16 @@ function parseCSV(text) {
   return rows.filter(r => r.some(cell => cell.trim().length > 0));
 }
 
+// Reads the optional 4th CSV column. Blank/missing = active. Anything
+// matching one of the "off" words below = starts deactivated.
+const INACTIVE_WORDS = new Set(['0', 'no', 'false', 'off', 'inactive', 'n']);
+function parseActiveDefault(raw) {
+  if (raw === undefined || raw === null) return true;
+  const v = raw.trim().toLowerCase();
+  if (v.length === 0) return true;
+  return !INACTIVE_WORDS.has(v);
+}
+
 function csvToCards(text) {
   const rows = parseCSV(text);
   if (rows.length === 0) return [];
@@ -74,7 +91,7 @@ function csvToCards(text) {
 
   const cards = [];
   for (let i = startIndex; i < rows.length; i++) {
-    const [front, back, id] = rows[i];
+    const [front, back, id, active] = rows[i];
     if (front && front.trim() && back && back.trim()) {
       const trimmedId = (id !== undefined && id !== null) ? id.trim() : '';
       cards.push({
@@ -84,6 +101,9 @@ function csvToCards(text) {
         // content-based key below, so history isn't tracked until
         // you assign one.
         id: trimmedId.length > 0 ? trimmedId : null,
+        // The CSV's starting active/inactive state. A checkbox in the
+        // deck preview can override this per device — see isCardActive().
+        activeDefault: parseActiveDefault(active),
       });
     }
   }
@@ -162,6 +182,54 @@ function cardScore(deckId, card) {
   const recent = history.slice(-HISTORY_WINDOW);
   const sum = recent.reduce((total, entry) => total + entry.grade, 0);
   return sum / recent.length;
+}
+
+/* ============================================================
+   Active/inactive overrides — a checkbox in the deck preview lets
+   you bench a card without touching the CSV. Stored per device,
+   same key shape as review history. Only *overrides* of the CSV's
+   activeDefault are written, and a toggle back to matching the
+   default removes the override again — so editing the CSV later
+   still "wins" for any card you haven't deliberately flipped.
+   ============================================================ */
+function cardActiveKey(deckId, card) {
+  if (card.id !== null && card.id !== undefined && String(card.id).length > 0) {
+    return `recall:${deckId}:active:${card.id}`;
+  }
+  return `recall:${deckId}:activeTemp:${hashString(card.front + '\u241F' + card.back)}`;
+}
+
+function loadActiveOverride(deckId, card) {
+  try {
+    const raw = localStorage.getItem(cardActiveKey(deckId, card));
+    if (raw === null) return null; // no override — defer to the CSV
+    return raw === '1';
+  } catch (err) {
+    return null;
+  }
+}
+
+function isCardActive(deckId, card) {
+  const override = loadActiveOverride(deckId, card);
+  return override === null ? card.activeDefault : override;
+}
+
+function setCardActive(deckId, card, active) {
+  const key = cardActiveKey(deckId, card);
+  try {
+    if (active === card.activeDefault) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, active ? '1' : '0');
+    }
+  } catch (err) {
+    // Storage full or unavailable — the checkbox still visually
+    // updates for this session, it just won't be remembered.
+  }
+}
+
+function getActiveCards(deckId) {
+  return state.decks[deckId].cards.filter(card => isCardActive(deckId, card));
 }
 
 // Rose (Missed) -> Amber (Hard) -> Lime (Almost) -> Mint (Got it!),
@@ -255,7 +323,10 @@ function renderDeckList() {
         btn.classList.add('is-error');
         countEl.textContent = 'No cards found';
       } else {
-        countEl.textContent = `${result.cards.length} card${result.cards.length === 1 ? '' : 's'}`;
+        const activeCount = getActiveCards(deck.id).length;
+        countEl.textContent = activeCount === result.cards.length
+          ? `${result.cards.length} card${result.cards.length === 1 ? '' : 's'}`
+          : `${activeCount}/${result.cards.length} active`;
       }
     });
   });
@@ -295,15 +366,29 @@ function openCountScreen(deck) {
   sortToggleEl.classList.remove('is-active');
   sortToggleEl.textContent = SORT_LABELS.original;
 
-  const total = state.decks[deck.id].cards.length;
+  renderCountGrid(deck);
+  renderDeckPreview(deck);
+  showScreen('screen-count');
+}
+
+// Rebuilt any time a card gets checked/unchecked below, since the
+// available session sizes and the "All" count depend on how many
+// cards are currently active.
+function renderCountGrid(deck) {
+  const total = getActiveCards(deck.id).length;
   countGridEl.innerHTML = '';
+
+  if (total === 0) {
+    const msg = document.createElement('p');
+    msg.className = 'count-empty';
+    msg.textContent = 'Every card here is switched off — uncheck one below to study it.';
+    countGridEl.appendChild(msg);
+    return;
+  }
 
   const options = COUNT_OPTIONS.filter(n => n < total);
   options.forEach(n => countGridEl.appendChild(makeCountButton(n, `${n} cards`, total)));
   countGridEl.appendChild(makeCountButton(total, `All (${total})`, total, true));
-
-  renderDeckPreview(deck);
-  showScreen('screen-count');
 }
 
 function renderDeckPreview(deck) {
@@ -327,13 +412,17 @@ function renderDeckPreview(deck) {
   previewListEl.innerHTML = '';
   withScores.forEach(({ card, score }) => {
     const li = document.createElement('li');
+    const active = isCardActive(deck.id, card);
+    li.classList.toggle('is-inactive', !active);
 
-    if (score === null) {
-      li.title = 'Not studied yet';
-    } else {
+    const scoreNote = score === null ? 'Not studied yet' : `Average grade ${score.toFixed(1)} / 3`;
+    li.title = active ? scoreNote : `${scoreNote} · skipped`;
+    if (score !== null) {
       li.style.setProperty('--score-color', scoreToColor(score));
-      li.title = `Average grade ${score.toFixed(1)} / 3`;
     }
+
+    const content = document.createElement('div');
+    content.className = 'preview-content';
 
     const front = document.createElement('div');
     front.className = 'preview-front';
@@ -341,8 +430,27 @@ function renderDeckPreview(deck) {
     const back = document.createElement('div');
     back.className = 'preview-back';
     back.textContent = card.back;
-    li.appendChild(front);
-    li.appendChild(back);
+    content.appendChild(front);
+    content.appendChild(back);
+
+    const toggleLabel = document.createElement('label');
+    toggleLabel.className = 'preview-toggle';
+    toggleLabel.title = 'Skip this card in quiz sessions';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = !active;
+    checkbox.setAttribute('aria-label', `Skip "${card.front}" in quiz sessions`);
+    checkbox.addEventListener('change', () => {
+      const nowActive = !checkbox.checked;
+      setCardActive(deck.id, card, nowActive);
+      li.classList.toggle('is-inactive', !nowActive);
+      li.title = nowActive ? scoreNote : `${scoreNote} · skipped`;
+      renderCountGrid(deck);
+    });
+    toggleLabel.appendChild(checkbox);
+
+    li.appendChild(content);
+    li.appendChild(toggleLabel);
     previewListEl.appendChild(li);
   });
 
@@ -397,8 +505,8 @@ const undoBtnEl = document.getElementById('undoBtn');
 const undoFromResultsEl = document.getElementById('undoFromResults');
 
 function startSession(count) {
-  const allCards = state.decks[state.activeDeck.id].cards;
-  state.sessionCards = shuffle(allCards).slice(0, count);
+  const activeCards = getActiveCards(state.activeDeck.id);
+  state.sessionCards = shuffle(activeCards).slice(0, count);
   state.index = 0;
   state.correct = 0;
   state.missed = [];
