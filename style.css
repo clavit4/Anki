@@ -223,6 +223,126 @@ code {
   color: var(--rose);
 }
 
+.deck-btn-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.deck-btn-badge {
+  flex-shrink: 0;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--mint-glow);
+  color: var(--mint-strong);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Custom (uploaded) decks need two independent click targets — open
+   vs. delete — so they're a wrapper <div> around two sibling
+   <button>s, instead of the single <button> built-in decks use. */
+.deck-btn-custom {
+  padding: 0;
+  gap: 0;
+  align-items: stretch;
+  cursor: default;
+  overflow: hidden;
+}
+
+.deck-btn-custom:hover,
+.deck-btn-custom:focus-within {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.deck-btn-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: none;
+  border: none;
+  padding: 18px 20px;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.deck-btn-main:hover,
+.deck-btn-main:focus-visible {
+  background: var(--surface-2);
+}
+
+.deck-btn-delete {
+  flex-shrink: 0;
+  width: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--border);
+  color: var(--text-faint);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.deck-btn-delete:hover,
+.deck-btn-delete:focus-visible {
+  background: var(--rose-glow);
+  color: var(--rose);
+}
+
+.deck-btn-custom.is-error .deck-btn-delete {
+  border-left-color: var(--rose);
+}
+
+.deck-upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 16px 20px;
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.deck-upload-btn:hover,
+.deck-upload-btn:focus-visible {
+  border-color: var(--mint-dim);
+  color: var(--mint-strong);
+  background: var(--mint-glow);
+}
+
+.deck-upload-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.deck-upload-error {
+  margin: 10px 2px 0;
+  color: var(--rose);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
 /* ============================================================
    Count select
    ============================================================ */
@@ -982,8 +1102,10 @@ code {
 }
 
 /* ============================================================
-   Confirm modal — small in-theme "are you sure?" dialog, reused
-   for any destructive-ish action (currently just Unselect all).
+   Confirm modal — small in-theme dialog reused for both a plain
+   "are you sure?" confirm (Unselect all, deck delete/replace) and,
+   with its optional text field shown, a "name this" prompt (deck
+   upload). See openModal()/showConfirm()/showPrompt() in app.js.
    ============================================================ */
 .modal-overlay {
   position: fixed;
@@ -1023,6 +1145,23 @@ code {
   font-size: 1rem;
   line-height: 1.45;
   text-align: center;
+}
+
+.modal-input {
+  display: block;
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 11px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.modal-input[hidden] {
+  display: none;
 }
 
 .modal-actions {

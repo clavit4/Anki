@@ -14,6 +14,11 @@
    grayed out, and won't be picked for quiz sessions until you
    tap it back on (which is remembered on this device, no need
    to edit the CSV again).
+
+   Deck ids here must never start with "custom:" — that prefix is
+   reserved for decks visitors upload themselves (stored in their own
+   browser's localStorage, see the "Custom decks" section below), so
+   built-in and uploaded decks can never collide.
    ============================================================ */
 const DECKS = [
   { id: 'deck1', name: 'Deck 1', file: 'decks/deck1.csv' },
@@ -266,6 +271,107 @@ function getActiveCards(deckId) {
   return state.decks[deckId].cards.filter(card => isCardActive(deckId, card));
 }
 
+/* ============================================================
+   Custom decks — uploaded via the deck-select screen, stored
+   entirely in this browser's localStorage (never shared with
+   anyone else). A registry key lists every custom deck's id/name;
+   each deck's parsed cards live under their own key. Both use the
+   same "recall:" prefix as everything else so a single sweep can
+   clean up a deleted deck's cards *and* its history/overrides
+   (which already share the "recall:<deckId>:" prefix below).
+   ============================================================ */
+const CUSTOM_DECK_REGISTRY_KEY = 'recall:customDecks';
+
+// Turns a display name into a stable, URL-safe id fragment. Falls
+// back to a timestamp when the name has no letters/digits at all
+// (e.g. "!!!"), so two such decks don't collide with each other.
+function slugify(name) {
+  const slug = name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  return slug.length > 0 ? slug : `deck-${Date.now().toString(36)}`;
+}
+
+// A custom deck's id is derived from its name rather than random,
+// so re-uploading a CSV under the same name reuses the same id —
+// which is what makes that count as "updating" the deck (same id
+// -> same recall:<id>:card:* keys -> progress carries over) instead
+// of creating an unrelated duplicate.
+function customDeckId(name) {
+  return `custom:${slugify(name)}`;
+}
+
+function customDeckCardsKey(deckId) {
+  return `recall:${deckId}:cards`;
+}
+
+function loadCustomDeckRegistry() {
+  try {
+    const raw = localStorage.getItem(CUSTOM_DECK_REGISTRY_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (err) {
+    return [];
+  }
+}
+
+// Returns false on failure (e.g. storage quota exceeded) so callers
+// can tell the user rather than silently losing their upload.
+function saveCustomDeckRegistry(registry) {
+  try {
+    localStorage.setItem(CUSTOM_DECK_REGISTRY_KEY, JSON.stringify(registry));
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+// Same {cards} / {error:true, cards:[]} shape loadDeck()'s fetch
+// path returns, so renderDeckList()'s result handling (is-error /
+// no-cards-found / count text) works unmodified for custom decks.
+function loadCustomDeckCards(deckId) {
+  try {
+    const raw = localStorage.getItem(customDeckCardsKey(deckId));
+    if (!raw) return { error: true, cards: [] };
+    const cards = JSON.parse(raw);
+    return Array.isArray(cards) ? { cards } : { error: true, cards: [] };
+  } catch (err) {
+    return { error: true, cards: [] };
+  }
+}
+
+function saveCustomDeckCards(deckId, cards) {
+  try {
+    localStorage.setItem(customDeckCardsKey(deckId), JSON.stringify(cards));
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+// Every key belonging to a deck — its cards, and (since they share
+// the same "recall:<deckId>:" prefix) every graded-history and
+// active-override entry for its cards — is removed in one sweep.
+// Collecting matching keys before removing them avoids skipping
+// entries, since localStorage.length shrinks as you remove things.
+function deleteDeckStorage(deckId) {
+  const prefix = `recall:${deckId}:`;
+  const keysToRemove = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith(prefix)) keysToRemove.push(key);
+  }
+  keysToRemove.forEach(key => localStorage.removeItem(key));
+}
+
+// The unified deck list the rest of the app renders from: every
+// built-in deck plus every custom one, in that order. Downstream
+// code (state.decks[id], getActiveCards, renderDeckPreview, session
+// start) only ever reads .id/.name/.cards, never .file, so a custom
+// deck config with no .file works everywhere a built-in one does.
+function getAllDeckConfigs() {
+  return DECKS.concat(loadCustomDeckRegistry().map(d => ({ id: d.id, name: d.name, custom: true })));
+}
+
 // Rose (Missed) -> Amber (Hard) -> Lime (Almost) -> Mint (Got it!),
 // interpolated continuously rather than snapped to four hard buckets.
 const SCORE_COLOR_STOPS = [
@@ -329,32 +435,75 @@ function showScreen(id) {
    ============================================================ */
 const confirmOverlayEl = document.getElementById('confirmOverlay');
 const confirmMessageEl = document.getElementById('confirmMessage');
+const confirmInputEl = document.getElementById('confirmInput');
 const confirmCancelBtnEl = document.getElementById('confirmCancelBtn');
 const confirmOkBtnEl = document.getElementById('confirmOkBtn');
-let resolveConfirm = null;
+let resolveModal = null;
 
-function showConfirm(message) {
+// The one dialog behind both showConfirm() (message + Yes/Cancel,
+// resolves true/false) and showPrompt() (message + a text field,
+// resolves the trimmed string or null). Passing `inputValue` (even
+// as '') is what tells it to show the text field, pre-filled with
+// that value.
+function openModal({ message, inputValue = null, okLabel = 'Yes, do it', cancelLabel = 'Cancel' }) {
   confirmMessageEl.textContent = message;
+  confirmOkBtnEl.textContent = okLabel;
+  confirmCancelBtnEl.textContent = cancelLabel;
+
+  if (inputValue !== null) {
+    confirmInputEl.hidden = false;
+    confirmInputEl.value = inputValue;
+    confirmOkBtnEl.disabled = inputValue.trim().length === 0;
+    // Wait a tick so the browser lays out the just-unhidden field
+    // before focusing/selecting it.
+    requestAnimationFrame(() => { confirmInputEl.focus(); confirmInputEl.select(); });
+  } else {
+    confirmInputEl.hidden = true;
+    confirmInputEl.value = '';
+    confirmOkBtnEl.disabled = false;
+  }
+
   confirmOverlayEl.hidden = false;
-  return new Promise(resolve => { resolveConfirm = resolve; });
+  return new Promise(resolve => { resolveModal = resolve; });
 }
 
-function closeConfirm(result) {
+function closeModal(result) {
   if (confirmOverlayEl.hidden) return;
   confirmOverlayEl.hidden = true;
-  if (resolveConfirm) {
-    resolveConfirm(result);
-    resolveConfirm = null;
+  if (resolveModal) {
+    resolveModal(result);
+    resolveModal = null;
   }
 }
 
-confirmCancelBtnEl.addEventListener('click', () => closeConfirm(false));
-confirmOkBtnEl.addEventListener('click', () => closeConfirm(true));
+function showConfirm(message, okLabel = 'Yes, do it') {
+  return openModal({ message, okLabel }).then(result => result === true);
+}
+
+function showPrompt(message, defaultValue) {
+  return openModal({ message, inputValue: defaultValue, okLabel: 'Save' })
+    .then(result => (result === false ? null : result));
+}
+
+confirmCancelBtnEl.addEventListener('click', () => closeModal(false));
+confirmOkBtnEl.addEventListener('click', () => {
+  if (confirmOkBtnEl.disabled) return;
+  closeModal(confirmInputEl.hidden ? true : confirmInputEl.value.trim());
+});
 confirmOverlayEl.addEventListener('click', (e) => {
-  if (e.target === confirmOverlayEl) closeConfirm(false);
+  if (e.target === confirmOverlayEl) closeModal(false);
+});
+confirmInputEl.addEventListener('input', () => {
+  confirmOkBtnEl.disabled = confirmInputEl.value.trim().length === 0;
+});
+confirmInputEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !confirmOkBtnEl.disabled) {
+    e.preventDefault();
+    closeModal(confirmInputEl.value.trim());
+  }
 });
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && !confirmOverlayEl.hidden) closeConfirm(false);
+  if (e.key === 'Escape' && !confirmOverlayEl.hidden) closeModal(false);
 });
 
 /* ============================================================
@@ -362,27 +511,67 @@ document.addEventListener('keydown', (e) => {
    ============================================================ */
 const deckListEl = document.getElementById('deckList');
 const deckScrollTopBtnEl = document.getElementById('deckScrollTopBtn');
+const deckUploadBtnEl = document.getElementById('deckUploadBtn');
+const deckFileInputEl = document.getElementById('deckFileInput');
+const deckUploadErrorEl = document.getElementById('deckUploadError');
 
 function renderDeckList() {
   deckListEl.innerHTML = '';
-  DECKS.forEach(deck => {
-    const btn = document.createElement('button');
-    btn.className = 'deck-btn';
-    btn.type = 'button';
+  getAllDeckConfigs().forEach(deck => {
+    const leftGroup = document.createElement('span');
+    leftGroup.className = 'deck-btn-left';
 
     const nameEl = document.createElement('span');
     nameEl.className = 'deck-btn-name';
     nameEl.textContent = deck.name;
+    leftGroup.appendChild(nameEl);
+
+    if (deck.custom) {
+      const badge = document.createElement('span');
+      badge.className = 'deck-btn-badge';
+      badge.textContent = 'Yours';
+      leftGroup.appendChild(badge);
+    }
 
     const countEl = document.createElement('span');
     countEl.className = 'deck-btn-count';
     countEl.textContent = 'Loading…';
 
-    btn.appendChild(nameEl);
-    btn.appendChild(countEl);
-    deckListEl.appendChild(btn);
+    // Custom decks need two independent click targets (open vs.
+    // delete), so — unlike a built-in deck's single <button> — they
+    // get a wrapper <div> holding two sibling <button>s instead.
+    let rowEl, mainBtn;
+    if (deck.custom) {
+      rowEl = document.createElement('div');
+      rowEl.className = 'deck-btn deck-btn-custom';
 
-    btn.addEventListener('click', () => {
+      mainBtn = document.createElement('button');
+      mainBtn.className = 'deck-btn-main';
+      mainBtn.type = 'button';
+      mainBtn.appendChild(leftGroup);
+      mainBtn.appendChild(countEl);
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'deck-btn-delete';
+      deleteBtn.type = 'button';
+      deleteBtn.setAttribute('aria-label', `Delete "${deck.name}"`);
+      deleteBtn.textContent = '×';
+      deleteBtn.addEventListener('click', () => deleteCustomDeck(deck.id));
+
+      rowEl.appendChild(mainBtn);
+      rowEl.appendChild(deleteBtn);
+    } else {
+      rowEl = document.createElement('button');
+      rowEl.className = 'deck-btn';
+      rowEl.type = 'button';
+      rowEl.appendChild(leftGroup);
+      rowEl.appendChild(countEl);
+      mainBtn = rowEl;
+    }
+
+    deckListEl.appendChild(rowEl);
+
+    mainBtn.addEventListener('click', () => {
       const loaded = state.decks[deck.id];
       if (!loaded || loaded.error || loaded.cards.length === 0) return;
       openCountScreen(deck);
@@ -390,10 +579,10 @@ function renderDeckList() {
 
     loadDeck(deck).then(result => {
       if (result.error) {
-        btn.classList.add('is-error');
+        rowEl.classList.add('is-error');
         countEl.textContent = 'Could not load';
       } else if (result.cards.length === 0) {
-        btn.classList.add('is-error');
+        rowEl.classList.add('is-error');
         countEl.textContent = 'No cards found';
       } else {
         const activeCount = getActiveCards(deck.id).length;
@@ -403,6 +592,104 @@ function renderDeckList() {
       }
     });
   });
+}
+
+function showUploadError(message) {
+  deckUploadErrorEl.textContent = message;
+  deckUploadErrorEl.hidden = false;
+}
+
+function clearUploadError() {
+  deckUploadErrorEl.hidden = true;
+  deckUploadErrorEl.textContent = '';
+}
+
+deckUploadBtnEl.addEventListener('click', () => {
+  clearUploadError();
+  deckFileInputEl.click();
+});
+
+deckFileInputEl.addEventListener('change', handleDeckFileSelected);
+
+async function handleDeckFileSelected(event) {
+  const file = event.target.files[0];
+  event.target.value = ''; // lets re-picking the same filename re-fire "change"
+  if (!file) return;
+
+  let text;
+  try {
+    text = await file.text();
+  } catch (err) {
+    showUploadError('Could not read that file.');
+    return;
+  }
+
+  const cards = csvToCards(text);
+  if (cards.length === 0) {
+    showUploadError('No valid cards found — the file needs front,back columns.');
+    return;
+  }
+
+  const defaultName = file.name.replace(/\.csv$/i, '').trim() || 'My deck';
+  const chosenName = await showPrompt('Name this deck:', defaultName);
+  if (chosenName === null) return; // cancelled
+
+  const trimmedName = chosenName.trim();
+  if (trimmedName.length === 0) return; // OK is disabled while empty, but just in case
+
+  // Same name -> same id -> treated as updating that deck (its
+  // progress carries over, since progress is keyed by deckId+cardId).
+  const id = customDeckId(trimmedName);
+  const registry = loadCustomDeckRegistry();
+  const existing = registry.find(d => d.id === id);
+
+  if (existing) {
+    const replace = await showConfirm(`A deck named "${existing.name}" already exists — replace its cards?`, 'Replace');
+    if (!replace) return;
+  }
+
+  // Save the cards before touching the registry: if this fails
+  // (storage full), the registry never ends up pointing at cards
+  // that don't exist.
+  if (!saveCustomDeckCards(id, cards)) {
+    showUploadError('Could not save this deck — storage is full.');
+    return;
+  }
+
+  const now = Date.now();
+  if (existing) {
+    existing.name = trimmedName;
+    existing.updatedAt = now;
+  } else {
+    registry.push({ id, name: trimmedName, createdAt: now, updatedAt: now });
+  }
+
+  if (!saveCustomDeckRegistry(registry)) {
+    showUploadError('Could not save this deck — storage is full.');
+    return;
+  }
+
+  clearUploadError();
+  // Drop any cached copy so a same-session re-upload doesn't keep
+  // serving the stale cards from before this update — loadDeck()
+  // short-circuits on a truthy cache hit otherwise.
+  delete state.decks[id];
+  renderDeckList();
+}
+
+async function deleteCustomDeck(deckId) {
+  const registry = loadCustomDeckRegistry();
+  const deck = registry.find(d => d.id === deckId);
+  if (!deck) return;
+
+  const confirmed = await showConfirm(`Delete "${deck.name}"? This also erases its study progress.`, 'Delete');
+  if (!confirmed) return;
+
+  saveCustomDeckRegistry(registry.filter(d => d.id !== deckId));
+  deleteDeckStorage(deckId);
+  delete state.decks[deckId];
+  if (state.activeDeck && state.activeDeck.id === deckId) state.activeDeck = null;
+  renderDeckList();
 }
 
 // The deck list scrolls the whole page rather than an inner container
@@ -419,6 +706,11 @@ deckScrollTopBtnEl.addEventListener('click', () => {
 
 async function loadDeck(deck) {
   if (state.decks[deck.id]) return state.decks[deck.id];
+  if (deck.custom) {
+    const result = loadCustomDeckCards(deck.id);
+    state.decks[deck.id] = result;
+    return result;
+  }
   try {
     const res = await fetch(deck.file, { cache: 'no-store' });
     if (!res.ok) throw new Error('fetch failed');
