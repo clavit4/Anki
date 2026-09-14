@@ -28,25 +28,28 @@ const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 // Deck-preview filter/sort cycle. Each mode both narrows *which* cards
 // show and the order they show in:
 //   original  - every card, ordered by its id number
-//   weakest   - every card except mastered ("Got it") ones, weakest first
+//   weakest   - graded cards you haven't mastered ("Got it") yet, weakest first
 //   strongest - only "Got it" / "Almost" cards, strongest first
+//   nongraded - only cards you've never studied
 //   active    - only active (non-skipped) cards
 //   nonactive - only skipped cards
 // Each label names the mode that's *currently* showing (tapping the
 // button advances to the next one).
-const SORT_MODES = ['original', 'weakest', 'strongest', 'active', 'nonactive'];
+const SORT_MODES = ['original', 'weakest', 'strongest', 'nongraded', 'active', 'nonactive'];
 const SORT_LABELS = {
   original: 'Original order',
   weakest: 'Weaker',
-  strongest: 'Strongest first',
+  strongest: 'Strongest',
+  nongraded: 'Non-graded',
   active: 'Active only',
   nonactive: 'Non-active only',
 };
 
 // Shown in place of the card list when a filter matches nothing.
 const EMPTY_FILTER_MESSAGES = {
-  weakest: 'Every card here is already "Got it" — nothing left to review.',
+  weakest: 'No graded cards below "Got it" yet — try Non-graded, or start studying.',
   strongest: 'No cards are "Almost" or "Got it" yet — keep studying.',
+  nongraded: 'Every card here has been studied at least once.',
   active: 'No active cards — everything here is switched off.',
   nonactive: 'Nothing is switched off — every card is active.',
 };
@@ -304,7 +307,7 @@ const state = {
   correct: 0,
   missed: [],
   flipped: false,
-  previewSort: 'original', // 'original' | 'weakest' | 'strongest' | 'active' | 'nonactive'
+  previewSort: 'original', // 'original' | 'weakest' | 'strongest' | 'nongraded' | 'active' | 'nonactive'
   history: [],           // stack of { index, grade } — one entry per graded card, for Undo
 };
 
@@ -315,6 +318,9 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
+  // Lives outside the .screen elements (see index.html), so it doesn't
+  // get hidden along with screen-deck automatically — clear it here.
+  if (id !== 'screen-deck') deckScrollTopBtnEl.classList.remove('is-visible');
 }
 
 /* ============================================================
@@ -485,15 +491,10 @@ function renderDeckPreview(deck) {
     // assigned yet) sort after every numbered card.
     visible = withScores.slice().sort((a, b) => idSortKey(a.card) - idSortKey(b.card));
   } else if (state.previewSort === 'weakest') {
-    // Every card except ones you've mastered ("Got it"), weakest first.
-    // Never-studied cards have no signal, so they sort to the bottom.
-    visible = withScores.filter(({ score }) => score === null || scoreBucket(score) !== GRADE.GOT_IT);
-    visible.sort((a, b) => {
-      if (a.score === null && b.score === null) return 0;
-      if (a.score === null) return 1;
-      if (b.score === null) return -1;
-      return a.score - b.score;
-    });
+    // Graded cards you haven't mastered ("Got it") yet, weakest first.
+    // Never-studied cards live in their own "Non-graded" tab instead.
+    visible = withScores.filter(({ score }) => score !== null && scoreBucket(score) !== GRADE.GOT_IT);
+    visible.sort((a, b) => a.score - b.score);
   } else if (state.previewSort === 'strongest') {
     // Only cards bucketed as "Got it" or "Almost", strongest first.
     visible = withScores.filter(({ score }) => {
@@ -501,6 +502,10 @@ function renderDeckPreview(deck) {
       return bucket === GRADE.GOT_IT || bucket === GRADE.ALMOST;
     });
     visible.sort((a, b) => b.score - a.score);
+  } else if (state.previewSort === 'nongraded') {
+    // Cards that have never been studied at all, by id number.
+    visible = withScores.filter(({ score }) => score === null);
+    visible.sort((a, b) => idSortKey(a.card) - idSortKey(b.card));
   } else if (state.previewSort === 'active') {
     visible = withScores.filter(({ card }) => isCardActive(deck.id, card));
   } else if (state.previewSort === 'nonactive') {
