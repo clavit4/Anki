@@ -37,12 +37,12 @@ const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 // button advances to the next one).
 const SORT_MODES = ['original', 'weakest', 'strongest', 'nongraded', 'active', 'nonactive'];
 const SORT_LABELS = {
-  original: 'Original order',
+  original: 'Original',
   weakest: 'Weaker',
   strongest: 'Strongest',
   nongraded: 'Non-graded',
-  active: 'Active only',
-  nonactive: 'Non-active only',
+  active: 'Active',
+  nonactive: 'Non-active',
 };
 
 // Shown in place of the card list when a filter matches nothing.
