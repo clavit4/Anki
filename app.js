@@ -414,6 +414,7 @@ const state = {
   missed: [],
   flipped: false,
   previewSort: 'original', // 'original' | 'weakest' | 'strongest' | 'nongraded' | 'active' | 'nonactive'
+  previewVisibleCards: [], // cards the current preview filter is showing, kept in sync by renderDeckPreview() — what "Play these" studies
   history: [],           // stack of { index, grade } — one entry per graded card, for Undo
 };
 
@@ -734,6 +735,7 @@ const countDeckNameEl = document.getElementById('countDeckName');
 const previewListEl = document.getElementById('previewList');
 const sortToggleEl = document.getElementById('sortToggle');
 const unselectAllBtnEl = document.getElementById('unselectAllBtn');
+const playFilteredBtnEl = document.getElementById('playFilteredBtn');
 const scrollTopBtnEl = document.getElementById('scrollTopBtn');
 const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -802,7 +804,11 @@ function renderDeckPreview(deck) {
     visible = withScores.filter(({ card }) => !isCardActive(deck.id, card));
   }
 
+  // What "Play these" will study if clicked — kept in sync here so
+  // the button doesn't need to recompute or re-filter anything.
+  state.previewVisibleCards = visible.map(({ card }) => card);
   updateSortToggleLabel(visible.length);
+  updatePlayFilteredButton(visible.length);
 
   previewListEl.innerHTML = '';
 
@@ -908,10 +914,28 @@ function updateSortToggleLabel(count) {
   sortToggleEl.classList.toggle('is-active', state.previewSort !== 'original');
 }
 
+// Text + disabled-state of the "Play these" button — mirrors
+// updateSortToggleLabel() above, just for the button that studies
+// the filtered set instead of the one that names it.
+function updatePlayFilteredButton(count) {
+  playFilteredBtnEl.textContent = `Play these (${count})`;
+  playFilteredBtnEl.disabled = count === 0;
+}
+
 sortToggleEl.addEventListener('click', () => {
   const currentIndex = SORT_MODES.indexOf(state.previewSort);
   state.previewSort = SORT_MODES[(currentIndex + 1) % SORT_MODES.length];
   renderDeckPreview(state.activeDeck);
+});
+
+// Studies exactly what the current filter is showing — e.g. only
+// your "Weaker" cards, or only "Non-active" ones — in random order,
+// regardless of each card's individual active/inactive state. A
+// separate, one-off pool from the normal count-grid sessions below,
+// which always draw from the deck's full active-card pool.
+playFilteredBtnEl.addEventListener('click', () => {
+  if (state.previewVisibleCards.length === 0) return;
+  startSessionWithCards(shuffle(state.previewVisibleCards));
 });
 
 previewListEl.addEventListener('scroll', () => {
@@ -952,9 +976,12 @@ const tapHintEl = document.getElementById('tapHint');
 const undoBtnEl = document.getElementById('undoBtn');
 const undoFromResultsEl = document.getElementById('undoFromResults');
 
-function startSession(count) {
-  const activeCards = getActiveCards(state.activeDeck.id);
-  state.sessionCards = shuffle(activeCards).slice(0, count);
+// Resets session state and jumps into the quiz with an already-
+// decided list of cards (already shuffled/limited by the caller).
+// Both startSession() (count-grid) and the "Play these" button fan
+// into this so the reset logic only lives in one place.
+function startSessionWithCards(cards) {
+  state.sessionCards = cards;
   state.index = 0;
   state.correct = 0;
   state.missed = [];
@@ -964,6 +991,11 @@ function startSession(count) {
   updateUndoAvailability();
   showScreen('screen-quiz');
   renderCurrentCard();
+}
+
+function startSession(count) {
+  const activeCards = getActiveCards(state.activeDeck.id);
+  startSessionWithCards(shuffle(activeCards).slice(0, count));
 }
 
 function renderCurrentCard() {
