@@ -997,6 +997,27 @@ code {
   color: var(--rose);
 }
 
+.mc-next-btn {
+  border-radius: var(--radius);
+  border: 1px solid var(--mint);
+  background: var(--mint);
+  color: #0a0d0c;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 15px;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.mc-next-btn:hover,
+.mc-next-btn:focus-visible {
+  filter: brightness(1.08);
+}
+
+.mc-next-btn[hidden] {
+  display: none;
+}
+
 /* ============================================================
    Flip / grade action row — flip button and grade buttons share
    the same footprint so the thumb never has to move.

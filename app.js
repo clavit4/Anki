@@ -1193,6 +1193,8 @@ const undoFromResultsEl = document.getElementById('undoFromResults');
 const mcStageEl = document.getElementById('mcStage');
 const mcPromptEl = document.getElementById('mcPrompt');
 const mcOptionsEl = document.getElementById('mcOptions');
+const mcNextBtnEl = document.getElementById('mcNextBtn');
+let pendingMcGrade = null; // set once you answer, cleared on advance — see answerMultipleChoice()
 
 /* ============================================================
    Multiple choice — hand-picked groups of kanji that are genuinely
@@ -1247,6 +1249,8 @@ function buildMultipleChoiceOptions(deck, card) {
 function renderMultipleChoiceCard(deck, card) {
   mcPromptEl.textContent = card.back;
   mcOptionsEl.innerHTML = '';
+  mcNextBtnEl.hidden = true;
+  pendingMcGrade = null;
   buildMultipleChoiceOptions(deck, card).forEach(optionFront => {
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -1257,11 +1261,11 @@ function renderMultipleChoiceCard(deck, card) {
   });
 }
 
-// Locks the options, flashes correct/wrong feedback (revealing the
-// right answer too, if you picked wrong), then feeds the same
-// recordGradeAndAdvance() pipeline gradeCard() uses — so a multiple
-// choice session updates the exact same per-card history, weakest/
-// strongest sort, and streak data a flashcard session would.
+// Locks the options and flashes correct/wrong feedback (revealing the
+// right answer too, if you picked wrong), then just waits — no timer.
+// Advancing happens on the "Next card" tap below, same tap-when-ready
+// pacing flashcard mode already uses (flip, then tap a grade whenever
+// you're ready) rather than forcing a fixed pause on every answer.
 function answerMultipleChoice(isCorrect, clickedBtn) {
   const card = state.sessionCards[state.index];
   mcOptionsEl.querySelectorAll('.mc-option').forEach(btn => {
@@ -1269,10 +1273,17 @@ function answerMultipleChoice(isCorrect, clickedBtn) {
     if (btn === clickedBtn) btn.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
     else if (!isCorrect && btn.textContent === card.front) btn.classList.add('is-correct');
   });
-  setTimeout(() => {
-    recordGradeAndAdvance(isCorrect ? GRADE.GOT_IT : GRADE.MISSED);
-  }, isCorrect ? 300 : 650);
+  pendingMcGrade = isCorrect ? GRADE.GOT_IT : GRADE.MISSED;
+  mcNextBtnEl.hidden = false;
+  mcNextBtnEl.focus();
 }
+
+mcNextBtnEl.addEventListener('click', () => {
+  if (pendingMcGrade === null) return;
+  const grade = pendingMcGrade;
+  pendingMcGrade = null;
+  recordGradeAndAdvance(grade);
+});
 
 // Resets session state and jumps into the quiz with an already-
 // decided list of cards (already shuffled/limited by the caller).
@@ -1361,7 +1372,13 @@ function recordGradeAndAdvance(grade) {
   const card = state.sessionCards[state.index];
   const gradedIndex = state.index;
 
-  recordGrade(state.activeDeck.id, card, grade);
+  // Multiple choice is a separate practice mode by design — it keeps
+  // its own live session score/results below, but never touches the
+  // persistent per-card history flashcards write to, so it can't
+  // shift weakest/strongest sorting or the score stripe color.
+  if (state.quizMode !== 'multichoice') {
+    recordGrade(state.activeDeck.id, card, grade);
+  }
 
   if (grade === GRADE.MISSED) {
     state.missed.push(card);
@@ -1402,7 +1419,15 @@ function undoLastGrade() {
   const last = state.history.pop();
   const card = state.sessionCards[last.index];
 
-  removeLastGradeRecord(state.activeDeck.id, card);
+  // Mirrors the same mode check in recordGradeAndAdvance() — a
+  // multiple choice answer never wrote to this card's persistent
+  // history, so there's nothing there to roll back. (Skipping this
+  // matters, not just being redundant: if the same card also has
+  // *real* flashcard history from another session, popping here
+  // would incorrectly delete that instead.)
+  if (state.quizMode !== 'multichoice') {
+    removeLastGradeRecord(state.activeDeck.id, card);
+  }
 
   if (last.grade === GRADE.MISSED) {
     state.missed.pop();
