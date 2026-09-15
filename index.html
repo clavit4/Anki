@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0e0d'/%3E%3Crect x='24' y='18' width='52' height='64' rx='8' fill='none' stroke='%234fd1a5' stroke-width='5'/%3E%3Cline x1='34' y1='38' x2='66' y2='38' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3Cline x1='34' y1='52' x2='58' y2='52' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0e0d'/%3E%3Crect x='24' y='18' width='52' height='64' rx='8' fill='none' stroke='%234fd1a5' stroke-width='5'/%3E%3Cline x1='34' y1='38' x2='66' y2='38' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3Cline x1='34' y1='52' x2='58' y2='52' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>A N K I</title>
-<link rel="stylesheet" href="style.css?v=19">
+<link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
 
@@ -41,6 +41,11 @@
       <h1 class="deck-name" id="countDeckName">Deck</h1>
       <p class="tagline">How many?</p>
     </header>
+
+    <div class="mode-toggle" id="modeToggle" role="group" aria-label="Study mode">
+      <button class="mode-btn is-active" id="modeFlashcardBtn" type="button">Flashcards</button>
+      <button class="mode-btn" id="modeMultichoiceBtn" type="button">Multiple choice</button>
+    </div>
 
     <div class="count-grid" id="countGrid">
       <!-- count buttons injected by app.js -->
@@ -83,7 +88,7 @@
       <span class="score-hit" id="scoreHitCount">0</span> got it<span class="score-sep">&middot;</span><span class="score-miss" id="scoreMissCount">0</span> missed
     </p>
 
-    <div class="card-stage">
+    <div class="card-stage" id="cardStage">
       <div class="card" id="card" tabindex="0" role="button" aria-pressed="false" aria-label="Flashcard, tap to reveal the answer">
         <div class="card-inner" id="cardInner">
           <div class="card-face card-front">
@@ -97,6 +102,11 @@
         </div>
       </div>
       <p class="tap-hint" id="tapHint"></p>
+    </div>
+
+    <div class="mc-stage" id="mcStage" hidden>
+      <p class="mc-prompt" id="mcPrompt"></p>
+      <div class="mc-options" id="mcOptions"></div>
     </div>
 
     <div class="action-row" id="actionRow">
@@ -172,6 +182,6 @@
 
 </div>
 
-<script src="app.js?v=22"></script>
+<script src="app.js?v=23"></script>
 </body>
 </html>

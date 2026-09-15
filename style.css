@@ -341,6 +341,44 @@ code {
 /* ============================================================
    Count select
    ============================================================ */
+/* Flashcards vs. Multiple choice — which quiz UI startSessionWithCards()
+   shows (see quizMode in app.js). Segmented-control styling similar to
+   the deck-preview's sort-toggle pill. */
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.mode-btn {
+  flex: 1;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 9px 12px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.mode-btn:hover:not(:disabled) {
+  border-color: var(--mint-dim);
+  color: var(--text);
+}
+
+.mode-btn.is-active {
+  border-color: var(--mint);
+  background: var(--mint-glow);
+  color: var(--mint-strong);
+  font-weight: 600;
+}
+
+.mode-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 .count-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -787,6 +825,10 @@ code {
   padding: 12px 0;
 }
 
+.card-stage[hidden] {
+  display: none;
+}
+
 .card {
   width: 100%;
   min-height: 320px;
@@ -882,6 +924,77 @@ code {
   font-size: 0.85rem;
   text-align: center;
   min-height: 1.2em;
+}
+
+/* ============================================================
+   Multiple choice — alternate quiz UI. Prompt is the card's "back"
+   (the meaning/reading), options are the "front" of the correct card
+   plus distractors drawn from getConfusableChars() where possible —
+   see buildMultipleChoiceOptions() in app.js.
+   ============================================================ */
+.mc-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 26px;
+  padding: 12px 0;
+}
+
+.mc-stage[hidden] {
+  display: none;
+}
+
+.mc-prompt {
+  margin: 0;
+  text-align: center;
+  color: var(--text);
+  font-size: 1.1rem;
+  line-height: 1.5;
+  padding: 0 6px;
+}
+
+.mc-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mc-option {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 30px 12px;
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+
+.mc-option:hover:not(:disabled) {
+  border-color: var(--mint-dim);
+  background: var(--surface-2);
+}
+
+.mc-option:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.mc-option:disabled {
+  cursor: default;
+}
+
+.mc-option.is-correct {
+  border-color: var(--mint);
+  background: var(--mint-glow);
+  color: var(--mint-strong);
+}
+
+.mc-option.is-wrong {
+  border-color: var(--rose);
+  background: var(--rose-glow);
+  color: var(--rose);
 }
 
 /* ============================================================
