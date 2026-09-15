@@ -430,6 +430,7 @@ const state = {
   correct: 0,
   missed: [],
   flipped: false,
+  quizMode: 'flashcard', // 'flashcard' | 'multichoice'
   previewSort: 'original', // 'original' | 'weakest' | 'strongest' | 'nongraded' | 'active' | 'nonactive'
   previewVisibleCards: [], // cards the current preview filter is showing, kept in sync by renderDeckPreview() — what "Play these" studies
   history: [],           // stack of { index, grade } — one entry per graded card, for Undo
@@ -848,6 +849,8 @@ const unselectAllBtnEl = document.getElementById('unselectAllBtn');
 const playFilteredBtnEl = document.getElementById('playFilteredBtn');
 const addCardBtnEl = document.getElementById('addCardBtn');
 const scrollTopBtnEl = document.getElementById('scrollTopBtn');
+const modeFlashcardBtnEl = document.getElementById('modeFlashcardBtn');
+const modeMultichoiceBtnEl = document.getElementById('modeMultichoiceBtn');
 const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function openCountScreen(deck) {
@@ -856,10 +859,27 @@ function openCountScreen(deck) {
   state.previewSort = 'original';
   addCardBtnEl.hidden = !deck.custom;
 
+  // Multiple choice needs 3 other cards to draw distractors from —
+  // below that, disable it rather than show a broken 1-2-option quiz.
+  const uniqueFronts = new Set(state.decks[deck.id].cards.map(card => card.front)).size;
+  const mcAvailable = uniqueFronts >= 4;
+  modeMultichoiceBtnEl.disabled = !mcAvailable;
+  modeMultichoiceBtnEl.title = mcAvailable ? '' : 'Needs at least 4 cards in this deck';
+  setQuizMode('flashcard');
+
   renderCountGrid(deck);
   renderDeckPreview(deck);
   showScreen('screen-count');
 }
+
+function setQuizMode(mode) {
+  state.quizMode = mode;
+  modeFlashcardBtnEl.classList.toggle('is-active', mode === 'flashcard');
+  modeMultichoiceBtnEl.classList.toggle('is-active', mode === 'multichoice');
+}
+
+modeFlashcardBtnEl.addEventListener('click', () => setQuizMode('flashcard'));
+modeMultichoiceBtnEl.addEventListener('click', () => setQuizMode('multichoice'));
 
 addCardBtnEl.addEventListener('click', () => {
   const deck = state.activeDeck;
@@ -1154,6 +1174,7 @@ document.getElementById('backToDeck').addEventListener('click', () => {
 /* ============================================================
    Quiz screen
    ============================================================ */
+const cardStageEl = document.getElementById('cardStage');
 const cardEl = document.getElementById('card');
 const cardInnerEl = document.getElementById('cardInner');
 const cardFrontTextEl = document.getElementById('cardFrontText');
@@ -1169,6 +1190,89 @@ const gradeRowEl = document.getElementById('gradeRow');
 const tapHintEl = document.getElementById('tapHint');
 const undoBtnEl = document.getElementById('undoBtn');
 const undoFromResultsEl = document.getElementById('undoFromResults');
+const mcStageEl = document.getElementById('mcStage');
+const mcPromptEl = document.getElementById('mcPrompt');
+const mcOptionsEl = document.getElementById('mcOptions');
+
+/* ============================================================
+   Multiple choice — hand-picked groups of kanji that are genuinely
+   easy to mix up at a glance (shared radical/component, similar
+   overall shape), not an exhaustive or algorithmic similarity
+   measure. A kanji outside every group here just falls back to
+   random distractors in buildMultipleChoiceOptions() below, rather
+   than force a weak "lookalike" claim.
+   ============================================================ */
+const CONFUSABLE_KANJI_GROUPS = [
+  ['人', '入', '八'],
+  ['日', '白', '百', '目'],
+  ['木', '本', '末'],
+  ['右', '左'],
+  ['小', '少'],
+  ['語', '話', '読'],
+  ['毎', '母'],
+  ['生', '先'],
+  ['今', '会'],
+  ['一', '二', '三'],
+  ['午', '年'],
+  ['大', '天'],
+];
+
+function getConfusableChars(char) {
+  const group = CONFUSABLE_KANJI_GROUPS.find(g => g.includes(char));
+  return group ? group.filter(c => c !== char) : [];
+}
+
+// The correct card's front plus 3 distractors, shuffled. Distractors
+// come from its confusable group first (when the deck actually
+// contains those characters as other cards), then padded out with
+// random other cards' fronts if the group is too small or empty.
+function buildMultipleChoiceOptions(deck, card) {
+  const otherFronts = state.decks[deck.id].cards
+    .filter(c => c.front !== card.front)
+    .map(c => c.front);
+
+  const distractors = [];
+  shuffle(getConfusableChars(card.front).filter(ch => otherFronts.includes(ch))).forEach(ch => {
+    if (distractors.length < 3 && !distractors.includes(ch)) distractors.push(ch);
+  });
+  if (distractors.length < 3) {
+    shuffle(otherFronts).forEach(front => {
+      if (distractors.length < 3 && !distractors.includes(front)) distractors.push(front);
+    });
+  }
+
+  return shuffle([card.front, ...distractors]);
+}
+
+function renderMultipleChoiceCard(deck, card) {
+  mcPromptEl.textContent = card.back;
+  mcOptionsEl.innerHTML = '';
+  buildMultipleChoiceOptions(deck, card).forEach(optionFront => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'mc-option';
+    btn.textContent = optionFront;
+    btn.addEventListener('click', () => answerMultipleChoice(optionFront === card.front, btn));
+    mcOptionsEl.appendChild(btn);
+  });
+}
+
+// Locks the options, flashes correct/wrong feedback (revealing the
+// right answer too, if you picked wrong), then feeds the same
+// recordGradeAndAdvance() pipeline gradeCard() uses — so a multiple
+// choice session updates the exact same per-card history, weakest/
+// strongest sort, and streak data a flashcard session would.
+function answerMultipleChoice(isCorrect, clickedBtn) {
+  const card = state.sessionCards[state.index];
+  mcOptionsEl.querySelectorAll('.mc-option').forEach(btn => {
+    btn.disabled = true;
+    if (btn === clickedBtn) btn.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
+    else if (!isCorrect && btn.textContent === card.front) btn.classList.add('is-correct');
+  });
+  setTimeout(() => {
+    recordGradeAndAdvance(isCorrect ? GRADE.GOT_IT : GRADE.MISSED);
+  }, isCorrect ? 500 : 1100);
+}
 
 // Resets session state and jumps into the quiz with an already-
 // decided list of cards (already shuffled/limited by the caller).
@@ -1183,6 +1287,15 @@ function startSessionWithCards(cards) {
   scoreHitEl.textContent = '0';
   scoreMissEl.textContent = '0';
   updateUndoAvailability();
+
+  // Fixed for the whole session (the mode toggle only lives on the
+  // count screen, before a session starts), so this only needs
+  // setting once here rather than on every renderCurrentCard() call.
+  const isMultipleChoice = state.quizMode === 'multichoice';
+  cardStageEl.hidden = isMultipleChoice;
+  actionRowEl.hidden = isMultipleChoice;
+  mcStageEl.hidden = !isMultipleChoice;
+
   showScreen('screen-quiz');
   renderCurrentCard();
 }
@@ -1195,6 +1308,14 @@ function startSession(count) {
 function renderCurrentCard() {
   const total = state.sessionCards.length;
   const card = state.sessionCards[state.index];
+
+  progressCountEl.textContent = `${state.index + 1} / ${total}`;
+  progressFillEl.style.width = `${(state.index / total) * 100}%`;
+
+  if (state.quizMode === 'multichoice') {
+    renderMultipleChoiceCard(state.activeDeck, card);
+    return;
+  }
 
   state.flipped = false;
 
@@ -1216,9 +1337,6 @@ function renderCurrentCard() {
   cardBackFrontTextEl.textContent = card.front;
   cardBackTextEl.textContent = card.back;
 
-  progressCountEl.textContent = `${state.index + 1} / ${total}`;
-  progressFillEl.style.width = `${(state.index / total) * 100}%`;
-
   // Force the browser to apply the transition-less reset above before we
   // remove "snap" — otherwise the two class changes could get batched
   // into one style pass and the reset would end up animated after all.
@@ -1235,8 +1353,11 @@ function flipCard() {
   tapHintEl.textContent = '';
 }
 
-function gradeCard(grade) {
-  if (!state.flipped) return;
+// Shared by both quiz modes: gradeCard() below (flashcards) and
+// answerMultipleChoice() above both fan into this once they've
+// decided a grade, so the history/score bookkeeping and end-of-
+// session check only live in one place.
+function recordGradeAndAdvance(grade) {
   const card = state.sessionCards[state.index];
   const gradedIndex = state.index;
 
@@ -1259,6 +1380,11 @@ function gradeCard(grade) {
     state.index = gradedIndex + 1;
     renderCurrentCard();
   }
+}
+
+function gradeCard(grade) {
+  if (!state.flipped) return;
+  recordGradeAndAdvance(grade);
 }
 
 function updateUndoAvailability() {
@@ -1291,7 +1417,10 @@ function undoLastGrade() {
 
   showScreen('screen-quiz');
   renderCurrentCard();
-  flipCard(); // show the answer right away so you can just tap the right grade
+  // Flashcards only — flips to the answer right away so you can just
+  // tap the right grade. Multiple choice has no flip step; its own
+  // re-render already puts you back at a fresh, answerable prompt.
+  if (state.quizMode === 'flashcard') flipCard();
 }
 
 cardEl.addEventListener('click', flipCard);
