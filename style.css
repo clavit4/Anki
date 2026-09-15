@@ -997,25 +997,35 @@ code {
   color: var(--rose);
 }
 
-.mc-next-btn {
-  border-radius: var(--radius);
-  border: 1px solid var(--mint);
-  background: var(--mint);
-  color: #0a0d0c;
-  font-size: 1rem;
-  font-weight: 600;
-  padding: 15px;
+/* Post-answer, options are "locked" via pointer-events rather than
+   the disabled attribute — a disabled button never dispatches a
+   click event at all, which would swallow taps instead of letting
+   them bubble up to .mc-stage's "tap anywhere to continue" handler. */
+.mc-option.is-locked {
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Always present at full size (never hidden/removed), so fading it
+   in on answer never shifts the centered column above it — compare
+   the earlier "Next card" button, which caused exactly that jump by
+   toggling in and out of the layout via the hidden attribute. */
+.mc-tap-hint {
+  margin: 0;
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.mc-tap-hint.is-visible {
+  opacity: 1;
+}
+
+.mc-stage.is-awaiting-continue {
   cursor: pointer;
-  transition: filter 0.15s ease;
-}
-
-.mc-next-btn:hover,
-.mc-next-btn:focus-visible {
-  filter: brightness(1.08);
-}
-
-.mc-next-btn[hidden] {
-  display: none;
 }
 
 /* ============================================================

@@ -1192,7 +1192,7 @@ const undoFromResultsEl = document.getElementById('undoFromResults');
 const mcStageEl = document.getElementById('mcStage');
 const mcPromptEl = document.getElementById('mcPrompt');
 const mcOptionsEl = document.getElementById('mcOptions');
-const mcNextBtnEl = document.getElementById('mcNextBtn');
+const mcTapHintEl = document.getElementById('mcTapHint');
 let pendingMcGrade = null; // set once you answer, cleared on advance — see answerMultipleChoice()
 
 /* ============================================================
@@ -1248,36 +1248,48 @@ function buildMultipleChoiceOptions(deck, card) {
 function renderMultipleChoiceCard(deck, card) {
   mcPromptEl.textContent = card.back;
   mcOptionsEl.innerHTML = '';
-  mcNextBtnEl.hidden = true;
+  mcStageEl.classList.remove('is-awaiting-continue');
+  mcTapHintEl.classList.remove('is-visible');
   pendingMcGrade = null;
   buildMultipleChoiceOptions(deck, card).forEach(optionFront => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'mc-option';
     btn.textContent = optionFront;
-    btn.addEventListener('click', () => answerMultipleChoice(optionFront === card.front, btn));
+    // Without stopping propagation, this click would immediately bubble
+    // up to mcStageEl's "tap anywhere to continue" listener below and
+    // fire it in the same dispatch — since pendingMcGrade is set
+    // synchronously inside answerMultipleChoice() — skipping straight
+    // past the feedback on the very first tap.
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      answerMultipleChoice(optionFront === card.front, btn);
+    });
     mcOptionsEl.appendChild(btn);
   });
 }
 
 // Locks the options and flashes correct/wrong feedback (revealing the
-// right answer too, if you picked wrong), then just waits — no timer.
-// Advancing happens on the "Next card" tap below, same tap-when-ready
-// pacing flashcard mode already uses (flip, then tap a grade whenever
-// you're ready) rather than forcing a fixed pause on every answer.
+// right answer too, if you picked wrong), then just waits — no timer,
+// no button popping into the layout. Tapping anywhere in .mc-stage
+// (see the listener below) advances once an answer is pending, same
+// tap-when-ready pacing flashcard mode already uses.
 function answerMultipleChoice(isCorrect, clickedBtn) {
   const card = state.sessionCards[state.index];
   mcOptionsEl.querySelectorAll('.mc-option').forEach(btn => {
-    btn.disabled = true;
+    // Locked via pointer-events (CSS), not the disabled attribute —
+    // a disabled button never dispatches click at all, which would
+    // swallow the tap instead of letting it bubble up to mcStageEl.
+    btn.classList.add('is-locked');
     if (btn === clickedBtn) btn.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
     else if (!isCorrect && btn.textContent === card.front) btn.classList.add('is-correct');
   });
   pendingMcGrade = isCorrect ? GRADE.GOT_IT : GRADE.MISSED;
-  mcNextBtnEl.hidden = false;
-  mcNextBtnEl.focus();
+  mcStageEl.classList.add('is-awaiting-continue');
+  mcTapHintEl.classList.add('is-visible');
 }
 
-mcNextBtnEl.addEventListener('click', () => {
+mcStageEl.addEventListener('click', () => {
   if (pendingMcGrade === null) return;
   const grade = pendingMcGrade;
   pendingMcGrade = null;
