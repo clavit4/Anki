@@ -1327,7 +1327,15 @@ document.getElementById('gradeAlmost').addEventListener('click', () => gradeCard
 document.getElementById('gradeHit').addEventListener('click', () => gradeCard(GRADE.GOT_IT));
 
 document.getElementById('quitQuiz').addEventListener('click', () => {
-  showScreen('screen-count');
+  // Cards graded so far are already saved (recordGrade() runs per
+  // grade, not at session end) — show the results screen for them
+  // instead of just discarding the session outright. Nothing to show
+  // if you quit before grading a single card, though.
+  if (state.history.length > 0) {
+    finishSession();
+  } else {
+    showScreen('screen-count');
+  }
 });
 
 /* ============================================================
@@ -1341,7 +1349,10 @@ const missedListEl = document.getElementById('missedList');
 function finishSession() {
   progressFillEl.style.width = '100%';
 
-  const total = state.sessionCards.length;
+  // Cards actually graded, not the originally planned session size —
+  // the two only differ when the session was ended early, in which
+  // case the score should reflect what was actually attempted.
+  const total = state.history.length;
   const pct = total === 0 ? 0 : Math.round((state.correct / total) * 100);
 
   scoreBigEl.textContent = `${state.correct}/${total}`;
