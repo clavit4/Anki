@@ -1271,7 +1271,7 @@ function answerMultipleChoice(isCorrect, clickedBtn) {
   });
   setTimeout(() => {
     recordGradeAndAdvance(isCorrect ? GRADE.GOT_IT : GRADE.MISSED);
-  }, isCorrect ? 500 : 1100);
+  }, isCorrect ? 300 : 650);
 }
 
 // Resets session state and jumps into the quiz with an already-
