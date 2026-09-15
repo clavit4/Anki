@@ -22,7 +22,6 @@
    ============================================================ */
 const DECKS = [
   { id: 'deck1', name: 'Deck 1', file: 'decks/deck1.csv' },
-  { id: 'deck2', name: 'Deck 2', file: 'decks/deck2.csv' },
 ];
 
 const COUNT_OPTIONS = [10, 25, 50, 100];
