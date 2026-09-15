@@ -1017,6 +1017,15 @@ function renderDeckPreview(deck) {
         li.classList.toggle('is-inactive', !nowActive);
         li.title = nowActive ? scoreNote : `${scoreNote} · skipped`;
         updateUnselectAllAvailability(deck);
+
+        // List membership doesn't change for these filters (none of
+        // them filter by active state), but the play pool does — every
+        // filter except Non-active excludes inactive cards from it.
+        // Keep it in sync without a full list rebuild.
+        state.previewVisibleCards = nowActive
+          ? state.previewVisibleCards.concat(card)
+          : state.previewVisibleCards.filter(c => c !== card);
+        updatePlayFilteredButton(state.previewVisibleCards.length);
       }
     });
     toggleLabel.appendChild(checkbox);
