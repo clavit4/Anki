@@ -39,7 +39,7 @@ const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 //   nonactive - only skipped cards
 // Each label names the mode that's *currently* showing (tapping the
 // button advances to the next one).
-const SORT_MODES = ['original', 'weakest', 'strongest', 'nongraded', 'active', 'nonactive'];
+const SORT_MODES = ['original', 'weakest', 'strongest', 'nongraded', 'active', 'nonactive', 'confusable'];
 const SORT_LABELS = {
   original: 'Original',
   weakest: 'Weaker',
@@ -47,6 +47,7 @@ const SORT_LABELS = {
   nongraded: 'Non-graded',
   active: 'Active',
   nonactive: 'Non-active',
+  confusable: 'Lookalikes',
 };
 
 // Shown in place of the card list when a filter matches nothing.
@@ -56,6 +57,7 @@ const EMPTY_FILTER_MESSAGES = {
   nongraded: 'Every card here has been studied at least once.',
   active: 'No active cards — everything here is switched off.',
   nonactive: 'Nothing is switched off — every card is active.',
+  confusable: 'No cards here are in a confusable-kanji group yet.',
 };
 
 // How many of a card's most recent graded attempts to average when
