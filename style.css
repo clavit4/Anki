@@ -405,6 +405,19 @@ code {
   transform: translateY(1px);
 }
 
+/* Bigger than the current filter's pool — grayed out rather than
+   left off the grid, so the layout stays put as you switch filters
+   instead of buttons appearing/disappearing under your thumb. */
+.count-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.count-btn:disabled:hover {
+  border-color: var(--border);
+  background: var(--surface);
+}
+
 .count-btn-num {
   display: block;
   font-family: var(--font-display);

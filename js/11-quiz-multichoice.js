@@ -13,6 +13,12 @@
    measure. A kanji outside every group here just falls back to
    random distractors in buildMultipleChoiceOptions() below, rather
    than force a weak "lookalike" claim.
+
+   The groups themselves live in decks/confusable-kanji.json rather
+   than here, so they're plain, hand-editable data (add a group, or
+   drop in a whole new file) instead of JS you'd have to touch this
+   file to change. Fetched once at boot — see the bottom of this
+   file — same pattern loadDeck() uses for CSV decks.
    ============================================================ */
 const mcStageEl = document.getElementById('mcStage');
 const mcPromptEl = document.getElementById('mcPrompt');
@@ -20,32 +26,12 @@ const mcOptionsEl = document.getElementById('mcOptions');
 const mcTapHintEl = document.getElementById('mcTapHint');
 let pendingMcGrade = null; // set once you answer, cleared on advance — see answerMultipleChoice()
 
-const CONFUSABLE_KANJI_GROUPS = [
-  ['人', '入', '八'],
-  ['日', '白', '百', '目'],
-  ['木', '本', '末', '大', '天', '犬'],
-  ['右', '左', '名', '友'],
-  ['語', '話', '読', '誰'],
-  ['生', '先', '午', '年', '住', '赤', '売'],
-  ['今', '会', '金'],
-  ['上', '下', '土', '止', '正'],
-  ['円', '千', '万'],
-  ['北', '花'],
-  ['子', '学'],
-  ['前', '時'],
-  ['聞', '間'], // was 间 (U+95F4, simplified Chinese) — this deck uses 間 (U+9593)
-  ['書', '言'],
-  ['安', '女'],
-  ['週', '道', '違', '近', '起'],
-  ['夜', '後'],
-  ['店', '走', '足'],
-  ['黒', '魚', '熱'],
-  ['楽', '茶'],
-  ['作', '昨', '明'],
-  ['海', '酒', '痛'],
-  ['曜', '皆', '階'],
-  ['気', '長'],
-];
+let CONFUSABLE_KANJI_GROUPS = [];
+
+fetch('decks/confusable-kanji.json', { cache: 'no-store' })
+  .then(res => (res.ok ? res.json() : []))
+  .then(groups => { CONFUSABLE_KANJI_GROUPS = Array.isArray(groups) ? groups : []; })
+  .catch(() => { CONFUSABLE_KANJI_GROUPS = []; });
 
 function getConfusableChars(char) {
   const group = CONFUSABLE_KANJI_GROUPS.find(g => g.includes(char));

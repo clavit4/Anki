@@ -39,9 +39,11 @@ function startSessionWithCards(cards) {
   renderCurrentCard();
 }
 
+// Draws from the current filter's pool (state.previewVisibleCards),
+// not the deck's whole active-card set — see renderCountGrid() in
+// 08-count-screen.js, which sizes its buttons off the same pool.
 function startSession(count) {
-  const activeCards = getActiveCards(state.activeDeck.id);
-  startSessionWithCards(shuffle(activeCards).slice(0, count));
+  startSessionWithCards(shuffle(state.previewVisibleCards).slice(0, count));
 }
 
 // Updates the shared progress bar/counter, then dispatches to

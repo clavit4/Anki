@@ -29,7 +29,10 @@ function openCountScreen(deck) {
   modeMultichoiceBtnEl.title = mcAvailable ? '' : 'Needs at least 4 cards in this deck';
   setQuizMode('flashcard');
 
-  renderCountGrid(deck);
+  // renderDeckPreview() computes state.previewVisibleCards and calls
+  // renderCountGrid() itself once that's ready — calling it here too
+  // would just render the grid against last screen's stale pool for
+  // a moment.
   renderDeckPreview(deck);
   showScreen('screen-count');
 }
@@ -52,9 +55,15 @@ addCardBtnEl.addEventListener('click', () => {
 // Rebuilt any time a card gets checked/unchecked below, since the
 // available session sizes and the "All" count depend on how many
 // cards are currently active.
+// Sized from the *current filter's* pool (state.previewVisibleCards),
+// not the deck's whole active-card count — so switching to "Weaker"
+// and picking "25" studies 25 random cards from your weak ones, not
+// 25 random cards from the whole deck. A count bigger than the
+// current pool is shown disabled rather than hidden, so the grid's
+// layout stays put as you flip between filters instead of reflowing.
 function renderCountGrid(deck) {
   const allCards = state.decks[deck.id].cards;
-  const total = getActiveCards(deck.id).length;
+  const total = state.previewVisibleCards.length;
   countGridEl.innerHTML = '';
 
   if (allCards.length === 0) {
@@ -70,13 +79,12 @@ function renderCountGrid(deck) {
   if (total === 0) {
     const msg = document.createElement('p');
     msg.className = 'count-empty';
-    msg.textContent = 'Every card here is switched off — uncheck one below to study it.';
+    msg.textContent = EMPTY_FILTER_MESSAGES[state.previewSort] || 'No cards match this filter.';
     countGridEl.appendChild(msg);
     return;
   }
 
-  const options = COUNT_OPTIONS.filter(n => n < total);
-  options.forEach(n => countGridEl.appendChild(makeCountButton(n, `${n} cards`, total)));
+  COUNT_OPTIONS.forEach(n => countGridEl.appendChild(makeCountButton(n, `${n} cards`, total, false, n >= total)));
   countGridEl.appendChild(makeCountButton(total, `All (${total})`, total, true));
 }
 
@@ -113,6 +121,13 @@ function renderDeckPreview(deck) {
     visible = withScores.filter(({ card }) => isCardActive(deck.id, card));
   } else if (state.previewSort === 'nonactive') {
     visible = withScores.filter(({ card }) => !isCardActive(deck.id, card));
+  } else if (state.previewSort === 'confusable') {
+    // Cards whose front is in some confusable-kanji group — see
+    // decks/confusable-kanji.json and getConfusableChars() in
+    // 11-quiz-multichoice.js. Empty until that file finishes loading,
+    // which for a small local file resolves well before anyone
+    // reaches this screen in practice.
+    visible = withScores.filter(({ card }) => getConfusableChars(card.front).length > 0);
   }
 
   // What "Play these" will study if clicked — kept in sync here so
@@ -127,6 +142,11 @@ function renderDeckPreview(deck) {
   state.previewVisibleCards = playable.map(({ card }) => card);
   updateSortToggleLabel(visible.length);
   updatePlayFilteredButton(playable.length);
+  // The count buttons (10/25/50/100/All) size a session drawn from
+  // this same filtered pool now, not the deck's whole active-card
+  // count — see renderCountGrid() — so it needs refreshing any time
+  // this does.
+  renderCountGrid(deck);
 
   previewListEl.innerHTML = '';
 
@@ -183,7 +203,6 @@ function renderDeckPreview(deck) {
     checkbox.addEventListener('change', () => {
       const nowActive = !checkbox.checked;
       setCardActive(deck.id, card, nowActive);
-      renderCountGrid(deck);
 
       if (state.previewSort === 'active' || state.previewSort === 'nonactive') {
         // This card just left (or joined) the group this filter shows —
@@ -208,6 +227,7 @@ function renderDeckPreview(deck) {
           ? state.previewVisibleCards.concat(card)
           : state.previewVisibleCards.filter(c => c !== card);
         updatePlayFilteredButton(state.previewVisibleCards.length);
+        renderCountGrid(deck);
       }
     });
     toggleLabel.appendChild(checkbox);
@@ -251,8 +271,7 @@ unselectAllBtnEl.addEventListener('click', async () => {
   // snapping back from wherever it was scrolled (see the sortToggle
   // handler above for the same reasoning).
   window.scrollTo(0, 0);
-  renderDeckPreview(deck);
-  renderCountGrid(deck);
+  renderDeckPreview(deck); // also refreshes the count grid now
 });
 
 // Text of the sort/filter button. Takes the count of cards the
@@ -316,10 +335,11 @@ scrollTopBtnEl.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
 });
 
-function makeCountButton(n, label, total, isAll) {
+function makeCountButton(n, label, total, isAll, disabled) {
   const btn = document.createElement('button');
   btn.className = 'count-btn' + (isAll ? ' is-all' : '');
   btn.type = 'button';
+  btn.disabled = !!disabled;
   btn.innerHTML = `<span class="count-btn-num">${n}</span><span class="count-btn-label">${isAll ? 'every card' : 'cards'}</span>`;
   btn.addEventListener('click', () => startSession(n));
   return btn;

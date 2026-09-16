@@ -21,8 +21,7 @@ async function addCardToDeck(deck) {
     return;
   }
   state.decks[deck.id].cards = updated;
-  renderCountGrid(deck);
-  renderDeckPreview(deck);
+  renderDeckPreview(deck); // also refreshes the count grid now
 }
 
 async function editCard(deck, card) {
@@ -44,8 +43,7 @@ async function editCard(deck, card) {
     return;
   }
   state.decks[deck.id].cards = updated;
-  renderCountGrid(deck);
-  renderDeckPreview(deck);
+  renderDeckPreview(deck); // also refreshes the count grid now
 }
 
 async function removeCardFromDeck(deck, card) {
@@ -66,6 +64,5 @@ async function removeCardFromDeck(deck, card) {
   // for a card that's still actually in the deck.
   localStorage.removeItem(cardStorageKey(deck.id, card));
   localStorage.removeItem(cardActiveKey(deck.id, card));
-  renderCountGrid(deck);
-  renderDeckPreview(deck);
+  renderDeckPreview(deck); // also refreshes the count grid now
 }
