@@ -75,16 +75,14 @@ function renderCountGrid(deck) {
     return;
   }
 
-  if (total === 0) {
-    const msg = document.createElement('p');
-    msg.className = 'count-empty';
-    msg.textContent = EMPTY_FILTER_MESSAGES[state.previewSort] || 'No cards match this filter.';
-    countGridEl.appendChild(msg);
-    return;
-  }
-
+  // Zero cards for the current filter (e.g. "Non-graded" once you've
+  // studied everything) still shows the full row of buttons — just
+  // every one of them grayed out, same as any other filter whose
+  // pool is smaller than a given option — rather than swapping the
+  // whole grid out for a text message. The card-list below still
+  // explains *why* it's empty (see EMPTY_FILTER_MESSAGES there).
   COUNT_OPTIONS.forEach(n => countGridEl.appendChild(makeCountButton(n, `${n} cards`, total, false, n >= total)));
-  countGridEl.appendChild(makeCountButton(total, `All (${total})`, total, true));
+  countGridEl.appendChild(makeCountButton(total, `All (${total})`, total, true, total === 0));
 }
 
 function renderDeckPreview(deck) {
