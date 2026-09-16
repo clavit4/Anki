@@ -44,6 +44,7 @@ const CONFUSABLE_KANJI_GROUPS = [
   ['作', '昨', '明'],
   ['海', '酒', '痛'],
   ['曜', '皆', '階'],
+  ['気', '長'],
 ];
 
 function getConfusableChars(char) {
