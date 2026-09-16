@@ -60,8 +60,18 @@ function buildMultipleChoiceOptions(deck, card) {
   return shuffle([card.front, ...distractors]);
 }
 
+// The deck's "back" text is often "meaning [on X, kun Y]" — the
+// bracketed readings would give away exactly the kind of visual
+// recognition this mode is testing, so only the meaning before the
+// first "[" is shown. Cards with no bracket at all (custom decks,
+// mostly) show their full back text unchanged.
+function mcPromptText(back) {
+  const bracketIndex = back.indexOf('[');
+  return (bracketIndex === -1 ? back : back.slice(0, bracketIndex)).trim();
+}
+
 function renderMultipleChoiceCard(deck, card) {
-  mcPromptEl.textContent = card.back;
+  mcPromptEl.textContent = mcPromptText(card.back);
   mcOptionsEl.innerHTML = '';
   mcStageEl.classList.remove('is-awaiting-continue');
   mcTapHintEl.classList.remove('is-visible');
