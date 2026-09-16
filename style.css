@@ -976,12 +976,21 @@ code {
   transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
 }
 
-.mc-option:hover:not(:disabled) {
-  border-color: var(--mint-dim);
-  background: var(--surface-2);
+/* Gated to real hover-capable pointers (mouse/trackpad) only — on
+   touch devices (no true hover), a :hover state applied by a tap
+   sticks to whatever ends up at that screen position (iOS Safari
+   keeps it until the next tap elsewhere) even after this button is
+   destroyed and a fresh one for the next question is built in its
+   place, which read as "the green never goes away". Touch just
+   never gets this rule at all, so there's nothing to stick. */
+@media (hover: hover) {
+  .mc-option:hover:not(.is-locked) {
+    border-color: var(--mint-dim);
+    background: var(--surface-2);
+  }
 }
 
-.mc-option:active:not(:disabled) {
+.mc-option:active:not(.is-locked) {
   transform: translateY(1px);
 }
 
