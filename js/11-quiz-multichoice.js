@@ -99,6 +99,12 @@ function renderMultipleChoiceCard(deck, card) {
 // no button popping into the layout. Tapping anywhere in .mc-stage
 // (see the listener below) advances once an answer is pending, same
 // tap-when-ready pacing flashcard mode already uses.
+// Correct and wrong answers are handled differently on purpose: a
+// right answer doesn't need confirming, so it just flashes green and
+// moves on by itself; a wrong one pauses on tap-anywhere so there's
+// actually time to read which option was correct before it's gone.
+const CORRECT_ADVANCE_DELAY = 300;
+
 function answerMultipleChoice(isCorrect, clickedBtn) {
   const card = state.sessionCards[state.index];
   mcOptionsEl.querySelectorAll('.mc-option').forEach(btn => {
@@ -109,9 +115,14 @@ function answerMultipleChoice(isCorrect, clickedBtn) {
     if (btn === clickedBtn) btn.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
     else if (!isCorrect && btn.textContent === card.front) btn.classList.add('is-correct');
   });
-  pendingMcGrade = isCorrect ? GRADE.GOT_IT : GRADE.MISSED;
-  mcStageEl.classList.add('is-awaiting-continue');
-  mcTapHintEl.classList.add('is-visible');
+
+  if (isCorrect) {
+    setTimeout(() => recordGradeAndAdvance(GRADE.GOT_IT), CORRECT_ADVANCE_DELAY);
+  } else {
+    pendingMcGrade = GRADE.MISSED;
+    mcStageEl.classList.add('is-awaiting-continue');
+    mcTapHintEl.classList.add('is-visible');
+  }
 }
 
 mcStageEl.addEventListener('click', () => {

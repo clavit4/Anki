@@ -23,6 +23,14 @@
   --lime: #d6da8e;
   --lime-glow: rgba(214, 218, 142, 0.16);
 
+  /* A true, saturated green — distinct from --mint (a teal used for
+     the app's whole branding/UI chrome) — reserved for "this is the
+     right answer" feedback in multiple choice, so it reads as its
+     own clear signal instead of blending into the ambient mint. */
+  --correct: #3ecf6d;
+  --correct-strong: #7ee8a0;
+  --correct-glow: rgba(62, 207, 109, 0.2);
+
   --text: #eef6f3;
   --text-muted: #a0b5b0;
   --text-faint: #62716d;
@@ -982,9 +990,9 @@ code {
 }
 
 .mc-option.is-correct {
-  border-color: var(--mint);
-  background: var(--mint-glow);
-  color: var(--mint-strong);
+  border-color: var(--correct);
+  background: var(--correct-glow);
+  color: var(--correct-strong);
 }
 
 .mc-option.is-wrong {
