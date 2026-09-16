@@ -471,8 +471,7 @@ code {
 }
 
 .sort-toggle,
-.unselect-btn,
-.play-filtered-btn {
+.unselect-btn {
   background: none;
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -505,23 +504,7 @@ code {
   color: var(--text);
 }
 
-/* Solid background rather than just a tint, so it reads as the
-   clear "go" action of the group — unlike the other two pills here,
-   which just filter/toggle, this one launches a session. */
-.play-filtered-btn {
-  border-color: var(--mint);
-  background: var(--mint);
-  color: #0a0d0c;
-  font-weight: 600;
-}
-
-.play-filtered-btn:hover:not(:disabled),
-.play-filtered-btn:focus-visible:not(:disabled) {
-  filter: brightness(1.08);
-}
-
-.unselect-btn:disabled,
-.play-filtered-btn:disabled {
+.unselect-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
 }
