@@ -42,11 +42,6 @@ function finishSession() {
   showScreen('screen-results');
 }
 
-document.getElementById('studyAgain').addEventListener('click', () => {
-  startSession(state.sessionCards.length);
-});
-
-document.getElementById('newDeck').addEventListener('click', () => {
-  renderDeckList();
-  showScreen('screen-deck');
+document.getElementById('backToDeckFromResults').addEventListener('click', () => {
+  openCountScreen(state.activeDeck);
 });
