@@ -8,7 +8,6 @@ const countDeckNameEl = document.getElementById('countDeckName');
 const previewListEl = document.getElementById('previewList');
 const sortToggleEl = document.getElementById('sortToggle');
 const unselectAllBtnEl = document.getElementById('unselectAllBtn');
-const playFilteredBtnEl = document.getElementById('playFilteredBtn');
 const addCardBtnEl = document.getElementById('addCardBtn');
 const scrollTopBtnEl = document.getElementById('scrollTopBtn');
 const modeFlashcardBtnEl = document.getElementById('modeFlashcardBtn');
@@ -130,22 +129,21 @@ function renderDeckPreview(deck) {
     visible = withScores.filter(({ card }) => getConfusableChars(card.front).length > 0);
   }
 
-  // What "Play these" will study if clicked — kept in sync here so
-  // the button doesn't need to recompute or re-filter anything.
-  // Skipped cards stay in the *list* (dimmed) for every filter, but
-  // shouldn't sneak into the *play pool* — except on "Non-active"
-  // itself, whose whole point is letting you drill exactly your
-  // skipped cards without reactivating them.
+  // What the count buttons (10/25/50/100/All) below will draw a
+  // session from — kept in sync here so renderCountGrid() doesn't
+  // need to recompute or re-filter anything. Skipped cards stay in
+  // the *list* (dimmed) for every filter, but shouldn't sneak into
+  // the *play pool* — except on "Non-active" itself, whose whole
+  // point is letting you drill exactly your skipped cards without
+  // reactivating them.
   const playable = state.previewSort === 'nonactive'
     ? visible
     : visible.filter(({ card }) => isCardActive(deck.id, card));
   state.previewVisibleCards = playable.map(({ card }) => card);
   updateSortToggleLabel(visible.length);
-  updatePlayFilteredButton(playable.length);
-  // The count buttons (10/25/50/100/All) size a session drawn from
-  // this same filtered pool now, not the deck's whole active-card
-  // count — see renderCountGrid() — so it needs refreshing any time
-  // this does.
+  // The count buttons size a session drawn from this same filtered
+  // pool now, not the deck's whole active-card count — see
+  // renderCountGrid() — so it needs refreshing any time this does.
   renderCountGrid(deck);
 
   previewListEl.innerHTML = '';
@@ -226,7 +224,6 @@ function renderDeckPreview(deck) {
         state.previewVisibleCards = nowActive
           ? state.previewVisibleCards.concat(card)
           : state.previewVisibleCards.filter(c => c !== card);
-        updatePlayFilteredButton(state.previewVisibleCards.length);
         renderCountGrid(deck);
       }
     });
@@ -285,14 +282,6 @@ function updateSortToggleLabel(count) {
   sortToggleEl.textContent = `${SORT_LABELS[state.previewSort]} (${count})`;
 }
 
-// Text + disabled-state of the "Play these" button — mirrors
-// updateSortToggleLabel() above, just for the button that studies
-// the filtered set instead of the one that names it.
-function updatePlayFilteredButton(count) {
-  playFilteredBtnEl.textContent = `Play these (${count})`;
-  playFilteredBtnEl.disabled = count === 0;
-}
-
 sortToggleEl.addEventListener('click', () => {
   const currentIndex = SORT_MODES.indexOf(state.previewSort);
   state.previewSort = SORT_MODES[(currentIndex + 1) % SORT_MODES.length];
@@ -304,16 +293,6 @@ sortToggleEl.addEventListener('click', () => {
   // Doing it ourselves first means there's nothing to snap.
   window.scrollTo(0, 0);
   renderDeckPreview(state.activeDeck);
-});
-
-// Studies exactly what the current filter is showing — e.g. only
-// your "Weaker" cards, or only "Non-active" ones — in random order,
-// regardless of each card's individual active/inactive state. A
-// separate, one-off pool from the normal count-grid sessions below,
-// which always draw from the deck's full active-card pool.
-playFilteredBtnEl.addEventListener('click', () => {
-  if (state.previewVisibleCards.length === 0) return;
-  startSessionWithCards(shuffle(state.previewVisibleCards));
 });
 
 // Shared "back to top" arrow for both this screen and the deck-select

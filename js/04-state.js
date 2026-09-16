@@ -13,7 +13,7 @@ const state = {
   flipped: false,
   quizMode: 'flashcard', // 'flashcard' | 'multichoice'
   previewSort: 'original', // 'original' | 'weakest' | 'strongest' | 'nongraded' | 'active' | 'nonactive'
-  previewVisibleCards: [], // cards the current preview filter is showing, kept in sync by renderDeckPreview() — what "Play these" studies
+  previewVisibleCards: [], // cards the current preview filter is showing, kept in sync by renderDeckPreview() — what the count-grid buttons draw a session from
   history: [],           // stack of { index, grade } — one entry per graded card, for Undo
 };
 

@@ -15,8 +15,6 @@ const undoFromResultsEl = document.getElementById('undoFromResults');
 
 // Resets session state and jumps into the quiz with an already-
 // decided list of cards (already shuffled/limited by the caller).
-// Both startSession() (count-grid) and the "Play these" button fan
-// into this so the reset logic only lives in one place.
 function startSessionWithCards(cards) {
   state.sessionCards = cards;
   state.index = 0;
