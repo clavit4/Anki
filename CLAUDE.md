@@ -104,9 +104,16 @@ state = {
 ```
 
 Card shape (from CSV or a custom deck): `{ front, back, id, activeDefault }`.
-`id` may be `null` for rows with no id column value — see `cardStorageKey`/
-`cardActiveKey` in `03-storage.js` for the content-hash fallback key scheme
-used in that case (`recall:<deckId>:temp:<hash>`).
+A CSV row with no id column doesn't stay `null` — `csvToCards()`
+(`02-csv.js`) auto-numbers it in file order via `assignMissingIds()`
+(collision-avoiding against any explicit ids elsewhere in the same file),
+same idea as `nextCardId()` in `03-storage.js` for a manually-added card.
+Exact duplicate rows (same front AND back) are silently dropped there too,
+keeping the first. `id` staying `null` past that point would only happen
+for a card that reaches `state` through some other path entirely — see
+`cardStorageKey`/`cardActiveKey` in `03-storage.js` for the content-hash
+fallback key scheme (`recall:<deckId>:temp:<hash>`) that exists for that
+case, though nothing in the app currently produces it.
 
 ## localStorage key scheme
 
