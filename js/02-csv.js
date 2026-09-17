@@ -51,22 +51,46 @@ function csvToCards(text) {
   const startIndex = (first[0] === 'front' && first[1] === 'back') ? 1 : 0;
 
   const cards = [];
+  const seenRows = new Set(); // "front␟back" -- catches exact-duplicate rows
   for (let i = startIndex; i < rows.length; i++) {
     const [front, back, id, active] = rows[i];
-    if (front && front.trim() && back && back.trim()) {
-      const trimmedId = (id !== undefined && id !== null) ? id.trim() : '';
-      cards.push({
-        front: front.trim(),
-        back: back.trim(),
-        // Rows without an id still work — they just fall back to a
-        // content-based key below, so history isn't tracked until
-        // you assign one.
-        id: trimmedId.length > 0 ? trimmedId : null,
-        // The CSV's starting active/inactive state. A checkbox in the
-        // deck preview can override this per device — see isCardActive().
-        activeDefault: parseActiveDefault(active),
-      });
-    }
+    if (!front || !front.trim() || !back || !back.trim()) continue;
+    const trimmedFront = front.trim();
+    const trimmedBack = back.trim();
+    const rowKey = trimmedFront + '␟' + trimmedBack;
+    if (seenRows.has(rowKey)) continue; // identical front+back already imported -- drop it
+    seenRows.add(rowKey);
+
+    const trimmedId = (id !== undefined && id !== null) ? id.trim() : '';
+    cards.push({
+      front: trimmedFront,
+      back: trimmedBack,
+      id: trimmedId.length > 0 ? trimmedId : null,
+      // The CSV's starting active/inactive state. A checkbox in the
+      // deck preview can override this per device — see isCardActive().
+      activeDefault: parseActiveDefault(active),
+    });
   }
+
+  assignMissingIds(cards);
   return cards;
+}
+
+// A row with no id column keeps id: null out of the loop above, which
+// this then fills in with a stable sequential number instead of
+// leaving it null -- otherwise that card's history would be keyed by
+// a hash of its own front+back text (see cardStorageKey() in
+// 03-storage.js), which silently breaks the moment you edit the
+// card's wording later. Numbers already taken by explicit ids
+// elsewhere in the same file are skipped, same collision-avoidance
+// idea as nextCardId() in 03-storage.js for manually-added cards.
+function assignMissingIds(cards) {
+  const used = new Set(cards.map(c => c.id).filter(id => id !== null));
+  let next = 1;
+  cards.forEach(card => {
+    if (card.id !== null) return;
+    while (used.has(String(next))) next++;
+    card.id = String(next);
+    used.add(card.id);
+  });
 }

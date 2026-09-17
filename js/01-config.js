@@ -5,8 +5,10 @@
    Add or remove entries as needed; each needs a unique id,
    a display name, and a path to a CSV file with a
    "front,back,id,active" header followed by one card per row.
-   The id column is optional — a row without one just won't have
-   review history tracked until you give it a number.
+   The id column is optional — a row without one gets auto-numbered
+   in file order when the deck loads (see assignMissingIds() in
+   02-csv.js), same as a manually-added card. Exact duplicate rows
+   (same front AND back) are silently dropped, keeping the first.
    The active column is optional too. Leave it out (or leave a
    row's value blank) and the card starts active. Set it to
    0 / no / false / off / inactive to have the card start
