@@ -140,12 +140,14 @@ function renderActivityHeatmap() {
 
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(year, month, d);
-    if (date > today) {
-      heatmapGridEl.appendChild(makeBlankCell());
-      continue;
-    }
-    const count = counts.get(dayKey(date)) || 0;
-    if (count > 0) {
+    const isFuture = date > today;
+    // A future day still gets a real, numbered cell — the only thing
+    // blocked is *navigating* past the current month (via the nav
+    // buttons/swipe above); a day that just hasn't happened yet is
+    // not the same thing as an out-of-month padding cell, and hiding
+    // it truncated the calendar mid-month, which looked broken.
+    const count = isFuture ? 0 : (counts.get(dayKey(date)) || 0);
+    if (!isFuture && count > 0) {
       monthTotal += count;
       monthActiveDays++;
     }
@@ -154,9 +156,14 @@ function renderActivityHeatmap() {
     cell.className = `heatmap-cell level-${levelFor(count, maxCount)}`;
     if (isSameDay(date, today)) cell.classList.add('is-today');
     cell.textContent = String(d);
-    cell.addEventListener('click', () => {
-      heatmapDetailEl.textContent = `${reviewsLabel(count)} on ${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`;
-    });
+    if (isFuture) {
+      cell.classList.add('is-future');
+      cell.disabled = true;
+    } else {
+      cell.addEventListener('click', () => {
+        heatmapDetailEl.textContent = `${reviewsLabel(count)} on ${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`;
+      });
+    }
     heatmapGridEl.appendChild(cell);
   }
 
