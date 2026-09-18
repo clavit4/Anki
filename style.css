@@ -378,12 +378,6 @@ code {
   display: none;
 }
 
-.heatmap-heading {
-  color: var(--text-faint);
-  font-size: 0.82rem;
-  margin: 0 0 10px;
-}
-
 .heatmap-nav {
   display: flex;
   align-items: center;
