@@ -311,6 +311,15 @@ code {
   border-left-color: var(--rose);
 }
 
+/* Deliberately fainter than --border (used everywhere else for real
+   component edges) — this is just a soft break before the upload
+   button, not a boundary that needs to read as strongly. */
+.deck-list-divider {
+  margin: 20px 0 0;
+  border: none;
+  border-top: 1px solid var(--border-soft);
+}
+
 .deck-upload-btn {
   display: flex;
   align-items: center;
