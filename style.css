@@ -355,69 +355,133 @@ code {
 }
 
 /* ============================================================
-   Activity heatmap — GitHub-style calendar of flashcard-study
-   days, see js/13-activity-heatmap.js for the data/render logic.
+   Activity heatmap — one-month-at-a-time calendar of flashcard-
+   study days, swipe or use the arrows to change months (never
+   past the current one). See js/13-activity-heatmap.js for the
+   data/render logic.
    ============================================================ */
 .activity-heatmap {
   margin-top: 20px;
 }
 
-.activity-heatmap.is-empty .heatmap-scroll {
+.activity-heatmap.is-empty .heatmap-nav,
+.activity-heatmap.is-empty .heatmap-swipe-area {
   display: none;
-}
-
-.heatmap-head {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-bottom: 10px;
 }
 
 .heatmap-heading {
   color: var(--text-faint);
   font-size: 0.82rem;
+  margin: 0 0 10px;
+}
+
+.heatmap-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.heatmap-nav-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+@media (hover: hover) {
+  .heatmap-nav-btn:hover:not(:disabled) {
+    border-color: var(--mint-dim);
+    background: var(--surface-2);
+  }
+}
+
+.heatmap-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.heatmap-month-label {
   margin: 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.heatmap-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.heatmap-weekdays span {
+  display: block;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-faint);
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.heatmap-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+/* Padding before day 1 / after the month's last day, plus any day
+   still in the future this month — kept as real (empty) grid cells
+   rather than left out, so every week stays a full 7-wide row and
+   day 1 always lands in its correct weekday column. */
+.heatmap-cell.is-empty {
+  visibility: hidden;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .heatmap-cell:not(.is-empty):hover {
+    border-color: var(--mint-dim);
+  }
+}
+
+.heatmap-cell.level-1 { background: var(--heat-1); border-color: transparent; color: var(--text); }
+.heatmap-cell.level-2 { background: var(--heat-2); border-color: transparent; color: var(--text); }
+.heatmap-cell.level-3 { background: var(--heat-3); border-color: transparent; color: var(--bg); }
+.heatmap-cell.level-4 { background: var(--heat-4); border-color: transparent; color: var(--bg); }
+
+.heatmap-cell.is-today {
+  box-shadow: inset 0 0 0 2px var(--mint-strong);
 }
 
 .heatmap-detail {
   color: var(--text-muted);
   font-size: 0.82rem;
-  margin: 0;
+  margin: 10px 0 0;
   min-height: 1.2em;
-}
-
-.heatmap-scroll {
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-
-.heatmap-grid {
-  display: grid;
-  grid-auto-columns: 11px;
-  grid-template-rows: 14px repeat(7, 11px);
-  gap: 3px;
-  width: max-content;
-}
-
-.heatmap-cell {
-  width: 11px;
-  height: 11px;
-  border-radius: 2px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-}
-
-.heatmap-cell.level-1 { background: var(--heat-1); border-color: transparent; }
-.heatmap-cell.level-2 { background: var(--heat-2); border-color: transparent; }
-.heatmap-cell.level-3 { background: var(--heat-3); border-color: transparent; }
-.heatmap-cell.level-4 { background: var(--heat-4); border-color: transparent; }
-
-.heatmap-month-label {
-  grid-row: 1;
-  align-self: end;
-  font-size: 0.62rem;
-  color: var(--text-faint);
-  white-space: nowrap;
+  text-align: center;
 }
 
 /* ============================================================

@@ -1,8 +1,12 @@
 'use strict';
 
 /* ============================================================
-   Activity heatmap — GitHub-style calendar of days you graded a
-   flashcard, shown on the deck-select screen below the deck list.
+   Activity heatmap — a one-month-at-a-time calendar (Mon-Sun
+   columns, weeks as rows) of days you graded a flashcard, shown
+   on the deck-select screen below the deck list. Swipe or tap the
+   arrows to change months; the current month is the newest you
+   can reach — heatmapMonthOffset never goes above 0.
+
    Reads straight off localStorage's grade-history keys
    (recall:*:card:* and recall:*:temp:*, see 03-storage.js) instead
    of iterating loaded decks, so it reflects every deck you've ever
@@ -14,11 +18,20 @@
    this is Flashcard-mode activity only, by the same deliberate
    isolation that keeps MC out of the Weakest/Strongest scoring.
    ============================================================ */
-const HEATMAP_WINDOW_MONTHS = 6;
 const heatmapEl = document.getElementById('activityHeatmap');
-const heatmapScrollEl = document.getElementById('heatmapScroll');
+const heatmapMonthLabelEl = document.getElementById('heatmapMonthLabel');
+const heatmapSwipeAreaEl = document.getElementById('heatmapSwipeArea');
 const heatmapGridEl = document.getElementById('heatmapGrid');
 const heatmapDetailEl = document.getElementById('heatmapDetail');
+const heatmapPrevBtnEl = document.getElementById('heatmapPrevBtn');
+const heatmapNextBtnEl = document.getElementById('heatmapNextBtn');
+
+// 0 = the current real month, negative = that many months back. Not
+// reset on every render — swiping back and returning to this screen
+// later keeps showing where you left off, like a normal calendar app.
+let heatmapMonthOffset = 0;
+
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 // Local calendar day, not UTC — toISOString() would shift the date
 // near midnight for anyone west/east of UTC.
@@ -27,6 +40,10 @@ function dayKey(date) {
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
+}
+
+function isSameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
 // Every grade ever recorded, bucketed by the local day it happened.
@@ -62,10 +79,11 @@ function collectDailyCounts() {
   return counts;
 }
 
-// 0 (no activity) plus 4 relative intensity steps scaled off this
-// window's own busiest day — a fixed cutoff like "100" would either
-// never light up for a light user or cap out immediately for a
-// heavy one, so the top tier always means "your best day so far".
+// 0 (no activity) plus 4 relative intensity steps, scaled off the
+// single busiest day across *all* your history (not just the month
+// on screen) — so the color scale means the same thing as you swipe
+// between months instead of recalibrating every time, and the top
+// tier always means "one of my best days ever".
 function levelFor(count, maxCount) {
   if (count === 0 || maxCount === 0) return 0;
   const ratio = count / maxCount;
@@ -75,73 +93,109 @@ function levelFor(count, maxCount) {
   return 1;
 }
 
-const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
 function reviewsLabel(count) {
   return `${count} ${count === 1 ? 'review' : 'reviews'}`;
 }
 
+function daysLabel(count) {
+  return `${count} ${count === 1 ? 'day' : 'days'}`;
+}
+
+function makeBlankCell() {
+  const cell = document.createElement('div');
+  cell.className = 'heatmap-cell is-empty';
+  return cell;
+}
+
 function renderActivityHeatmap() {
   const counts = collectDailyCounts();
-  const totalCount = [...counts.values()].reduce((a, b) => a + b, 0);
+  const everCount = [...counts.values()].reduce((a, b) => a + b, 0);
 
-  heatmapGridEl.innerHTML = '';
-  heatmapEl.classList.toggle('is-empty', totalCount === 0);
-  if (totalCount === 0) {
+  heatmapEl.classList.toggle('is-empty', everCount === 0);
+  if (everCount === 0) {
     heatmapDetailEl.textContent = 'No flashcard activity yet — study a deck to fill this in.';
     return;
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const windowStart = new Date(today);
-  windowStart.setMonth(windowStart.getMonth() - HEATMAP_WINDOW_MONTHS);
-  // Snap back to the Sunday on/before windowStart so every column is
-  // a full Sun-Sat week — same alignment GitHub's own graph uses.
-  windowStart.setDate(windowStart.getDate() - windowStart.getDay());
-
-  const totalDays = Math.round((today - windowStart) / 86400000) + 1;
-  const totalWeeks = Math.ceil(totalDays / 7);
-
   let maxCount = 0;
   counts.forEach(c => { if (c > maxCount) maxCount = c; });
 
-  let lastMonth = -1;
-  let activeDays = 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const displayed = new Date(today.getFullYear(), today.getMonth() + heatmapMonthOffset, 1);
+  const year = displayed.getFullYear();
+  const month = displayed.getMonth();
 
-  for (let i = 0; i < totalWeeks * 7; i++) {
-    const date = new Date(windowStart);
-    date.setDate(date.getDate() + i);
-    const week = Math.floor(i / 7) + 1; // 1-indexed grid column
-    const dow = i % 7; // 0 = Sunday — day rows start at grid-row 2, row 1 is month labels
+  heatmapMonthLabelEl.textContent = `${MONTH_NAMES[month]} ${year}`;
+  heatmapNextBtnEl.disabled = heatmapMonthOffset >= 0; // never swipe/tap into the future
 
-    if (dow === 0 && date.getMonth() !== lastMonth) {
-      const label = document.createElement('span');
-      label.className = 'heatmap-month-label';
-      label.style.gridColumn = String(week);
-      label.textContent = MONTH_LABELS[date.getMonth()];
-      heatmapGridEl.appendChild(label);
-      lastMonth = date.getMonth();
+  heatmapGridEl.innerHTML = '';
+  // Monday-indexed weekday of the 1st (JS getDay() is Sunday-indexed).
+  const leadingBlanks = (new Date(year, month, 1).getDay() + 6) % 7;
+  for (let i = 0; i < leadingBlanks; i++) heatmapGridEl.appendChild(makeBlankCell());
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  let monthTotal = 0;
+  let monthActiveDays = 0;
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    if (date > today) {
+      heatmapGridEl.appendChild(makeBlankCell());
+      continue;
     }
-
-    if (date > today) continue; // partial trailing week — leave blank
-
     const count = counts.get(dayKey(date)) || 0;
-    if (count > 0) activeDays++;
-    const cell = document.createElement('div');
+    if (count > 0) {
+      monthTotal += count;
+      monthActiveDays++;
+    }
+    const cell = document.createElement('button');
+    cell.type = 'button';
     cell.className = `heatmap-cell level-${levelFor(count, maxCount)}`;
-    cell.style.gridColumn = String(week);
-    cell.style.gridRow = String(dow + 2);
-    cell.title = `${reviewsLabel(count)} on ${date.toLocaleDateString()}`;
+    if (isSameDay(date, today)) cell.classList.add('is-today');
+    cell.textContent = String(d);
     cell.addEventListener('click', () => {
       heatmapDetailEl.textContent = `${reviewsLabel(count)} on ${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`;
     });
     heatmapGridEl.appendChild(cell);
   }
 
-  heatmapDetailEl.textContent = `${reviewsLabel(totalCount)} across ${activeDays} days (last ${HEATMAP_WINDOW_MONTHS} months)`;
+  const trailingBlanks = (7 - (heatmapGridEl.children.length % 7)) % 7;
+  for (let i = 0; i < trailingBlanks; i++) heatmapGridEl.appendChild(makeBlankCell());
 
-  // Land on the right edge so "today" is on-screen immediately,
-  // instead of making you swipe through months of history first.
-  heatmapScrollEl.scrollLeft = heatmapScrollEl.scrollWidth;
+  heatmapDetailEl.textContent = monthActiveDays === 0
+    ? 'No flashcard activity this month.'
+    : `${reviewsLabel(monthTotal)} across ${daysLabel(monthActiveDays)}`;
 }
+
+heatmapPrevBtnEl.addEventListener('click', () => {
+  heatmapMonthOffset -= 1;
+  renderActivityHeatmap();
+});
+
+heatmapNextBtnEl.addEventListener('click', () => {
+  if (heatmapMonthOffset >= 0) return;
+  heatmapMonthOffset += 1;
+  renderActivityHeatmap();
+});
+
+// Swipe to change months — passive listeners (never call
+// preventDefault) so a mostly-vertical drag still scrolls the page
+// normally; only a clearly horizontal drag past the threshold counts.
+let heatmapTouchStartX = null;
+let heatmapTouchStartY = null;
+
+heatmapSwipeAreaEl.addEventListener('touchstart', (e) => {
+  heatmapTouchStartX = e.touches[0].clientX;
+  heatmapTouchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+heatmapSwipeAreaEl.addEventListener('touchend', (e) => {
+  if (heatmapTouchStartX === null) return;
+  const dx = e.changedTouches[0].clientX - heatmapTouchStartX;
+  const dy = e.changedTouches[0].clientY - heatmapTouchStartY;
+  heatmapTouchStartX = null;
+  if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return; // not a clear horizontal swipe
+  if (dx < 0) heatmapNextBtnEl.click();
+  else heatmapPrevBtnEl.click();
+}, { passive: true });
