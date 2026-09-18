@@ -25,7 +25,7 @@ iteration norms rather than long design discussions in future sessions too.
 ## Hard architectural constraint: one global scope, no bundler
 
 There is no module system, no bundler, no `import`/`export`, no build step.
-`index.html` loads 13 plain classic `<script>` tags in a fixed order:
+`index.html` loads 14 plain classic `<script>` tags in a fixed order:
 
 ```
 js/01-config.js
@@ -40,7 +40,8 @@ js/09-quiz-core.js
 js/10-quiz-flashcard.js
 js/11-quiz-multichoice.js
 js/12-results.js
-js/13-boot.js
+js/13-activity-heatmap.js
+js/14-boot.js
 ```
 
 All 13 files share **one single global scope**, exactly as if they were
@@ -83,7 +84,8 @@ Consequences that matter for future edits:
 | `js/10-quiz-flashcard.js` | Flashcard-mode rendering (flip animation, front/back text, tap-hint). |
 | `js/11-quiz-multichoice.js` | Multiple-choice mode: builds 4-option buttons from `CONFUSABLE_KANJI_GROUPS` (fetched async from `decks/confusable-kanji.json`) with random fallback, `mcPromptText` (strips bracketed readings from the prompt), answer feedback/locking, auto-advance on correct / tap-to-continue on wrong. |
 | `js/12-results.js` | Results screen: score summary, missed-cards list, the single "Back to deck" button (`openCountScreen(state.activeDeck)`). |
-| `js/13-boot.js` | Entry point — wires the deck-list click handlers and kicks off the initial render on page load. |
+| `js/13-activity-heatmap.js` | `renderActivityHeatmap()` — GitHub-style calendar of flashcard-study days, shown on the deck-select screen below the deck list. Reads grade-history timestamps straight off localStorage — Flashcard-mode only, since Multiple choice never calls `recordGrade()` (same isolation noted below). Called from `renderDeckList()`, not from `showScreen()` — numbered 13 (before `14-boot.js`) specifically so that call is safe under the load-order rule above. |
+| `js/14-boot.js` | Entry point — wires the deck-list click handlers and kicks off the initial render on page load. Renumbered from `13-` to `14-` when the heatmap file was added, so it stays last — it calls `renderDeckList()` synchronously at the top level, so everything it might reach into (including the heatmap) has to already exist. |
 
 ## The `state` object (`js/04-state.js`)
 

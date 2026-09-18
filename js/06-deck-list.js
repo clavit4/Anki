@@ -86,6 +86,12 @@ function renderDeckList() {
       }
     });
   });
+
+  // Grade history doesn't depend on which decks are currently
+  // loaded, so this can render independently of the loop above —
+  // see renderActivityHeatmap() in 13-activity-heatmap.js, loaded
+  // after this file specifically so it's safe to call from here.
+  renderActivityHeatmap();
 }
 
 function showUploadError(message) {
