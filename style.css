@@ -452,17 +452,25 @@ code {
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-/* Padding before day 1 / after the month's last day, plus any day
-   still in the future this month — kept as real (empty) grid cells
-   rather than left out, so every week stays a full 7-wide row and
-   day 1 always lands in its correct weekday column. */
+/* Padding before day 1 / after the month's last day — kept as real
+   (invisible) grid cells rather than left out, so every week stays a
+   full 7-wide row and day 1 always lands in its correct weekday
+   column. */
 .heatmap-cell.is-empty {
   visibility: hidden;
   cursor: default;
 }
 
+/* A day later this month that just hasn't happened yet — still a
+   real, numbered cell (see 13-activity-heatmap.js for why), just
+   dimmed and inert since there's nothing to show or tap yet. */
+.heatmap-cell.is-future {
+  color: var(--text-faint);
+  cursor: default;
+}
+
 @media (hover: hover) {
-  .heatmap-cell:not(.is-empty):hover {
+  .heatmap-cell:not(.is-empty):not(.is-future):hover {
     border-color: var(--mint-dim);
   }
 }
