@@ -82,6 +82,97 @@ function scoreBucket(score) {
   return score === null ? null : Math.round(score);
 }
 
+/* ============================================================
+   Spaced repetition — a simplified SM-2 variant, adapted to this
+   app's 4-level grade (Missed/Hard/Almost/Got it) instead of the
+   usual 0-5 quality score real SM-2 expects. Nothing new is
+   persisted for this: a card's whole SRS state (interval, ease,
+   due date) is derived by replaying its existing, already-stored
+   grade history (loadCardHistory() — never trimmed) from the
+   beginning every time it's asked for, so there's no new storage
+   key and no migration. See REQUIREMENTS.md #29/#71 and the
+   "Due" filter in 08-count-screen.js for where this gets used.
+
+   Deliberately NOT textbook SM-2 (which treats any pass the same
+   and can rocket a card's interval out for months after one lucky
+   answer) — this was built in direct response to an earlier
+   complaint that real spaced repetition would "give space" to a
+   card after a single good answer even though the card was still
+   genuinely weak:
+
+     - Only Almost/Got it grow the interval. Got it grows it (and
+       the ease multiplier) more than Almost does, since a shaky
+       "Almost" shouldn't earn the same trust as a clean pass.
+     - Hard/Missed don't just fail to grow the interval — they
+       shrink it *and* reset the pass streak to 0. That reset is
+       the actual fix for the original complaint: the next Got it
+       after a Hard/Missed restarts from the short 1-day step
+       instead of picking up wherever the old (undeserved) streak
+       left off, so one good answer right after a rough patch
+       can't suddenly push the card weeks out again — it has to
+       earn a new streak first, same as it would for a brand-new
+       card.
+   ============================================================ */
+const SRS_INITIAL_EASE = 2.5;   // starting multiplier applied to the interval on each further pass
+const SRS_MIN_EASE = 1.3;       // floor — matches standard SM-2, keeps a hard card's interval from shrinking to nothing
+const SRS_FIRST_INTERVAL_DAYS = 1;  // interval after the 1st pass of a streak
+const SRS_SECOND_INTERVAL_DAYS = 3; // interval after the 2nd pass of a streak (3rd+ multiplies by ease instead)
+
+// Replays `history` (oldest first) through the rules above and
+// returns { interval, ease, streak, dueDate, isNew }. A card with no
+// history at all is "new" — due immediately, nothing to replay.
+function computeSrsState(deckId, card) {
+  const history = loadCardHistory(deckId, card);
+  if (history.length === 0) {
+    return { interval: 0, ease: SRS_INITIAL_EASE, streak: 0, dueDate: null, isNew: true };
+  }
+
+  let interval = 0;
+  let ease = SRS_INITIAL_EASE;
+  let streak = 0; // consecutive Almost/Got it passes since the last Hard/Missed
+  let lastTimestamp = history[0].timestamp;
+
+  history.forEach(entry => {
+    lastTimestamp = entry.timestamp;
+    if (entry.grade >= GRADE.ALMOST) {
+      streak++;
+      if (streak === 1) {
+        interval = SRS_FIRST_INTERVAL_DAYS;
+      } else if (streak === 2) {
+        interval = SRS_SECOND_INTERVAL_DAYS;
+      } else {
+        interval = Math.max(1, Math.round(interval * ease));
+      }
+      ease = entry.grade === GRADE.GOT_IT
+        ? Math.min(ease + 0.15, 3)
+        : Math.max(SRS_MIN_EASE, ease - 0.05); // Almost: barely grows the ease, if at all
+    } else {
+      streak = 0;
+      interval = entry.grade === GRADE.MISSED
+        ? 1
+        : Math.max(1, Math.round(interval * 0.5)); // Hard: shrink, don't fully reset
+      ease = Math.max(SRS_MIN_EASE, ease - (entry.grade === GRADE.MISSED ? 0.3 : 0.2));
+    }
+  });
+
+  const dueDate = new Date(lastTimestamp + interval * 86400000);
+  return { interval, ease, streak, dueDate, isNew: false };
+}
+
+// Due-ness relative to right now: overdueDays is negative when it's
+// not due yet, 0 when due today, positive when overdue by that many
+// days. A never-graded card is treated as "infinitely overdue" so it
+// sorts to the front of the Due list, same spirit as a real SRS queue
+// putting brand-new cards ahead of ones merely due today.
+function cardDueInfo(deckId, card) {
+  const srs = computeSrsState(deckId, card);
+  if (srs.isNew) {
+    return Object.assign({ overdueDays: Infinity }, srs);
+  }
+  const overdueDays = Math.floor((Date.now() - srs.dueDate.getTime()) / 86400000);
+  return Object.assign({ overdueDays }, srs);
+}
+
 // Sort key for "original order": numeric id ascending, with un-numbered
 // cards (no id yet) pushed after every numbered one.
 function idSortKey(card) {

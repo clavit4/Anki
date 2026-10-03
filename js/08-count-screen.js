@@ -125,6 +125,20 @@ function renderDeckPreview(deck) {
     // which for a small local file resolves well before anyone
     // reaches this screen in practice.
     visible = withScores.filter(({ card }) => getConfusableChars(card.front).length > 0);
+  } else if (state.previewSort === 'due') {
+    // Spaced-repetition queue — see computeSrsState()/cardDueInfo() in
+    // 03-storage.js. Actual reviews (cards you've studied before and
+    // are now due again) rank ahead of never-studied cards, most
+    // overdue first — forgetting something you already learned is
+    // more urgent than meeting something new, same priority real SRS
+    // tools use. Without this, a deck with lots of never-graded cards
+    // would bury its truly overdue reviews under a wall of "New".
+    visible = withScores.map(entry => Object.assign({ due: cardDueInfo(deck.id, entry.card) }, entry));
+    visible = visible.filter(({ due }) => due.isNew || due.overdueDays >= 0);
+    visible.sort((a, b) => {
+      if (a.due.isNew !== b.due.isNew) return a.due.isNew ? 1 : -1;
+      return a.due.isNew ? idSortKey(a.card) - idSortKey(b.card) : b.due.overdueDays - a.due.overdueDays;
+    });
   }
 
   // What the count buttons (10/25/50/100/All) below will draw a
@@ -156,7 +170,7 @@ function renderDeckPreview(deck) {
     return;
   }
 
-  visible.forEach(({ card, score }) => {
+  visible.forEach(({ card, score, due }) => {
     const li = document.createElement('li');
     const active = isCardActive(deck.id, card);
     li.classList.toggle('is-inactive', !active);
@@ -178,6 +192,17 @@ function renderDeckPreview(deck) {
     back.textContent = card.back;
     content.appendChild(front);
     content.appendChild(back);
+
+    // Only present on the Due filter (see the `due` filter branch
+    // above) — shown inline rather than only in the hover title,
+    // since this app is mostly used on a phone where hover never
+    // fires.
+    if (due) {
+      const badge = document.createElement('div');
+      badge.className = 'preview-due';
+      badge.textContent = dueBadgeText(due);
+      content.appendChild(badge);
+    }
 
     if (deck.custom) {
       li.classList.add('is-editable');
@@ -276,6 +301,16 @@ unselectAllBtnEl.addEventListener('click', async () => {
 // known. (The button always looks "on" via .sort-toggle's own CSS —
 // every filter, "Original" included, is an equally deliberate choice,
 // not a default/disabled state.)
+// "New" for a never-studied card, "Due today" right on schedule,
+// otherwise how many days overdue — matches the overdueDays cardDueInfo()
+// already computed for sorting, so this never disagrees with the order
+// the list is actually shown in.
+function dueBadgeText(due) {
+  if (due.isNew) return 'New';
+  if (due.overdueDays === 0) return 'Due today';
+  return `${due.overdueDays} ${due.overdueDays === 1 ? 'day' : 'days'} overdue`;
+}
+
 function updateSortToggleLabel(count) {
   sortToggleEl.textContent = `${SORT_LABELS[state.previewSort]} (${count})`;
 }
