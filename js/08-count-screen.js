@@ -287,11 +287,11 @@ unselectAllBtnEl.addEventListener('click', async () => {
   const cards = state.decks[deck.id].cards;
   cards.forEach(card => setCardActive(deck.id, card, true));
   // If "Non-active" is the current filter, this just emptied it out —
-  // reset to the top first so the page doesn't visibly jump/resize
-  // snapping back from wherever it was scrolled (see the sortToggle
-  // handler above for the same reasoning).
-  window.scrollTo(0, 0);
+  // clampScrollToContent() (see the sortToggle handler below) pulls the
+  // scroll position back only if the page actually got too short to
+  // support where it was, instead of always snapping to the top.
   renderDeckPreview(deck); // also refreshes the count grid now
+  clampScrollToContent();
 });
 
 // Text of the sort/filter button. Takes the count of cards the
@@ -318,15 +318,37 @@ function updateSortToggleLabel(count) {
 sortToggleEl.addEventListener('click', () => {
   const currentIndex = SORT_MODES.indexOf(state.previewSort);
   state.previewSort = SORT_MODES[(currentIndex + 1) % SORT_MODES.length];
-  // Reset to the top *before* re-rendering: switching to a filter
-  // with far fewer (or zero) cards can shrink the page drastically,
-  // and if the window was scrolled deep into the previous filter's
-  // long list, the browser has to forcibly snap the scroll position
-  // back to fit — which looks like the page jumping/resizing oddly.
-  // Doing it ourselves first means there's nothing to snap.
-  window.scrollTo(0, 0);
   renderDeckPreview(state.activeDeck);
+  clampScrollToContent();
 });
+
+// Switching to a filter with far fewer (or zero) cards can shrink the
+// page drastically — if the window was scrolled deep into the
+// previous filter's long list, leaving the browser to forcibly snap
+// the scroll position back to fit looks like the page jumping/
+// resizing oddly. This used to be "fixed" by unconditionally
+// scrolling to the top *before* every re-render, which did stop the
+// jump but also yanked the page to the top on every single filter
+// switch — including the common case where the new list is plenty
+// tall enough that nothing would've snapped at all, which is its own
+// annoyance when you're paging through filters mid-read.
+//
+// Call this *after* the re-render instead: scrollHeight reflects the
+// new (already-rendered) content, and reading it forces a layout
+// flush, but window.scrollY itself isn't touched by that — the
+// browser only auto-corrects an overflowing scroll position as part
+// of the next paint, which hasn't happened yet at this point in the
+// script — so comparing the two here still catches the old position
+// before the browser would silently snap it, and only intervenes
+// when that position is actually now too far down. Lands on the new
+// max scroll rather than forcing all the way to 0, so you end up as
+// close to where you were as the shorter content allows.
+function clampScrollToContent() {
+  const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  if (window.scrollY > maxScroll) {
+    window.scrollTo(0, maxScroll);
+  }
+}
 
 // Shared "back to top" arrow for both this screen and the deck-select
 // one. Neither screen's content actually scrolls inside its own
