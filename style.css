@@ -774,6 +774,12 @@ code {
   font-style: italic;
 }
 
+.preview-due {
+  margin-top: 4px;
+  color: var(--text-faint);
+  font-size: 0.78rem;
+}
+
 /* Skipped card — unchecked in the toggle, still listed but out of
    the running for quiz sessions. Dimmed rather than hidden so it's
    easy to find and switch back on. */

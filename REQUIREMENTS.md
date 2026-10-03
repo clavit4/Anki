@@ -100,11 +100,13 @@ If the thing you remembered asking for and not getting is one of the two
     worried a real spaced-repetition algorithm would space a card too far
     out after just one good answer. *(Satisfied by the Weakest/Strongest
     filters + per-card score, manually driven rather than automatic.)*
-29. ❔ *(19:12)* Floated turning that into a separate study mode alongside
-    "choose a pool + choose a count." Never built as its own mode — the
-    closest thing that shipped is the Weakest/Strongest filters plus the
-    rolling 7-attempt average, which is manual, not an automatic "due"
-    scheduler.
+29. ✅ *(19:12)* Floated turning that into a separate study mode alongside
+    "choose a pool + choose a count." Built on Oct 3 as a new "Due"
+    filter — a simplified SM-2 that derives each card's schedule from
+    its existing grade history (no new storage), with Hard/Missed
+    resetting the pass streak so one good answer right after a rough
+    patch can't push the card far out again. See the "Spaced
+    repetition" section in `CLAUDE.md` for the full mechanics.
 30. ✅ *(19:16)* Wants historical per-card attempt tracking, plus a small
     calendar showing how many cards were studied each day (a "racha" /
     streak) — the original ask behind what later became the activity
@@ -241,3 +243,13 @@ If the thing you remembered asking for and not getting is one of the two
     asked for earlier never got done, but said it isn't urgent.
 71. ✅ *(later same day)* Add a status marker to every item above — ✅
     Done, 🌀 Reverted, ❌ Rejected, or ❔ Forgotten.
+
+## Oct 3 — the spaced-repetition mode (item #29, finally)
+
+72. ✅ *(morning)* Asked me to actually build the spaced-repetition mode
+    from #28/#29: investigate how spaced repetition works, implement
+    it, and explain both the calculation and whatever changed in the
+    deck's data format (CSV/JSON). See the "Spaced repetition" section
+    in `CLAUDE.md` for the mechanics — short answer on the data-format
+    half: nothing changed, no new column, no new storage key, it's all
+    derived from grade history that was already being saved.

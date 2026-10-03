@@ -39,9 +39,13 @@ const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 //   nongraded - only cards you've never studied
 //   active    - only active (non-skipped) cards
 //   nonactive - only skipped cards
+//   due       - only cards whose spaced-repetition schedule says
+//               they're due now (never-studied cards count as due),
+//               most-overdue first — see computeSrsState() in
+//               03-storage.js for how that schedule is derived
 // Each label names the mode that's *currently* showing (tapping the
 // button advances to the next one).
-const SORT_MODES = ['original', 'weakest', 'strongest', 'nongraded', 'active', 'nonactive', 'confusable'];
+const SORT_MODES = ['original', 'weakest', 'strongest', 'nongraded', 'active', 'nonactive', 'confusable', 'due'];
 const SORT_LABELS = {
   original: 'Original',
   weakest: 'Weaker',
@@ -50,6 +54,7 @@ const SORT_LABELS = {
   active: 'Active',
   nonactive: 'Non-active',
   confusable: 'Lookalikes',
+  due: 'Due',
 };
 
 // Shown in place of the card list when a filter matches nothing.
@@ -60,6 +65,7 @@ const EMPTY_FILTER_MESSAGES = {
   active: 'No active cards — everything here is switched off.',
   nonactive: 'Nothing is switched off — every card is active.',
   confusable: 'No cards here are in a confusable-kanji group yet.',
+  due: 'Nothing is due right now — come back later.',
 };
 
 // How many of a card's most recent graded attempts to average when

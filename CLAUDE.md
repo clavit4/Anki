@@ -74,7 +74,7 @@ Consequences that matter for future edits:
 |---|---|
 | `js/01-config.js` | `DECKS` (built-in deck registry: id/name/csv path), `COUNT_OPTIONS`, `GRADE` enum, `SORT_MODES`/`SORT_LABELS`/`EMPTY_FILTER_MESSAGES` (deck-preview filter cycle), `HISTORY_WINDOW`. Edit this to add a built-in deck. |
 | `js/02-csv.js` | `csvToCards(text)` — parses a deck CSV (`front,back,id,active` header) into card objects. |
-| `js/03-storage.js` | All `localStorage` read/write: grade history (`recordGrade`/`removeLastGradeRecord`/`loadCardHistory`/`cardScore`/`scoreBucket`), active/inactive overrides (`isCardActive`/`setCardActive`), custom-deck persistence (registry + per-deck card arrays), `deleteDeckStorage`, the score→color gradient (`SCORE_COLOR_STOPS`/`scoreToColor`), `shuffle`. |
+| `js/03-storage.js` | All `localStorage` read/write: grade history (`recordGrade`/`removeLastGradeRecord`/`loadCardHistory`/`cardScore`/`scoreBucket`), spaced-repetition state derived from that same history (`computeSrsState`/`cardDueInfo`, see the dedicated section below), active/inactive overrides (`isCardActive`/`setCardActive`), custom-deck persistence (registry + per-deck card arrays), `deleteDeckStorage`, the score→color gradient (`SCORE_COLOR_STOPS`/`scoreToColor`), `shuffle`. |
 | `js/04-state.js` | The single `state` object (see below) and `showScreen(id)`. |
 | `js/05-modal.js` | Generic confirm/prompt/card-editor modal (`openModal`/`showPrompt`, 3 modes: plain confirm, text input, front/back card fields). Reused by delete-deck, delete-card, add-card, edit-card flows. |
 | `js/06-deck-list.js` | Deck-select screen: renders built-in + custom decks, upload-CSV flow, delete-custom-deck flow. |
@@ -165,6 +165,47 @@ The count-grid (`renderCountGrid`) sizes its buttons off
 deck's total card count) and disables (grays out, never hides) any button
 whose count exceeds the pool — this keeps the grid's layout stable across
 filter switches instead of buttons appearing/disappearing.
+
+## Spaced repetition / the "Due" filter
+
+`computeSrsState(deckId, card)` and `cardDueInfo(deckId, card)`
+(`03-storage.js`) implement a simplified SM-2 adapted to this app's
+4-level `GRADE` (Missed/Hard/Almost/Got it) instead of SM-2's usual 0-5
+quality score. **No new data is persisted for this** — a card's whole SRS
+state (interval in days, ease multiplier, due date) is derived by
+replaying its existing, already-stored grade history
+(`loadCardHistory()`, never trimmed) from the beginning, every time it's
+asked for. No new localStorage key, no new CSV/JSON column, no
+migration — the deck format and the `recall:<deckId>:card:<id>` history
+array are both unchanged from before this existed.
+
+Deliberately not textbook SM-2, which treats any pass the same and can
+send a card's interval out for months after one lucky answer — built
+this way specifically because REQUIREMENTS.md #28 already recorded the
+opposite ask: a card you're still weak on shouldn't get "given space"
+just because of a single good answer.
+
+- Only Almost/Got it grow the interval (`entry.grade >= GRADE.ALMOST`).
+  Got it grows the interval and ease more than Almost does.
+- Hard/Missed don't just fail to grow the interval — they shrink it
+  *and* reset the pass streak to 0. That reset is the actual fix for
+  the complaint above: the next Got it after a Hard/Missed restarts
+  from the short 1-day step instead of continuing the old (undeserved)
+  streak, so one good answer right after a rough patch can't suddenly
+  push the card weeks out again — it has to earn a new streak first.
+- A never-graded card is `isNew: true`, `overdueDays: Infinity` — always
+  due, but see the next point for how that's weighted.
+- The `due` filter's sort (`08-count-screen.js`) puts actual reviews
+  (cards you've studied before and are now due again) ahead of
+  never-graded ones, most-overdue-first within each group. Without
+  that split, a deck with lots of never-graded cards would bury its
+  truly overdue reviews under a wall of "New" (confirmed with
+  Playwright: seeded one card 4 days overdue in a 136-card deck where
+  135 were ungraded — sorting new cards as "infinitely overdue" put
+  the genuinely-forgotten card last instead of first).
+- Like every other filter, `due` follows the play-pool-vs-list-
+  membership split above: an inactive-but-due card still shows
+  (dimmed) in the list, just not in the play pool.
 
 ## Multiple choice mode specifics
 
