@@ -6,12 +6,19 @@
 const countGridEl = document.getElementById('countGrid');
 const countDeckNameEl = document.getElementById('countDeckName');
 const previewListEl = document.getElementById('previewList');
-const sortToggleEl = document.getElementById('sortToggle');
+const filterTriggerEl = document.getElementById('filterTrigger');
+const filterTriggerLabelEl = document.getElementById('filterTriggerLabel');
 const unselectAllBtnEl = document.getElementById('unselectAllBtn');
 const addCardBtnEl = document.getElementById('addCardBtn');
 const scrollTopBtnEl = document.getElementById('scrollTopBtn');
 const modeFlashcardBtnEl = document.getElementById('modeFlashcardBtn');
 const modeMultichoiceBtnEl = document.getElementById('modeMultichoiceBtn');
+const filterSheetOverlayEl = document.getElementById('filterSheetOverlay');
+const filterSheetEl = document.getElementById('filterSheet');
+const filterSheetCloseEl = document.getElementById('filterSheetClose');
+const filterTileGridEl = document.getElementById('filterTileGrid');
+const sheetGrabberEl = document.getElementById('sheetGrabber');
+const sheetHeadEl = document.getElementById('sheetHead');
 const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function openCountScreen(deck) {
@@ -85,47 +92,48 @@ function renderCountGrid(deck) {
   countGridEl.appendChild(makeCountButton(total, `All (${total})`, total, true, total === 0));
 }
 
-function renderDeckPreview(deck) {
-  const cards = state.decks[deck.id].cards;
-
-  // Score once up front so filtering/sorting doesn't recompute per card.
-  const withScores = cards.map(card => ({ card, score: cardScore(deck.id, card) }));
-
-  let visible = withScores;
-
-  if (state.previewSort === 'original') {
+// Returns the filtered+sorted `{card, score, [due]}` list for `mode`
+// against an already-scored `withScores` array. Factored out of
+// renderDeckPreview() so computeFilterCounts() (the filter sheet) can
+// run every mode against the same scored array without either
+// duplicating these branches or re-scoring the deck 8 times over.
+function filterCardsForMode(deck, mode, withScores) {
+  if (mode === 'original') {
     // By id number rather than raw CSV row order, so re-shuffling rows
     // in the CSV doesn't change this view. Cards without an id (none
     // assigned yet) sort after every numbered card.
-    visible = withScores.slice().sort((a, b) => idSortKey(a.card) - idSortKey(b.card));
-  } else if (state.previewSort === 'weakest') {
+    return withScores.slice().sort((a, b) => idSortKey(a.card) - idSortKey(b.card));
+  } else if (mode === 'weakest') {
     // Graded cards you haven't mastered ("Got it") yet, weakest first.
     // Never-studied cards live in their own "Non-graded" tab instead.
-    visible = withScores.filter(({ score }) => score !== null && scoreBucket(score) !== GRADE.GOT_IT);
+    const visible = withScores.filter(({ score }) => score !== null && scoreBucket(score) !== GRADE.GOT_IT);
     visible.sort((a, b) => a.score - b.score);
-  } else if (state.previewSort === 'strongest') {
+    return visible;
+  } else if (mode === 'strongest') {
     // Only cards bucketed as "Got it" or "Almost", strongest first.
-    visible = withScores.filter(({ score }) => {
+    const visible = withScores.filter(({ score }) => {
       const bucket = scoreBucket(score);
       return bucket === GRADE.GOT_IT || bucket === GRADE.ALMOST;
     });
     visible.sort((a, b) => b.score - a.score);
-  } else if (state.previewSort === 'nongraded') {
+    return visible;
+  } else if (mode === 'nongraded') {
     // Cards that have never been studied at all, by id number.
-    visible = withScores.filter(({ score }) => score === null);
+    const visible = withScores.filter(({ score }) => score === null);
     visible.sort((a, b) => idSortKey(a.card) - idSortKey(b.card));
-  } else if (state.previewSort === 'active') {
-    visible = withScores.filter(({ card }) => isCardActive(deck.id, card));
-  } else if (state.previewSort === 'nonactive') {
-    visible = withScores.filter(({ card }) => !isCardActive(deck.id, card));
-  } else if (state.previewSort === 'confusable') {
+    return visible;
+  } else if (mode === 'active') {
+    return withScores.filter(({ card }) => isCardActive(deck.id, card));
+  } else if (mode === 'nonactive') {
+    return withScores.filter(({ card }) => !isCardActive(deck.id, card));
+  } else if (mode === 'confusable') {
     // Cards whose front is in some confusable-kanji group — see
     // decks/confusable-kanji.json and getConfusableChars() in
     // 11-quiz-multichoice.js. Empty until that file finishes loading,
     // which for a small local file resolves well before anyone
     // reaches this screen in practice.
-    visible = withScores.filter(({ card }) => getConfusableChars(card.front).length > 0);
-  } else if (state.previewSort === 'due') {
+    return withScores.filter(({ card }) => getConfusableChars(card.front).length > 0);
+  } else if (mode === 'due') {
     // Spaced-repetition queue — see computeSrsState()/cardDueInfo() in
     // 03-storage.js. Actual reviews (cards you've studied before and
     // are now due again) rank ahead of never-studied cards, most
@@ -133,13 +141,34 @@ function renderDeckPreview(deck) {
     // more urgent than meeting something new, same priority real SRS
     // tools use. Without this, a deck with lots of never-graded cards
     // would bury its truly overdue reviews under a wall of "New".
-    visible = withScores.map(entry => Object.assign({ due: cardDueInfo(deck.id, entry.card) }, entry));
+    let visible = withScores.map(entry => Object.assign({ due: cardDueInfo(deck.id, entry.card) }, entry));
     visible = visible.filter(({ due }) => due.isNew || due.overdueDays >= 0);
     visible.sort((a, b) => {
       if (a.due.isNew !== b.due.isNew) return a.due.isNew ? 1 : -1;
       return a.due.isNew ? idSortKey(a.card) - idSortKey(b.card) : b.due.overdueDays - a.due.overdueDays;
     });
+    return visible;
   }
+  return withScores;
+}
+
+// One count per SORT_MODES key, for the filter sheet's tiles — scores
+// the deck once, then runs every mode's filter against that same
+// array instead of re-scoring per mode.
+function computeFilterCounts(deck) {
+  const cards = state.decks[deck.id].cards;
+  const withScores = cards.map(card => ({ card, score: cardScore(deck.id, card) }));
+  const counts = {};
+  SORT_MODES.forEach(mode => { counts[mode] = filterCardsForMode(deck, mode, withScores).length; });
+  return counts;
+}
+
+function renderDeckPreview(deck) {
+  const cards = state.decks[deck.id].cards;
+
+  // Score once up front so filtering/sorting doesn't recompute per card.
+  const withScores = cards.map(card => ({ card, score: cardScore(deck.id, card) }));
+  const visible = filterCardsForMode(deck, state.previewSort, withScores);
 
   // What the count buttons (10/25/50/100/All) below will draw a
   // session from — kept in sync here so renderCountGrid() doesn't
@@ -152,7 +181,7 @@ function renderDeckPreview(deck) {
     ? visible
     : visible.filter(({ card }) => isCardActive(deck.id, card));
   state.previewVisibleCards = playable.map(({ card }) => card);
-  updateSortToggleLabel(visible.length);
+  updateFilterTriggerLabel(visible.length);
   // The count buttons size a session drawn from this same filtered
   // pool now, not the deck's whole active-card count — see
   // renderCountGrid() — so it needs refreshing any time this does.
@@ -287,20 +316,24 @@ unselectAllBtnEl.addEventListener('click', async () => {
   const cards = state.decks[deck.id].cards;
   cards.forEach(card => setCardActive(deck.id, card, true));
   // If "Non-active" is the current filter, this just emptied it out —
-  // clampScrollToContent() (see the sortToggle handler below) pulls the
-  // scroll position back only if the page actually got too short to
-  // support where it was, instead of always snapping to the top.
+  // clampScrollToContent() below pulls the scroll position back only
+  // if the page actually got too short to support where it was,
+  // instead of always snapping to the top.
   renderDeckPreview(deck); // also refreshes the count grid now
   clampScrollToContent();
 });
 
-// Text of the sort/filter button. Takes the count of cards the
+// Text of the filter-trigger button. Takes the count of cards the
 // *current* filter is showing, so e.g. "Weaker (12)" always reflects
 // what's actually on screen — set from renderDeckPreview() right
 // after it finishes filtering, which is the one place that count is
-// known. (The button always looks "on" via .sort-toggle's own CSS —
-// every filter, "Original" included, is an equally deliberate choice,
-// not a default/disabled state.)
+// known. (The button always looks "on" via .filter-trigger's own
+// CSS — every filter, "Original" included, is an equally deliberate
+// choice, not a default/disabled state.)
+function updateFilterTriggerLabel(count) {
+  filterTriggerLabelEl.textContent = `${SORT_LABELS[state.previewSort]} (${count})`;
+}
+
 // "New" for a never-studied card, "Due today" right on schedule,
 // otherwise how many days overdue — matches the overdueDays cardDueInfo()
 // already computed for sorting, so this never disagrees with the order
@@ -311,15 +344,129 @@ function dueBadgeText(due) {
   return `${due.overdueDays} ${due.overdueDays === 1 ? 'day' : 'days'} overdue`;
 }
 
-function updateSortToggleLabel(count) {
-  sortToggleEl.textContent = `${SORT_LABELS[state.previewSort]} (${count})`;
+/* ============================================================
+   Filter sheet — tap #filterTrigger to open, tap a tile to pick a
+   filter (closes automatically), or dismiss without picking via the
+   backdrop, the × button, Escape, or dragging down from the
+   grabber/header. Built from FILTER_SHEET_GROUPS (01-config.js) each
+   time it opens rather than once at boot, so it always reflects
+   whichever deck is currently open and its current card counts.
+   ============================================================ */
+function renderFilterSheetTiles(deck) {
+  const counts = computeFilterCounts(deck);
+  filterTileGridEl.innerHTML = '';
+
+  FILTER_SHEET_GROUPS.forEach(group => {
+    if (group.label) {
+      const label = document.createElement('p');
+      label.className = 'sheet-section-label';
+      label.textContent = group.label;
+      filterTileGridEl.appendChild(label);
+    }
+    group.modes.forEach(mode => {
+      const tile = document.createElement('button');
+      tile.type = 'button';
+      tile.className = 'filter-tile' + (group.full ? ' is-full' : '');
+      tile.classList.toggle('is-selected', mode === state.previewSort);
+      const count = counts[mode];
+      tile.innerHTML = `<span class="tile-count">${count}</span><span class="tile-label">${SORT_LABELS[mode]}</span>`
+        + (mode === 'due' ? '<span class="tile-hint">includes new cards</span>' : '');
+      tile.addEventListener('click', () => {
+        state.previewSort = mode;
+        renderDeckPreview(deck);
+        clampScrollToContent();
+        closeFilterSheet();
+      });
+      filterTileGridEl.appendChild(tile);
+    });
+  });
 }
 
-sortToggleEl.addEventListener('click', () => {
-  const currentIndex = SORT_MODES.indexOf(state.previewSort);
-  state.previewSort = SORT_MODES[(currentIndex + 1) % SORT_MODES.length];
-  renderDeckPreview(state.activeDeck);
-  clampScrollToContent();
+function openFilterSheet() {
+  const deck = state.activeDeck;
+  if (!deck) return;
+  renderFilterSheetTiles(deck);
+  filterSheetOverlayEl.hidden = false;
+  // Locks the page behind the sheet so a swipe anywhere on it can't
+  // fall through to the browser's own scroll/pull-to-refresh — see
+  // closeFilterSheet() for the matching restore.
+  document.body.style.overflow = 'hidden';
+  // Needs a frame to actually paint hidden -> visible before adding
+  // the class that drives the slide-up transition, or the transition
+  // has no "before" state to animate from and just snaps open.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => filterSheetOverlayEl.classList.add('is-open'));
+  });
+}
+
+function closeFilterSheet() {
+  if (filterSheetOverlayEl.hidden || !filterSheetOverlayEl.classList.contains('is-open')) return;
+  filterSheetOverlayEl.classList.remove('is-open');
+  document.body.style.overflow = '';
+  filterSheetEl.addEventListener('transitionend', function onDone(e) {
+    if (e.propertyName !== 'transform') return;
+    filterSheetEl.removeEventListener('transitionend', onDone);
+    filterSheetOverlayEl.hidden = true;
+  });
+}
+
+filterTriggerEl.addEventListener('click', openFilterSheet);
+filterSheetCloseEl.addEventListener('click', closeFilterSheet);
+filterSheetOverlayEl.addEventListener('click', (e) => {
+  if (e.target === filterSheetOverlayEl) closeFilterSheet();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && filterSheetOverlayEl.classList.contains('is-open')) closeFilterSheet();
+});
+
+// Swipe-to-dismiss, from the grabber or the header only — not the
+// tile grid below, so a drag never fights a tap on a tile. Follows
+// the finger 1:1 while dragging (transition disabled, inline
+// transform set directly), then either snaps back (short drag) or
+// finishes the same downward motion through to fully closed (past
+// SHEET_DISMISS_PX) instead of bouncing back up first.
+const SHEET_DISMISS_PX = 80;
+let sheetDragStartY = null;
+let sheetDragY = 0;
+
+function onSheetDragStart(e) {
+  sheetDragStartY = e.touches[0].clientY;
+  filterSheetEl.style.transition = 'none';
+}
+
+function onSheetDragMove(e) {
+  if (sheetDragStartY === null) return;
+  e.preventDefault(); // keep this gesture from ever reaching the page's own scroll/pull-to-refresh
+  sheetDragY = Math.max(0, e.touches[0].clientY - sheetDragStartY);
+  filterSheetEl.style.transform = `translateY(${sheetDragY}px)`;
+}
+
+function onSheetDragEnd() {
+  if (sheetDragStartY === null) return;
+  filterSheetEl.style.transition = '';
+  const dragged = sheetDragY;
+  sheetDragStartY = null;
+  sheetDragY = 0;
+
+  if (dragged > SHEET_DISMISS_PX) {
+    filterSheetEl.style.transform = 'translateY(100%)';
+    filterSheetOverlayEl.classList.remove('is-open');
+    document.body.style.overflow = '';
+    filterSheetEl.addEventListener('transitionend', function onDone(e) {
+      if (e.propertyName !== 'transform') return;
+      filterSheetEl.removeEventListener('transitionend', onDone);
+      filterSheetEl.style.transform = '';
+      filterSheetOverlayEl.hidden = true;
+    });
+  } else {
+    filterSheetEl.style.transform = ''; // .is-open .sheet (still active) snaps it back to translateY(0)
+  }
+}
+
+[sheetGrabberEl, sheetHeadEl].forEach(el => {
+  el.addEventListener('touchstart', onSheetDragStart, { passive: true });
+  el.addEventListener('touchmove', onSheetDragMove, { passive: false });
+  el.addEventListener('touchend', onSheetDragEnd);
 });
 
 // Switching to a filter with far fewer (or zero) cards can shrink the

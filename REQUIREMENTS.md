@@ -253,3 +253,16 @@ If the thing you remembered asking for and not getting is one of the two
     in `CLAUDE.md` for the mechanics — short answer on the data-format
     half: nothing changed, no new column, no new storage key, it's all
     derived from grade history that was already being saved.
+73. ✅ *(afternoon)* 8 filters had gotten too many to cycle through one
+    tap at a time — asked for ideas on rebuilding it to be user/UI
+    friendly, then (after a live mockup) pushed back that a plain
+    dropdown would be boring/hard to tap. Built as a bottom-sheet tile
+    grid instead (grouped, live counts per tile) — see "The filter
+    sheet" section in `CLAUDE.md`.
+74. ✅ *(same day)* Two fixes to the new filter sheet: the trigger
+    button looked bigger than "Unselect all" next to it (now share one
+    CSS rule for sizing, confirmed pixel-identical), and swiping down
+    to dismiss without picking a filter fell through to the browser's
+    own pull-to-refresh instead of closing the sheet (now a real
+    drag-to-dismiss gesture, with body-scroll locked while the sheet
+    is open so that can't happen).

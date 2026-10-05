@@ -31,8 +31,8 @@ const COUNT_OPTIONS = [10, 25, 50, 100];
 // The four grading buttons, worst to best.
 const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 
-// Deck-preview filter/sort cycle. Each mode both narrows *which* cards
-// show and the order they show in:
+// Deck-preview filters. Each mode both narrows *which* cards show and
+// the order they show in:
 //   original  - every card, ordered by its id number
 //   weakest   - graded cards you haven't mastered ("Got it") yet, weakest first
 //   strongest - only "Got it" / "Almost" cards, strongest first
@@ -43,8 +43,10 @@ const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 //               they're due now (never-studied cards count as due),
 //               most-overdue first — see computeSrsState() in
 //               03-storage.js for how that schedule is derived
-// Each label names the mode that's *currently* showing (tapping the
-// button advances to the next one).
+// Picked via the filter sheet (08-count-screen.js) rather than cycled
+// one at a time — SORT_MODES is just the canonical list of valid keys
+// now, the sheet's own tile *order* comes from FILTER_SHEET_GROUPS
+// below instead.
 const SORT_MODES = ['original', 'weakest', 'strongest', 'nongraded', 'active', 'nonactive', 'confusable', 'due'];
 const SORT_LABELS = {
   original: 'Original',
@@ -56,6 +58,21 @@ const SORT_LABELS = {
   confusable: 'Lookalikes',
   due: 'Due',
 };
+
+// How the filter sheet lays out its tiles — a flat list of groups,
+// each either a loose visual cluster of 2-column tiles (with an
+// optional small section label) or a single `full`-width tile that
+// stands apart from the grid (used for "Original", the reset option,
+// and "Lookalikes", which is a different kind of filter from the
+// score/visibility-based ones). Every key in SORT_MODES must appear
+// in exactly one group here or it silently won't show up as a tile —
+// there's no runtime check for that, so keep the two in sync by hand.
+const FILTER_SHEET_GROUPS = [
+  { modes: ['original'], full: true },
+  { label: 'Study', modes: ['due', 'weakest', 'strongest', 'nongraded'] },
+  { label: 'Cards', modes: ['active', 'nonactive'] },
+  { modes: ['confusable'], full: true },
+];
 
 // Shown in place of the card list when a filter matches nothing.
 const EMPTY_FILTER_MESSAGES = {
