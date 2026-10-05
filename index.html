@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0e0d'/%3E%3Crect x='24' y='18' width='52' height='64' rx='8' fill='none' stroke='%234fd1a5' stroke-width='5'/%3E%3Cline x1='34' y1='38' x2='66' y2='38' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3Cline x1='34' y1='52' x2='58' y2='52' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0e0d'/%3E%3Crect x='24' y='18' width='52' height='64' rx='8' fill='none' stroke='%234fd1a5' stroke-width='5'/%3E%3Cline x1='34' y1='38' x2='66' y2='38' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3Cline x1='34' y1='52' x2='58' y2='52' stroke='%234fd1a5' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>A N K I</title>
-<link rel="stylesheet" href="style.css?v=33">
+<link rel="stylesheet" href="style.css?v=34">
 </head>
 <body>
 
@@ -73,7 +73,10 @@
         <p class="preview-heading">Deck entries</p>
         <div class="preview-head-actions">
           <button class="unselect-btn" id="unselectAllBtn" type="button" disabled title="Turn every card back on">Unselect all</button>
-          <button class="sort-toggle" id="sortToggle" type="button">Original</button>
+          <button class="filter-trigger" id="filterTrigger" type="button" aria-haspopup="dialog">
+            <span id="filterTriggerLabel">Original</span>
+            <svg width="9" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
       </div>
       <button class="deck-upload-btn add-card-btn" id="addCardBtn" type="button" hidden>
@@ -196,6 +199,23 @@
     </div>
   </div>
 
+  <!-- ================= FILTER SHEET ================= -->
+  <!-- Replaces the old one-at-a-time filter cycle button: tap
+       #filterTrigger to open this, tap a tile to pick a filter and
+       close. Dismiss without picking via the backdrop, the × button,
+       Escape, or dragging down from the grabber/header — see
+       08-count-screen.js for all four. -->
+  <div class="sheet-overlay" id="filterSheetOverlay" hidden>
+    <div class="sheet" id="filterSheet" role="dialog" aria-modal="true" aria-label="Filter deck entries">
+      <div class="sheet-grabber" id="sheetGrabber" aria-hidden="true"></div>
+      <div class="sheet-head" id="sheetHead">
+        <h2>Filter entries</h2>
+        <button class="sheet-close" id="filterSheetClose" type="button" aria-label="Close">&times;</button>
+      </div>
+      <div class="sheet-grid" id="filterTileGrid"><!-- tiles injected by 08-count-screen.js --></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Split into one file per feature area (see js/) instead of one
@@ -203,19 +223,19 @@
      so they all still share one global scope like a single file
      would, and load order here is what defines it. Bump the shared
      ?v= below whenever any of these files change. -->
-<script src="js/01-config.js?v=18"></script>
-<script src="js/02-csv.js?v=18"></script>
-<script src="js/03-storage.js?v=18"></script>
-<script src="js/04-state.js?v=18"></script>
-<script src="js/05-modal.js?v=18"></script>
-<script src="js/06-deck-list.js?v=18"></script>
-<script src="js/07-card-editor.js?v=18"></script>
-<script src="js/08-count-screen.js?v=18"></script>
-<script src="js/09-quiz-core.js?v=18"></script>
-<script src="js/10-quiz-flashcard.js?v=18"></script>
-<script src="js/11-quiz-multichoice.js?v=18"></script>
-<script src="js/12-results.js?v=18"></script>
-<script src="js/13-activity-heatmap.js?v=18"></script>
-<script src="js/14-boot.js?v=18"></script>
+<script src="js/01-config.js?v=19"></script>
+<script src="js/02-csv.js?v=19"></script>
+<script src="js/03-storage.js?v=19"></script>
+<script src="js/04-state.js?v=19"></script>
+<script src="js/05-modal.js?v=19"></script>
+<script src="js/06-deck-list.js?v=19"></script>
+<script src="js/07-card-editor.js?v=19"></script>
+<script src="js/08-count-screen.js?v=19"></script>
+<script src="js/09-quiz-core.js?v=19"></script>
+<script src="js/10-quiz-flashcard.js?v=19"></script>
+<script src="js/11-quiz-multichoice.js?v=19"></script>
+<script src="js/12-results.js?v=19"></script>
+<script src="js/13-activity-heatmap.js?v=19"></script>
+<script src="js/14-boot.js?v=19"></script>
 </body>
 </html>

@@ -79,7 +79,7 @@ Consequences that matter for future edits:
 | `js/05-modal.js` | Generic confirm/prompt/card-editor modal (`openModal`/`showPrompt`, 3 modes: plain confirm, text input, front/back card fields). Reused by delete-deck, delete-card, add-card, edit-card flows. |
 | `js/06-deck-list.js` | Deck-select screen: renders built-in + custom decks, upload-CSV flow, delete-custom-deck flow. |
 | `js/07-card-editor.js` | Add/edit/delete a single card in a deck's preview list. |
-| `js/08-count-screen.js` | The "how many cards?" screen: `renderCountGrid` (filter-aware count buttons), `renderDeckPreview` (the scrollable card list + filter/sort cycling + play-pool computation), mode toggle (Flashcards vs Multiple choice). |
+| `js/08-count-screen.js` | The "how many cards?" screen: `renderCountGrid` (filter-aware count buttons), `renderDeckPreview` (the scrollable card list + play-pool computation), the filter sheet (`openFilterSheet`/`renderFilterSheetTiles`/drag-to-dismiss, see its own section below), mode toggle (Flashcards vs Multiple choice). |
 | `js/09-quiz-core.js` | Shared session engine both study modes fan into: `startSession`, `renderCurrentCard` (dispatches to flashcard or multichoice renderer based on `state.quizMode`), `gradeCard`/`recordGradeAndAdvance`, undo, quit-to-results. |
 | `js/10-quiz-flashcard.js` | Flashcard-mode rendering (flip animation, front/back text, tap-hint). |
 | `js/11-quiz-multichoice.js` | Multiple-choice mode: builds 4-option buttons from `CONFUSABLE_KANJI_GROUPS` (fetched async from `decks/confusable-kanji.json`) with random fallback, `mcPromptText` (strips bracketed readings from the prompt), answer feedback/locking, auto-advance on correct / tap-to-continue on wrong. |
@@ -165,6 +165,59 @@ The count-grid (`renderCountGrid`) sizes its buttons off
 deck's total card count) and disables (grays out, never hides) any button
 whose count exceeds the pool — this keeps the grid's layout stable across
 filter switches instead of buttons appearing/disappearing.
+
+## The filter sheet
+
+`state.previewSort` is picked via a bottom sheet (`#filterSheet`,
+opened by tapping `#filterTrigger`), not cycled one tap at a time —
+cycling stopped scaling once there were 8 filters (up to 7 taps to
+reach the one you wanted). `FILTER_SHEET_GROUPS` (`01-config.js`)
+controls the sheet's tile layout (grouping + full-width odd-ones-out
+for "Original" and "Lookalikes") independently of `SORT_MODES`'
+array order, which is now just the canonical list of valid filter
+keys — every mode in `SORT_MODES` must also appear in exactly one
+`FILTER_SHEET_GROUPS` group, with no runtime check that they're in
+sync, so keep them matched by hand when adding a filter.
+
+`computeFilterCounts(deck)` and `filterCardsForMode(deck, mode,
+withScores)` (`08-count-screen.js`) exist so the sheet can show a live
+count on all 8 tiles without either duplicating each filter's
+branch logic or re-scoring the deck 8 times over — `renderDeckPreview`
+and the sheet both score the deck once into `withScores`, then
+`filterCardsForMode` runs per-mode against that same array.
+
+`#filterTrigger` and `#unselectAllBtn` deliberately share one CSS rule
+(`.filter-trigger, .unselect-btn { ... }`) for padding/font-size,
+not two separately-tuned copies — keeps them the same size as each
+other by construction. If a future change to one makes them look
+mismatched again, check this shared rule before adding bespoke sizing
+to either button.
+
+The sheet can be dismissed without picking a filter four ways: tapping
+the backdrop, the × button, Escape, or **dragging down from the
+grabber or header** (not the tile grid — a drag starting there would
+fight a tap on a tile). That drag-to-dismiss exists specifically
+because swiping down with no custom handler at all let the gesture
+fall through to the browser's own scroll/pull-to-refresh, which read
+as "swiping down on the sheet refreshes the whole page." Two things
+stop that: `document.body.style.overflow = 'hidden'` while the sheet
+is open (restored on every close path), and `touch-action: none` on
+the grabber/header in CSS plus `e.preventDefault()` in
+`onSheetDragMove` (which is why that listener is registered
+`{ passive: false }`, unlike its sibling `touchstart`/`touchend`
+listeners).
+
+The sheet's open/close transition is a plain CSS `transition` on
+`transform` (class-toggled via `.is-open`), **not** an `@keyframes`
+animation like `.modal-box`'s `rise`/`fade-in` — deliberately
+different from that established pattern. The drag-to-dismiss gesture
+sets `filterSheetEl.style.transform` directly while dragging, and a
+running (or fill-mode-held) `@keyframes` animation wins the cascade
+over an inline style on the same property, which would make the drag
+visibly do nothing. A `transition` doesn't have that problem — it
+just re-animates toward whatever the transform is next set to,
+inline included — so don't "fix" this to match the modal's animation
+style without re-checking that the drag still works afterward.
 
 ## Spaced repetition / the "Due" filter
 
@@ -283,8 +336,9 @@ existing pattern to copy if a new hideable-flex-container shows up.
 1. Deck list (`screen-deck`) → tap a deck → `openCountScreen(deck)`
    (`08-count-screen.js`) sets `state.activeDeck`, renders the mode toggle,
    count grid, and card-preview list, shows `screen-count`.
-2. Pick Flashcards or Multiple choice (`state.quizMode`), optionally cycle
-   a filter (`state.previewSort`, via the sort-toggle button), then tap a
+2. Pick Flashcards or Multiple choice (`state.quizMode`), optionally pick
+   a filter (`state.previewSort`, via the filter sheet — see its own
+   section below), then tap a
    count button → `startSession(n)` (`09-quiz-core.js`) slices `n` cards
    from `state.previewVisibleCards`, resets session state, shows
    `screen-quiz`.
