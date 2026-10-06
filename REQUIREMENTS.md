@@ -266,3 +266,20 @@ If the thing you remembered asking for and not getting is one of the two
     own pull-to-refresh instead of closing the sheet (now a real
     drag-to-dismiss gesture, with body-scroll locked while the sheet
     is open so that can't happen).
+
+## Oct 6 — skipped cards were throwing off the filter numbers
+
+75. ✅ *(morning)* Three related fixes, all about non-active (skipped)
+    cards and the filter sheet: (1) a filter's displayed count —
+    trigger label and sheet tile alike — was the raw number of
+    matching cards, including skipped ones, which could badly disagree
+    with what "All" actually gave you (e.g. "Due (37)" when only 4
+    were active); now it's the playable count everywhere, consistently.
+    (2) Fine to keep showing skipped cards in the list, but now they
+    sort to the end instead of being interleaved at their normal
+    filter position. (3) Unchecking a card in the list leaves it right
+    where it is (no immediate jump to the bottom), but the numbers
+    update live, and the next time that filter is (re-)picked from the
+    sheet it re-sorts, pushing the newly-skipped card down with the
+    rest. See the "Play pool vs. list membership" section in
+    `CLAUDE.md` for the mechanics.
