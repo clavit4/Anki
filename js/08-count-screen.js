@@ -154,17 +154,20 @@ function filterCardsForMode(deck, mode, withScores) {
 
 // Narrows a filtered `visible` array down to what's actually
 // playable — every filter excludes inactive (skipped) cards from the
-// play pool except "Non-active" itself, whose whole point is letting
-// you drill exactly your skipped cards without reactivating them.
-// Shared by renderDeckPreview() (the real play pool,
-// state.previewVisibleCards) and computeFilterCounts() (what the
-// filter sheet's tiles show), so a filter's displayed count always
-// means "how many you'd actually study", not "how many match
-// including ones you've switched off" — those two used to disagree
-// badly on a deck with a lot skipped (e.g. "Due (37)" when only 4 of
-// those 37 were actually active).
+// play pool, with two deliberate exceptions: "Non-active" (whose
+// whole point is letting you drill exactly your skipped cards
+// without reactivating them) and "Original" (whose whole point is
+// being the one unfiltered view of the *entire* deck — if it also
+// quietly dropped skipped cards from the count/play pool, it'd show
+// the exact same number as "Active" and stop meaning anything
+// distinct from it). Shared by renderDeckPreview() (the real play
+// pool, state.previewVisibleCards) and computeFilterCounts() (what
+// the filter sheet's tiles show), so a filter's displayed count
+// always matches what tapping "All" actually gives you — those two
+// used to disagree badly on a deck with a lot skipped (e.g. "Due
+// (37)" when only 4 of those 37 were actually active).
 function playableCardsForMode(deck, mode, visible) {
-  return mode === 'nonactive' ? visible : visible.filter(({ card }) => isCardActive(deck.id, card));
+  return (mode === 'nonactive' || mode === 'original') ? visible : visible.filter(({ card }) => isCardActive(deck.id, card));
 }
 
 // One count per SORT_MODES key, for the filter sheet's tiles — scores
@@ -299,13 +302,17 @@ function renderDeckPreview(deck) {
         updateUnselectAllAvailability(deck);
 
         // List membership doesn't change for these filters (none of
-        // them filter by active state), but the play pool does — every
-        // filter except Non-active excludes inactive cards from it.
-        // Keep it (and the trigger label/count-grid numbers that read
-        // from it) in sync without a full list rebuild.
-        state.previewVisibleCards = nowActive
-          ? state.previewVisibleCards.concat(card)
-          : state.previewVisibleCards.filter(c => c !== card);
+        // them filter by active state), but the play pool usually
+        // does — every filter except Non-active *and* Original
+        // excludes inactive cards from it (see playableCardsForMode()
+        // for why Original is exempt too). Keep it (and the trigger
+        // label/count-grid numbers that read from it) in sync without
+        // a full list rebuild.
+        if (state.previewSort !== 'original') {
+          state.previewVisibleCards = nowActive
+            ? state.previewVisibleCards.concat(card)
+            : state.previewVisibleCards.filter(c => c !== card);
+        }
         updateFilterTriggerLabel(state.previewVisibleCards.length);
         renderCountGrid(deck);
       }

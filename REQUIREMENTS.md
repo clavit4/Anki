@@ -283,3 +283,17 @@ If the thing you remembered asking for and not getting is one of the two
     sheet it re-sorts, pushing the newly-skipped card down with the
     rest. See the "Play pool vs. list membership" section in
     `CLAUDE.md` for the mechanics.
+76. ✅ *(later)* Asked how "Original" works and whether it's now a
+    duplicate of "Active," since the two showed the same card after
+    #75's playable-count fix (both excluded skipped cards). Clarified
+    it isn't a duplicate, order aside — but then asked the sharper
+    follow-up: shouldn't "Original" just show and play literally
+    everything, skip toggle included? Agreed and implemented: Original
+    is now a second deliberate exception alongside Non-active in
+    `playableCardsForMode()` — its count, list, and play pool all
+    include every card in the deck regardless of active state, so
+    picking Original and tapping "All" genuinely studies the whole
+    deck. Toggling a card's checkbox while viewing Original still
+    updates the stored flag (every other filter still respects it),
+    just doesn't change Original's own pool, which was never filtered
+    by it to begin with.

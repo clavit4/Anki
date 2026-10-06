@@ -33,7 +33,10 @@ const GRADE = Object.freeze({ MISSED: 0, HARD: 1, ALMOST: 2, GOT_IT: 3 });
 
 // Deck-preview filters. Each mode both narrows *which* cards show and
 // the order they show in:
-//   original  - every card, ordered by its id number
+//   original  - every card, ordered by its id number, skipped ones
+//               included in both the list AND the play pool — the
+//               one filter the active/inactive toggle doesn't apply
+//               to, see playableCardsForMode() in 08-count-screen.js
 //   weakest   - graded cards you haven't mastered ("Got it") yet, weakest first
 //   strongest - only "Got it" / "Almost" cards, strongest first
 //   nongraded - only cards you've never studied
