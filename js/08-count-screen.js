@@ -152,6 +152,21 @@ function filterCardsForMode(deck, mode, withScores) {
   return withScores;
 }
 
+// Narrows a filtered `visible` array down to what's actually
+// playable — every filter excludes inactive (skipped) cards from the
+// play pool except "Non-active" itself, whose whole point is letting
+// you drill exactly your skipped cards without reactivating them.
+// Shared by renderDeckPreview() (the real play pool,
+// state.previewVisibleCards) and computeFilterCounts() (what the
+// filter sheet's tiles show), so a filter's displayed count always
+// means "how many you'd actually study", not "how many match
+// including ones you've switched off" — those two used to disagree
+// badly on a deck with a lot skipped (e.g. "Due (37)" when only 4 of
+// those 37 were actually active).
+function playableCardsForMode(deck, mode, visible) {
+  return mode === 'nonactive' ? visible : visible.filter(({ card }) => isCardActive(deck.id, card));
+}
+
 // One count per SORT_MODES key, for the filter sheet's tiles — scores
 // the deck once, then runs every mode's filter against that same
 // array instead of re-scoring per mode.
@@ -159,7 +174,10 @@ function computeFilterCounts(deck) {
   const cards = state.decks[deck.id].cards;
   const withScores = cards.map(card => ({ card, score: cardScore(deck.id, card) }));
   const counts = {};
-  SORT_MODES.forEach(mode => { counts[mode] = filterCardsForMode(deck, mode, withScores).length; });
+  SORT_MODES.forEach(mode => {
+    const visible = filterCardsForMode(deck, mode, withScores);
+    counts[mode] = playableCardsForMode(deck, mode, visible).length;
+  });
   return counts;
 }
 
@@ -168,20 +186,27 @@ function renderDeckPreview(deck) {
 
   // Score once up front so filtering/sorting doesn't recompute per card.
   const withScores = cards.map(card => ({ card, score: cardScore(deck.id, card) }));
-  const visible = filterCardsForMode(deck, state.previewSort, withScores);
+  let visible = filterCardsForMode(deck, state.previewSort, withScores);
+
+  // Active cards first, skipped ones pushed to the end — still shown
+  // (dimmed, so you can find and re-enable them), just not breaking
+  // up the flow of what you can actually study right now. A stable
+  // partition, not a fresh sort, so it doesn't disturb the filter's
+  // own order (weakest-first, most-overdue-first, etc.) within either
+  // group. Skipped for "Non-active" itself since every card there is
+  // already inactive — the partition would be a no-op anyway, this
+  // just skips the wasted pass.
+  if (state.previewSort !== 'nonactive') {
+    visible = visible.filter(({ card }) => isCardActive(deck.id, card))
+      .concat(visible.filter(({ card }) => !isCardActive(deck.id, card)));
+  }
 
   // What the count buttons (10/25/50/100/All) below will draw a
   // session from — kept in sync here so renderCountGrid() doesn't
-  // need to recompute or re-filter anything. Skipped cards stay in
-  // the *list* (dimmed) for every filter, but shouldn't sneak into
-  // the *play pool* — except on "Non-active" itself, whose whole
-  // point is letting you drill exactly your skipped cards without
-  // reactivating them.
-  const playable = state.previewSort === 'nonactive'
-    ? visible
-    : visible.filter(({ card }) => isCardActive(deck.id, card));
+  // need to recompute or re-filter anything.
+  const playable = playableCardsForMode(deck, state.previewSort, visible);
   state.previewVisibleCards = playable.map(({ card }) => card);
-  updateFilterTriggerLabel(visible.length);
+  updateFilterTriggerLabel(playable.length);
   // The count buttons size a session drawn from this same filtered
   // pool now, not the deck's whole active-card count — see
   // renderCountGrid() — so it needs refreshing any time this does.
@@ -265,6 +290,10 @@ function renderDeckPreview(deck) {
         renderDeckPreview(deck);
         window.scrollTo(0, scrollPos);
       } else {
+        // The card itself deliberately stays right where it is in the
+        // list rather than jumping to the bottom immediately — it'll
+        // sort in with the other skipped cards next time this filter
+        // (re-)renders, e.g. picking it again from the filter sheet.
         li.classList.toggle('is-inactive', !nowActive);
         li.title = nowActive ? scoreNote : `${scoreNote} · skipped`;
         updateUnselectAllAvailability(deck);
@@ -272,10 +301,12 @@ function renderDeckPreview(deck) {
         // List membership doesn't change for these filters (none of
         // them filter by active state), but the play pool does — every
         // filter except Non-active excludes inactive cards from it.
-        // Keep it in sync without a full list rebuild.
+        // Keep it (and the trigger label/count-grid numbers that read
+        // from it) in sync without a full list rebuild.
         state.previewVisibleCards = nowActive
           ? state.previewVisibleCards.concat(card)
           : state.previewVisibleCards.filter(c => c !== card);
+        updateFilterTriggerLabel(state.previewVisibleCards.length);
         renderCountGrid(deck);
       }
     });
@@ -323,13 +354,13 @@ unselectAllBtnEl.addEventListener('click', async () => {
   clampScrollToContent();
 });
 
-// Text of the filter-trigger button. Takes the count of cards the
-// *current* filter is showing, so e.g. "Weaker (12)" always reflects
-// what's actually on screen — set from renderDeckPreview() right
-// after it finishes filtering, which is the one place that count is
-// known. (The button always looks "on" via .filter-trigger's own
-// CSS — every filter, "Original" included, is an equally deliberate
-// choice, not a default/disabled state.)
+// Text of the filter-trigger button. Takes the *playable* count
+// (playableCardsForMode() — active cards only, except on "Non-active"
+// itself), not the raw count of cards the filter matches, so e.g.
+// "Weaker (12)" always means "12 cards you'd actually study", same
+// number the count-grid's "All" button would draw from — showing the
+// raw match count here instead used to make a filter with a lot of
+// skipped cards look very wrong ("Due (37)" when only 4 were active).
 function updateFilterTriggerLabel(count) {
   filterTriggerLabelEl.textContent = `${SORT_LABELS[state.previewSort]} (${count})`;
 }

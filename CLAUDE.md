@@ -147,8 +147,17 @@ The deck-preview filter (`state.previewSort`) controls two related but
 distinct things that must **not** be conflated:
 
 1. The **list** rendered in `#previewList` — every card matching the
-   filter, including inactive (skipped) ones, shown dimmed. This lets you
-   find and re-enable a skipped card while looking at e.g. "Weaker".
+   filter, including inactive (skipped) ones. Active cards sort first,
+   inactive ones are pushed to the end (still shown, dimmed, so you can
+   find and re-enable them) — a stable partition in `renderDeckPreview()`
+   applied *after* `filterCardsForMode()`'s own ordering, so it doesn't
+   disturb weakest-first/most-overdue-first/etc. within either group.
+   Toggling a card's checkbox does **not** immediately re-sort it out of
+   place — it stays right where you toggled it (dimmed/undimmed in
+   place) until the next time this filter (re-)renders, e.g. picking it
+   again from the filter sheet. That deferred-resort is deliberate, not
+   a missed update: re-sorting instantly out from under your thumb mid-
+   review was the actual complaint that led to this.
 2. The **play pool** (`state.previewVisibleCards`), which the count-grid
    buttons (10/25/50/100/All) draw sessions from — this must exclude
    inactive cards, so toggling a card off actually keeps it out of study,
@@ -157,8 +166,17 @@ distinct things that must **not** be conflated:
 The one deliberate exception: the `nonactive` filter's whole *purpose* is
 drilling exactly your skipped cards, so for that one filter the play pool
 is **not** further restricted to active cards (it would otherwise always be
-empty). See `renderDeckPreview()` in `08-count-screen.js` for the branch
-that applies this exception.
+empty). `playableCardsForMode(deck, mode, visible)` (`08-count-screen.js`)
+is the one place this exception is encoded — shared by `renderDeckPreview()`
+(the real play pool) and `computeFilterCounts()` (what the filter sheet's
+tiles show), so a filter's *displayed* count always means "cards you'd
+actually study," never the raw list-match count. Showing the raw match
+count there used to make a filter look badly wrong on a deck with a lot
+skipped — "Due (37)" when only 4 of those 37 were actually active — since
+that number disagreed with what tapping "All" actually gave you. The
+filter-trigger label (`updateFilterTriggerLabel`) reads the same playable
+count, both from `renderDeckPreview()` and live from the checkbox
+light-patch handler, so it never goes stale relative to the count-grid.
 
 The count-grid (`renderCountGrid`) sizes its buttons off
 `state.previewVisibleCards.length` (the current filter's pool, not the
