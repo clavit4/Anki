@@ -163,20 +163,37 @@ distinct things that must **not** be conflated:
    inactive cards, so toggling a card off actually keeps it out of study,
    regardless of which filter you're looking at.
 
-The one deliberate exception: the `nonactive` filter's whole *purpose* is
-drilling exactly your skipped cards, so for that one filter the play pool
-is **not** further restricted to active cards (it would otherwise always be
-empty). `playableCardsForMode(deck, mode, visible)` (`08-count-screen.js`)
-is the one place this exception is encoded — shared by `renderDeckPreview()`
-(the real play pool) and `computeFilterCounts()` (what the filter sheet's
-tiles show), so a filter's *displayed* count always means "cards you'd
-actually study," never the raw list-match count. Showing the raw match
-count there used to make a filter look badly wrong on a deck with a lot
-skipped — "Due (37)" when only 4 of those 37 were actually active — since
-that number disagreed with what tapping "All" actually gave you. The
-filter-trigger label (`updateFilterTriggerLabel`) reads the same playable
-count, both from `renderDeckPreview()` and live from the checkbox
-light-patch handler, so it never goes stale relative to the count-grid.
+Two deliberate exceptions, both in `playableCardsForMode(deck, mode,
+visible)` (`08-count-screen.js`) — the one place both are encoded,
+shared by `renderDeckPreview()` (the real play pool) and
+`computeFilterCounts()` (what the filter sheet's tiles show):
+
+- `nonactive` — its whole *purpose* is drilling exactly your skipped
+  cards, so the play pool is **not** further restricted to active ones
+  (it would otherwise always be empty).
+- `original` — its whole *purpose* is being the one unfiltered view of
+  the *entire* deck. If it also quietly excluded skipped cards like
+  every other filter, it would show the exact same count as `active`
+  and stop meaning anything distinct from it (this is exactly what
+  happened before this exception existed, and is what prompted adding
+  it). So picking Original and tapping "All" genuinely studies every
+  card in the deck, skip-toggle or not — the one filter where that
+  toggle doesn't apply. The checkbox's light-patch handler knows this
+  too: toggling a card's active state while viewing Original updates
+  its dimmed/undimmed look and the stored flag (still respected by
+  every *other* filter) but deliberately leaves `state.previewVisibleCards`
+  untouched, since Original's pool was never filtered by that flag to
+  begin with.
+
+For every other filter, a card's displayed count always means "cards
+you'd actually study," never the raw list-match count — showing the
+raw match count there used to make a filter look badly wrong on a
+deck with a lot skipped ("Due (37)" when only 4 of those 37 were
+actually active), since that number disagreed with what tapping "All"
+actually gave you. The filter-trigger label
+(`updateFilterTriggerLabel`) reads the same playable count, both from
+`renderDeckPreview()` and live from the checkbox light-patch handler,
+so it never goes stale relative to the count-grid.
 
 The count-grid (`renderCountGrid`) sizes its buttons off
 `state.previewVisibleCards.length` (the current filter's pool, not the
