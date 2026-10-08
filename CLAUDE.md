@@ -357,6 +357,21 @@ just the Missed-grade color) was explicitly tried and rejected earlier in
 this project's history; don't reintroduce a pink accent without the user
 asking again.
 
+A third font token, `--font-kanji: 'Yuji Syuku', serif`, is reserved
+specifically for rendering an actual kanji glyph (as opposed to English
+meaning/reading text, which stays on `--font-display`) — currently used
+only by the flashcard front (`.card-front .card-text`, 4.5rem) and its
+back-side recap (`.card-front-recap`, 1.3rem). Yuji Syuku is a Google Fonts
+brush-style Japanese face, loaded via a `<link>` in `index.html`'s
+`<head>` — this is the app's **first and only external network
+dependency**; everything else (deck CSVs, `confusable-kanji.json`) is
+same-origin. If that Google Fonts request ever fails (offline, blocked),
+the font stack falls back to the browser's default serif, not to
+`--font-display` — acceptable degradation, not worth adding a local font
+file for. The user named Yuji Mai / Yuji Boku as acceptable alternatives
+in the same request; swapping is a two-line change (the `<link>` href's
+`family=` param, and the token value) if asked again.
+
 Also note the `[hidden]` attribute vs. author CSS `display` gotcha that's
 bitten this project more than once: an author-origin rule (even at equal
 specificity) always beats the UA stylesheet's `[hidden] { display: none }`.

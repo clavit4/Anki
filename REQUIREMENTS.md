@@ -297,3 +297,21 @@ If the thing you remembered asking for and not getting is one of the two
     updates the stored flag (every other filter still respects it),
     just doesn't change Original's own pool, which was never filtered
     by it to begin with.
+
+## Oct 8 — authentic kanji font in flashcards
+
+77. ✅ Asked for the kanji on flashcards to look bigger and use an
+    authentic Japanese brush-style font, naming Yuji Syuku (or Yuji
+    Mai / Yuji Boku as alternatives). Implemented with Yuji Syuku,
+    loaded from Google Fonts in `index.html`'s `<head>` — the first
+    external network dependency this app has had, everything else is
+    same-origin. New `--font-kanji` token in `style.css`, applied to
+    `.card-front .card-text` (the big front-facing kanji, scoped to
+    the front only so the English meaning on the back keeps using
+    `--font-display`) and `.card-front-recap` (the smaller kanji
+    recap shown above the meaning on the back, for visual
+    consistency). Front-face font-size went from 1.6rem to 4.5rem;
+    the back recap went from 1.05rem to 1.3rem since the brush face
+    reads thinner than the old serif at the same size. Multiple
+    choice is untouched — the user's ask was specifically about
+    flashcards.
