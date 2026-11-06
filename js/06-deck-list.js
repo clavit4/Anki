@@ -7,6 +7,7 @@ const deckListEl = document.getElementById('deckList');
 const deckUploadBtnEl = document.getElementById('deckUploadBtn');
 const deckFileInputEl = document.getElementById('deckFileInput');
 const deckUploadErrorEl = document.getElementById('deckUploadError');
+const elisaBtnEl = document.getElementById('elisaBtn');
 
 function renderDeckList() {
   deckListEl.innerHTML = '';
@@ -110,6 +111,13 @@ deckUploadBtnEl.addEventListener('click', () => {
 });
 
 deckFileInputEl.addEventListener('change', handleDeckFileSelected);
+
+// games/elisa.html is a separate, self-contained static page (not
+// wired into state/showScreen) -- a plain full navigation away from
+// the SPA, same as following any other link.
+elisaBtnEl.addEventListener('click', () => {
+  window.location.href = 'games/elisa.html';
+});
 
 async function handleDeckFileSelected(event) {
   const file = event.target.files[0];

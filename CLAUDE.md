@@ -68,6 +68,29 @@ Consequences that matter for future edits:
 - No TypeScript, no JSX, no npm dependencies at all. `'use strict';` is the
   first line of every file — keep that convention on any new file.
 
+## The ELISA game link
+
+`games/elisa.html` is a **deliberate exception** to everything above — it's
+a third-party, self-contained single-file HTML game (inline `<style>` and
+`<script>`, no dependencies, not even a shared favicon), given as-is by the
+user (built by their uncle for their cousin Elisa — a probability/statistics
+quiz with a dental-word-problems theme) and committed byte-for-byte unmodified.
+It is **not** part of the 14-file shared global scope: it isn't in
+`index.html`'s script list, defines its own `$`/`state`/etc. identifiers
+freely since it runs in total isolation, and has its own independent
+`<title>`/viewport/everything. The only integration point is one button on
+the deck-select screen (`#elisaBtn` in `index.html`, styled by reusing the
+existing `.deck-upload-btn` class rather than adding new CSS, wired in
+`06-deck-list.js` with a plain `window.location.href = 'games/elisa.html'`
+— a full page navigation *away* from the Anki SPA, same as clicking any
+ordinary link, not a `state`/`showScreen()` transition). It's positioned
+*before* `#activityHeatmap` in the DOM specifically so the heatmap keeps its
+earlier, explicitly-requested status as the last element on the home
+screen. If the user ever hands over another one-off static page like this,
+follow the same pattern: drop it in `games/` untouched, add one button that
+reuses existing styling, wire a plain navigation, and don't fold it into
+the shared-scope app.
+
 ## File-by-file map
 
 | File | Responsibility |

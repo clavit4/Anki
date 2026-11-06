@@ -315,3 +315,13 @@ If the thing you remembered asking for and not getting is one of the two
     reads thinner than the old serif at the same size. Multiple
     choice is untouched — the user's ask was specifically about
     flashcards.
+
+## Nov 6 — the ELISA game link
+
+78. ✅ Uploaded a standalone HTML file (a probability/statistics quiz
+    game themed around dental word problems, built by the user's
+    uncle for their cousin Elisa), asked for it to be added to the
+    app with a button somewhere labeled "ELISA" that opens it.
+    Implemented as a fully separate static page, deliberately
+    outside the 14-file shared-scope JS app — see "The ELISA game
+    link" in `CLAUDE.md`.

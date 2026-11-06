@@ -38,6 +38,14 @@
     <input type="file" id="deckFileInput" accept=".csv,text/csv" hidden>
     <p class="deck-upload-error" id="deckUploadError" hidden></p>
 
+    <!-- Standalone static page (games/elisa.html), not part of the
+         SPA's screens/state — a plain full navigation, same as
+         clicking any other link. See CLAUDE.md "The ELISA game link". -->
+    <button class="deck-upload-btn" id="elisaBtn" type="button">
+      <span class="deck-upload-icon" aria-hidden="true">🦷</span>
+      <span>ELISA</span>
+    </button>
+
     <div class="activity-heatmap" id="activityHeatmap">
       <div class="heatmap-nav">
         <button class="heatmap-nav-btn" id="heatmapPrevBtn" type="button" aria-label="Previous month">&lsaquo;</button>
@@ -226,19 +234,19 @@
      so they all still share one global scope like a single file
      would, and load order here is what defines it. Bump the shared
      ?v= below whenever any of these files change. -->
-<script src="js/01-config.js?v=21"></script>
-<script src="js/02-csv.js?v=21"></script>
-<script src="js/03-storage.js?v=21"></script>
-<script src="js/04-state.js?v=21"></script>
-<script src="js/05-modal.js?v=21"></script>
-<script src="js/06-deck-list.js?v=21"></script>
-<script src="js/07-card-editor.js?v=21"></script>
-<script src="js/08-count-screen.js?v=21"></script>
-<script src="js/09-quiz-core.js?v=21"></script>
-<script src="js/10-quiz-flashcard.js?v=21"></script>
-<script src="js/11-quiz-multichoice.js?v=21"></script>
-<script src="js/12-results.js?v=21"></script>
-<script src="js/13-activity-heatmap.js?v=21"></script>
-<script src="js/14-boot.js?v=21"></script>
+<script src="js/01-config.js?v=22"></script>
+<script src="js/02-csv.js?v=22"></script>
+<script src="js/03-storage.js?v=22"></script>
+<script src="js/04-state.js?v=22"></script>
+<script src="js/05-modal.js?v=22"></script>
+<script src="js/06-deck-list.js?v=22"></script>
+<script src="js/07-card-editor.js?v=22"></script>
+<script src="js/08-count-screen.js?v=22"></script>
+<script src="js/09-quiz-core.js?v=22"></script>
+<script src="js/10-quiz-flashcard.js?v=22"></script>
+<script src="js/11-quiz-multichoice.js?v=22"></script>
+<script src="js/12-results.js?v=22"></script>
+<script src="js/13-activity-heatmap.js?v=22"></script>
+<script src="js/14-boot.js?v=22"></script>
 </body>
 </html>
