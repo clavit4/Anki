@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Probabilidad Dental · El juego</title>
+<style>
+:root{--bg:#0f1226;--panel:#1a1f3d;--panel2:#232a52;--line:#2c3463;--txt:#eef0ff;--mut:#a3a9d6;--acc:#5b8cff;--ok:#2ecc8f;--bad:#ff5d6c;--gold:#ffc23d;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+h1{font-size:22px;margin:0;letter-spacing:.5px}
+h1 span{color:var(--gold)}
+.btn{font:inherit;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:700;background:var(--panel2);color:var(--txt);transition:transform .08s,filter .15s}
+.btn:hover{filter:brightness(1.2)}.btn:active{transform:scale(.96)}
+.btn.pri{background:var(--acc)}.btn.gold{background:var(--gold);color:#2a1d00}.btn.sm{padding:8px 12px;font-size:14px}
+.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.stat{background:var(--panel);border-radius:var(--r);padding:10px 12px;border:1px solid var(--line)}
+.stat .l{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
+.stat .v{font-size:26px;font-weight:800}
+.stages{display:flex;gap:4px;margin:4px 0 6px}
+.seg{flex:1;height:10px;border-radius:5px;background:var(--line);position:relative;overflow:hidden}
+.seg>i{position:absolute;left:0;top:0;bottom:0;width:0;transition:width .4s}
+.seg.u>i{background:#4fb3ff}.seg.n>i{background:#b77bff}
+.seg.cur{outline:2px solid var(--gold);outline-offset:1px}
+.stagelbl{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut);margin-bottom:10px;flex-wrap:wrap}
+.card{background:var(--panel);border-radius:18px;padding:20px;border:1px solid var(--line)}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.pill{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--panel2);color:var(--mut)}
+.pill.u{background:#123d5c;color:#7cc8ff}.pill.n{background:#3c1f5c;color:#d4a8ff}.pill.x2{background:#5c4300;color:var(--gold)}
+.q{font-size:18px;line-height:1.6;margin:6px 0 16px}
+.ansrow{display:flex;gap:8px;flex-wrap:wrap}
+input[type=text]{font:inherit;font-size:18px;flex:1;min-width:150px;padding:10px 14px;border-radius:10px;border:2px solid var(--line);background:#0f1330;color:var(--txt);outline:none}
+input[type=text]:focus{border-color:var(--acc)}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:6px}
+.fb{margin-top:12px;border-radius:12px;padding:14px;line-height:1.7;font-size:15px}
+.fb.ok{background:#0f3d2c;border:1px solid var(--ok)}.fb.bad{background:#3d1220;border:1px solid var(--bad)}.fb.hint{background:#3a3110;border:1px solid var(--gold)}
+.fb .t{font-size:19px;font-weight:800;display:block;margin-bottom:4px}
+.steps{margin:6px 0 0;padding-left:20px}
+svg.plot{width:100%;max-width:540px;display:block;margin:10px auto 0}
+.pop{animation:pop .45s}@keyframes pop{50%{transform:scale(1.3)}}
+.shake{animation:shake .4s}@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.foot{font-size:12px;color:var(--mut);margin-top:12px;text-align:center}
+#confetti{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:60}
+.overlay{position:fixed;inset:0;background:rgba(5,7,20,.8);display:none;align-items:flex-start;justify-content:center;z-index:40;overflow:auto;padding:20px}
+.overlay.on{display:flex}
+.modal{background:var(--panel);border-radius:18px;padding:18px;max-width:780px;width:100%;border:1px solid var(--line)}
+.tblwrap{overflow:auto;max-height:52vh;margin-top:10px;border-radius:10px}
+.tz{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+.tz th,.tz td{padding:4px 3px;text-align:center;border:1px solid var(--line);cursor:pointer}
+.tz th{background:var(--panel2);color:var(--mut);position:sticky;top:0}
+.tz td.hr{background:#24305f}
+.tz td.hit{background:var(--gold);color:#2a1d00;font-weight:800}
+.res{font-size:15px;line-height:1.7;background:#0f1330;border-radius:10px;padding:10px 12px;margin-top:10px}
+.big{font-size:28px;font-weight:800;color:var(--gold)}
+.center{text-align:center}
+.btn.on{background:#1d6b4f}.btn:disabled{cursor:default}
+.gdone{list-style:none;padding:0;margin:0 0 10px}.gdone li{padding:6px 10px;margin-bottom:6px;border-radius:8px;background:#11331f;color:#bff0d6;font-size:14px}
+.gcur{background:#141a3a;border:1px solid var(--acc);border-radius:12px;padding:14px;line-height:1.65}
+.gtip{margin-top:10px;padding:10px 12px;border-radius:10px;background:#3a3110;border:1px solid var(--gold);line-height:1.6;font-size:14px}
+.choice{display:flex;flex-direction:column;gap:8px;margin-top:10px}.choice .btn{text-align:left}
+.cpanel{position:fixed;right:16px;top:80px;width:300px;max-width:calc(100vw - 16px);z-index:45;display:none;background:var(--panel);border:1px solid var(--acc);border-radius:16px;padding:10px 12px 12px;box-shadow:0 12px 40px rgba(0,0,0,.55)}.cpanel.on{display:block}
+.chead{display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:move;touch-action:none;user-select:none;-webkit-user-select:none;padding:2px 0 6px}
+.zrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px;padding:6px 8px;background:#1a2147;border-radius:8px}.zrow .btn{padding:6px 10px;font-size:13px}
+.crow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}.crow .btn{padding:8px 4px;font-size:12.5px}
+.ok{color:var(--ok)!important}
+.cdisp{background:#0f1330;border-radius:10px;padding:8px 10px;text-align:right;min-height:64px;word-break:break-all}
+.cdisp .e{font-size:16px;color:var(--mut);min-height:22px}.cdisp .r{font-size:30px;font-weight:800}
+.ckeys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}.ckeys .btn{padding:10px 0;font-size:18px}
+.ckeys .op{background:#2f3a78}.ckeys .eq{background:var(--acc)}.ckeys .cl{background:#5c1f2a}
+ul.rules{line-height:1.9;padding-left:20px;margin:8px 0 16px}
+.sumgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+@media(max-width:560px){.hud{grid-template-columns:repeat(2,1fr)}.q{font-size:16px}.sumgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <header>
+    <h1>🦷 Probabilidad <span>Dental</span></h1>
+    <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm" id="calcB">🧮 Calculadora</button><button class="btn gold sm" id="openT">📊 Tabla Z</button><button class="btn sm" id="exitB">🚪 Salir</button></div>
+  </header>
+  <div class="hud">
+    <div class="stat"><div class="l">Ronda</div><div class="v" id="hRound">1</div></div>
+    <div class="stat"><div class="l">🏆 Puntos</div><div class="v" id="hPts">0</div></div>
+    <div class="stat"><div class="l">🔥 Racha</div><div class="v" id="hStreak">0</div></div>
+    <div class="stat"><div class="l">⭐ Récord ronda</div><div class="v" id="hBest">0</div></div>
+  </div>
+  <div class="stages" id="stages"></div>
+  <div class="stagelbl"><span id="sName">Listos para jugar</span><span id="sProg"></span></div>
+  <div class="card" id="main"></div>
+  <div class="foot">Respuestas: 0,25 · 1/4 · 25%. Margen de error por redondeo: ±0,005 en uniformes y ±0,002 en normales.</div>
+</div>
+
+<div class="overlay" id="ov">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <b style="font-size:18px">📊 Tabla Z · P(Z &lt; z)</b>
+      <button class="btn sm" id="closeT">✕ Cerrar</button>
+    </div>
+    <div class="ansrow" style="margin-top:12px">
+      <input type="text" id="zin" placeholder="Escribe un Z, por ejemplo 1,25 o −0,67" autocomplete="off">
+      <button class="btn pri" id="zgo">Buscar</button>
+    </div>
+    <div class="err" id="zerr"></div>
+    <div class="res" id="zres">Escribe un valor de Z (o toca una celda de la tabla) y te muestro cómo se lee.</div>
+    <div class="tblwrap"><table class="tz" id="tz"></table></div>
+  </div>
+</div>
+
+<div class="cpanel" id="calcP" tabindex="-1">
+  <div class="chead" id="cHead">
+    <b style="font-size:15px">✥ 🧮 Calculadora <span style="font-weight:400;color:var(--mut);font-size:12px">(arrástrame)</span></b>
+    <button class="btn sm" id="closeC" style="padding:4px 10px">✕</button>
+  </div>
+  <div class="cdisp"><div class="e" id="cExpr"></div><div class="r" id="cRes">0</div></div>
+  <div class="ckeys" id="cKeys">
+    <button class="btn cl" data-k="C">C</button><button class="btn op" data-k="(">(</button><button class="btn op" data-k=")">)</button><button class="btn op" data-k="back">⌫</button>
+    <button class="btn" data-k="7">7</button><button class="btn" data-k="8">8</button><button class="btn" data-k="9">9</button><button class="btn op" data-k="÷">÷</button>
+    <button class="btn" data-k="4">4</button><button class="btn" data-k="5">5</button><button class="btn" data-k="6">6</button><button class="btn op" data-k="×">×</button>
+    <button class="btn" data-k="1">1</button><button class="btn" data-k="2">2</button><button class="btn" data-k="3">3</button><button class="btn op" data-k="−">−</button>
+    <button class="btn" data-k="0">0</button><button class="btn" data-k=",">,</button><button class="btn eq" data-k="=">=</button><button class="btn op" data-k="+">+</button>
+  </div>
+  <div class="crow"><button class="btn" id="cCopy">📋 Copiar</button><button class="btn gold" id="cUse">↳ Respuesta</button><button class="btn gold" id="cZ">↳ Tabla Z</button></div>
+  <div class="err" id="cErr"></div>
+</div>
+
+<script>
+"use strict";
+/* ---------- utilidades numéricas ---------- */
+const rnd=(v,d)=>{const p=Math.pow(10,d);return Math.round(v*p+(v>=0?1e-9:-1e-9))/p};
+const rint=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
+const fmt=n=>String(rnd(n,4)).replace('-','−').replace('.',',');
+const fz=z=>(z<0?'−':'')+Math.abs(z).toFixed(2).replace('.',',');
+const f4=p=>p.toFixed(4).replace('.',',');
+function Phi(x){if(x<0)return 1-Phi(-x);if(x>8)return 1;let s=x,t=x;for(let n=1;n<300;n++){t*=x*x/(2*n+1);s+=t;if(t<1e-17)break}return .5+s*Math.exp(-x*x/2)/Math.sqrt(2*Math.PI)}
+function T(z){z=Math.min(rnd(Math.abs(z),2),3.59);return rnd(Phi(z),4)}
+function Plt(z){return z>=0?T(z):rnd(1-T(-z),4)}
+function rowcol(z){const a=rnd(Math.abs(z),2);const row=Math.floor(a*10+1e-9)/10;const col=rnd(a-row,2);return[row.toFixed(1),col.toFixed(2)]}
+function stepGrid(lo,hi,st){const n=Math.round((hi-lo)/st);return rnd(lo+st*rint(0,n),4)}
+
+/* ---------- contextos (mismo estilo que la guía) ---------- */
+const UC=[
+ {s:'El tiempo necesario para esterilizar un conjunto de herramientas',q:'la esterilización tarde',u:'minutos',a:[8,15],b:[25,40],st:1},
+ {s:'La longitud de un diente molar',q:'un diente molar mida',u:'mm',a:[6,8],b:[11,14],st:1},
+ {s:'El tiempo entre citas de pacientes en una clínica dental',q:'entre dos citas transcurran',u:'minutos',a:[10,20],b:[40,60],st:5},
+ {s:'El grosor del esmalte dental en un estudio',q:'el esmalte tenga un grosor de',u:'mm',a:[1,1.5],b:[2.5,3],st:.5},
+ {s:'La duración de un procedimiento dental para colocar implantes',q:'el procedimiento dure',u:'horas',a:[1,1.5],b:[3,4],st:.5},
+ {s:'El tiempo de fraguado de un material de impresión',q:'el material frague en',u:'minutos',a:[3,5],b:[8,12],st:1},
+ {s:'La cantidad de anestésico utilizada en una extracción',q:'se utilicen',u:'ml',a:[1,1.5],b:[3,4],st:.5},
+ {s:'El tiempo que un paciente pasa en la sala de espera',q:'un paciente espere',u:'minutos',a:[5,10],b:[30,45],st:5}
+];
+const NC=[
+ {s:'La longitud de las raíces de los dientes molares en una población',q:'un molar seleccionado al azar tenga una raíz que mida',u:'mm',mu:[20,24,1],sg:[1.5,2,2.5]},
+ {s:'El tiempo que tarda una consulta odontológica de rutina',q:'una consulta tarde',u:'minutos',mu:[35,50,5],sg:[5,8,10]},
+ {s:'El desgaste de una pieza dental (en micras) después de 5 años de uso de prótesis',q:'el desgaste sea de',u:'micras',mu:[120,180,10],sg:[15,20,25]},
+ {s:'El nivel de placa bacteriana en los pacientes, medido en una escala de 0 a 100,',q:'un paciente tenga un nivel de placa de',u:'',mu:[50,70,5],sg:[6,8,10]},
+ {s:'El tamaño de los dientes incisivos en niños',q:'un niño tenga un incisivo que mida',u:'mm',mu:[9,11,1],sg:[.8,1,1.2]},
+ {s:'El tiempo que tarda en hacer efecto una anestesia local en procedimientos odontológicos',q:'el efecto tarde',u:'minutos',mu:[4,6,1],sg:[1,1.2,1.5]},
+ {s:'El tiempo de recuperación (en días) tras una extracción dental complicada',q:'un paciente se recupere en',u:'días',mu:[6,10,1],sg:[1.5,2,2.5]},
+ {s:'El espesor del esmalte dental en adultos',q:'un adulto tenga un espesor de esmalte de',u:'mm',mu:[2.3,2.7,.1],sg:[.2,.25,.3]}
+];
+
+/* ---------- etapas de cada ronda (20 preguntas) ---------- */
+const STAGES=[
+ {k:'U',t:'lt',n:3,name:()=>'Uniforme · hacia el extremo inferior (menos de)'},
+ {k:'U',t:'gt',n:3,name:()=>'Uniforme · hacia el extremo superior (más de)'},
+ {k:'U',t:'bt',n:3,name:()=>'Uniforme · tramo central (entre)'},
+ {k:'N',t:'R',n:4,name:r=>r===1?'Normal · menor que, a la derecha de la media':'Normal · a la derecha de la media (menor o mayor que)'},
+ {k:'N',t:'L',n:4,name:r=>r===1?'Normal · menor que, a la izquierda de la media':'Normal · a la izquierda de la media (menor o mayor que)'},
+ {k:'N',t:'C',n:3,name:r=>r===1?'Normal · valores centrales (simétricos)':'Normal · valores centrales'}
+];
+const PLAN=[];STAGES.forEach((s,i)=>{for(let k=0;k<s.n;k++)PLAN.push(i)});
+const DIFF=r=>r===1?'Fácil':r===2?'Media':r===3?'Difícil':'Experta';
+
+/* ---------- generadores ---------- */
+let lastCtx='';
+function ctxPick(list){let c,tries=0;do{c=pick(list);tries++}while(c.s===lastCtx&&tries<10);lastCtx=c.s;return c}
+function genU(t,r){
+ for(let tries=0;tries<50;tries++){
+  const c=ctxPick(UC);const a=stepGrid(c.a[0],c.a[1],c.st),b=stepGrid(c.b[0],c.b[1],c.st);
+  const div=r===1?1:r===2?2:5;const xs=rnd(c.st/div,4);const m=Math.round((b-a)/xs);
+  if(m-1<(t==='bt'?2:1))continue;
+  let x,x1,x2,tramo,cond,lo,hi;
+  if(t==='bt'){let k1=rint(1,m-1),k2;do{k2=rint(1,m-1)}while(k2===k1);if(k1>k2)[k1,k2]=[k2,k1];
+   if(m>=4&&(k1===1&&k2===m-1)){} x1=rnd(a+k1*xs,4);x2=rnd(a+k2*xs,4);tramo=rnd(x2-x1,4);lo=x1;hi=x2;
+   cond='esté entre '+fmt(x1)+' y '+fmt(x2)+' '+c.u;}
+  else{x=rnd(a+rint(1,m-1)*xs,4);
+   if(t==='lt'){tramo=rnd(x-a,4);lo=a;hi=x;cond='menos de '+fmt(x)+' '+c.u}
+   else{tramo=rnd(b-x,4);lo=x;hi=b;cond='más de '+fmt(x)+' '+c.u}}
+  const total=rnd(b-a,4);let N=Math.round(tramo*100),D=Math.round(total*100),g=gcd(N,D);
+  const frac=(N/g)+'/'+(D/g),ans=tramo/total;
+  const verb=t==='bt'?c.q.replace(/ (mida|dure|tarde|espere|transcurran|se utilicen)$/,' $1'):c.q;
+  let qtext;
+  if(t==='bt')qtext=c.s+' sigue una distribución uniforme entre '+fmt(a)+' y '+fmt(b)+' '+c.u+'. ¿Cuál es la probabilidad de que '+verb+' entre '+fmt(x1)+' y '+fmt(x2)+' '+c.u+'?';
+  else qtext=c.s+' sigue una distribución uniforme entre '+fmt(a)+' y '+fmt(b)+' '+c.u+'. ¿Cuál es la probabilidad de que '+c.q+' '+cond+'?';
+  const tramoTxt=t==='lt'?fmt(x)+' − '+fmt(a):t==='gt'?fmt(b)+' − '+fmt(x):fmt(x2)+' − '+fmt(x1);
+  const steps=[
+   'Largo total del rango: '+fmt(b)+' − '+fmt(a)+' = <b>'+fmt(total)+'</b>',
+   'Tramo que te piden ('+(t==='lt'?'desde '+fmt(a)+' hasta '+fmt(x):t==='gt'?'desde '+fmt(x)+' hasta '+fmt(b):'entre '+fmt(x1)+' y '+fmt(x2))+'): '+tramoTxt+' = <b>'+fmt(tramo)+'</b>',
+   'P = tramo / total = '+fmt(tramo)+' / '+fmt(total)+' = <b>'+frac+' ≈ '+f4(ans)+'</b>'];
+  const rule=t==='lt'?'"Menos de": el tramo va desde el inicio del rango (a) hasta el valor.':t==='gt'?'"Más de": el tramo va desde el valor hasta el final del rango (b).':'"Entre": el tramo es la distancia entre los dos valores.';
+  return{g:{type:'U',a,b,t,x,x1,x2,total,tramo,ans},k:'U',text:qtext,ans,tol:.005,steps,rule,plot:()=>plotU(a,b,lo,hi),show:frac+' ≈ '+f4(ans)};
+ }
+}
+function genZ(r){if(r===1)return stepGrid(.3,2,.1);if(r===2)return stepGrid(.1,2.5,.01);return stepGrid(.05,3,.01)}
+function mkX(c,z){const mu=c.mu,sg=c.sg;const x=rnd(mu+z*sg,2);const zc=rnd((x-mu)/sg,2);return{x,zc}}
+function lookupTxt(z){const[r,c]=rowcol(z);const t=T(z);let s='Tabla con '+fz(Math.abs(z))+': fila '+r+', columna '+c+' → <b>'+f4(t)+'</b>';return s}
+function genN(t,r){
+ for(let tries=0;tries<50;tries++){
+  const c0=ctxPick(NC);const mu=stepGrid(c0.mu[0],c0.mu[1],c0.mu[2]);const sg=pick(c0.sg);const c={mu,sg};
+  const U=c0.u?' '+c0.u:'';
+  const head=c0.s+' sigue una distribución normal con una media de '+fmt(mu)+U+' y una desviación estándar de '+fmt(sg)+U+'. ¿Cuál es la probabilidad de que '+c0.q+' ';
+  if(t==='R'||t==='L'){
+   const z=(t==='R'?1:-1)*genZ(r);const{x,zc}=mkX(c,z);if(zc===0||x<=0)continue;
+   const kind=r===1?'lt':pick(['lt','gt']);
+   const plt=Plt(zc);const ans=kind==='lt'?plt:rnd(1-plt,4);
+   const cond=(kind==='lt'?'menos de ':'más de ')+fmt(x)+U+'?';
+   const steps=['Z = ('+fmt(x)+' − '+fmt(mu)+') / '+fmt(sg)+' = <b>'+fz(zc)+'</b>',lookupTxt(zc)];
+   let rule;
+   if(kind==='lt'&&zc>0){rule='"Menos de" con Z positivo: área grande, se usa la tabla directo.';steps.push('P = <b>'+f4(ans)+'</b>')}
+   else if(kind==='lt'){rule='"Menos de" con Z negativo: es la colita izquierda (área chica), se usa 1 − tabla.';steps.push('P = 1 − '+f4(T(zc))+' = <b>'+f4(ans)+'</b>')}
+   else if(zc>0){rule='"Más de" con Z positivo: es la colita derecha (área chica), se usa 1 − tabla.';steps.push('P = 1 − '+f4(T(zc))+' = <b>'+f4(ans)+'</b>')}
+   else{rule='"Más de" con Z negativo: área grande, se usa la tabla directo (por el espejo).';steps.push('P = <b>'+f4(ans)+'</b>')}
+   const lo=kind==='lt'?-4:zc,hi=kind==='lt'?zc:4;
+   return{g:{type:'N1',x,mu,sg,zc,kind,Tv:T(zc),ans},k:'N',text:head+cond,ans,tol:.002,steps,rule,plot:()=>plotN(lo,hi,[[zc,x]]),show:f4(ans)};
+  }else{
+   const z1=-genZ(r);const z2=r===1?-z1:genZ(r);
+   const A=mkX(c,z1),B=mkX(c,z2);if(A.zc>=0||B.zc<=0||A.x<=0)continue;
+   const p2=Plt(B.zc),p1=Plt(A.zc);const ans=rnd(p2-p1,4);
+   const cond='entre '+fmt(A.x)+' y '+fmt(B.x)+U+'?';
+   const steps=[
+    'Z₁ = ('+fmt(A.x)+' − '+fmt(mu)+') / '+fmt(sg)+' = <b>'+fz(A.zc)+'</b> &nbsp;·&nbsp; Z₂ = ('+fmt(B.x)+' − '+fmt(mu)+') / '+fmt(sg)+' = <b>'+fz(B.zc)+'</b>',
+    'P(Z &lt; '+fz(B.zc)+'): '+lookupTxt(B.zc)+' → '+f4(p2),
+    'P(Z &lt; '+fz(A.zc)+'): '+lookupTxt(A.zc)+' → Z negativo, espejo: 1 − '+f4(T(A.zc))+' = '+f4(p1),
+    'P = '+f4(p2)+' − '+f4(p1)+' = <b>'+f4(ans)+'</b>'];
+   const rule='"Entre": lo que queda bajo el valor mayor, menos lo que queda bajo el valor menor.';
+   return{g:{type:'NC',x1:A.x,x2:B.x,mu,sg,z1:A.zc,z2:B.zc,T1:T(A.zc),T2:T(B.zc),p1,ans},k:'N',text:head+cond,ans,tol:.002,steps,rule,plot:()=>plotN(A.zc,B.zc,[[A.zc,A.x],[B.zc,B.x]]),show:f4(ans)};
+  }
+ }
+}
+
+/* ---------- dibujos ---------- */
+function plotN(lo,hi,marks){
+ const X=z=>20+(z+3.6)/7.2*500,Y=y=>140-y/.42*118;
+ let p='';for(let z=-3.6;z<=3.6001;z+=.05){p+=(p?'L':'M')+X(z).toFixed(1)+' '+Y(Math.exp(-z*z/2)/Math.sqrt(2*Math.PI)).toFixed(1)}
+ const a=Math.max(lo,-3.6),b=Math.min(hi,3.6);let s='M'+X(a).toFixed(1)+' 140';
+ for(let z=a;z<=b+1e-9;z+=.02)s+='L'+X(z).toFixed(1)+' '+Y(Math.exp(-z*z/2)/Math.sqrt(2*Math.PI)).toFixed(1);
+ s+='L'+X(b).toFixed(1)+' 140Z';
+ let m='';marks.forEach(([z,x])=>{m+='<line x1="'+X(z)+'" y1="14" x2="'+X(z)+'" y2="142" stroke="#ffc23d" stroke-dasharray="4 3"/><text x="'+X(z)+'" y="157" text-anchor="middle" font-size="12" fill="#eef0ff">'+fmt(x)+'</text><text x="'+X(z)+'" y="172" text-anchor="middle" font-size="11" fill="#a3a9d6">Z='+fz(z)+'</text>'});
+ return'<svg class="plot" viewBox="0 0 540 178"><path d="'+s+'" fill="#ff5d6c" opacity=".75"/><path d="'+p+'" fill="none" stroke="#5b8cff" stroke-width="2.5"/><line x1="20" y1="140" x2="520" y2="140" stroke="#5a6399"/><line x1="'+X(0)+'" y1="140" x2="'+X(0)+'" y2="146" stroke="#a3a9d6"/>'+m+'</svg>';
+}
+function plotU(a,b,lo,hi){
+ const X=v=>50+(v-a)/(b-a)*440;
+ let lbl=v=>'<line x1="'+X(v)+'" y1="40" x2="'+X(v)+'" y2="112" stroke="#ffc23d" stroke-dasharray="4 3"/><text x="'+X(v)+'" y="130" text-anchor="middle" font-size="12" fill="#eef0ff">'+fmt(v)+'</text>';
+ let m='';[lo,hi].forEach(v=>{if(v!==a&&v!==b)m+=lbl(v)});
+ return'<svg class="plot" viewBox="0 0 540 140"><rect x="'+X(a)+'" y="50" width="440" height="60" fill="none" stroke="#5b8cff" stroke-width="2.5"/><rect x="'+X(lo)+'" y="50" width="'+(X(hi)-X(lo))+'" height="60" fill="#ff5d6c" opacity=".75"/><line x1="30" y1="110" x2="510" y2="110" stroke="#5a6399"/><text x="'+X(a)+'" y="130" text-anchor="middle" font-size="12" fill="#a3a9d6">a='+fmt(a)+'</text><text x="'+X(b)+'" y="130" text-anchor="middle" font-size="12" fill="#a3a9d6">b='+fmt(b)+'</text>'+m+'</svg>';
+}
+
+/* ---------- confeti ---------- */
+const cv=document.getElementById('confetti'),cx=(()=>{try{return cv.getContext('2d')}catch(e){return null}})();let parts=[],running=false;
+const COLORS=['#5b8cff','#2ecc8f','#ffc23d','#ff6fb1','#b77bff','#7cc8ff','#ff5d6c'];
+function fitC(){if(!cx)return;const d=window.devicePixelRatio||1;cv.width=innerWidth*d;cv.height=innerHeight*d;cx.setTransform(d,0,0,d,0,0)}
+function burst(x,y,n,ang,spr,vel){for(let k=0;k<n;k++){const a=(ang+(Math.random()-.5)*spr)*Math.PI/180,v=vel*(.6+Math.random()*.6);parts.push({x,y,vx:Math.cos(a)*v,vy:-Math.sin(a)*v,w:7+Math.random()*7,h:4+Math.random()*5,r:Math.random()*6.28,vr:(Math.random()-.5)*.4,c:COLORS[k%COLORS.length],life:0,max:120+Math.random()*70,circ:Math.random()<.3})}if(!running){running=true;requestAnimationFrame(tick)}}
+function tick(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life<p.max&&p.y<innerHeight+40);for(const p of parts){p.life++;p.vy+=.28;p.vx*=.985;p.vy*=.985;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;cx.save();cx.globalAlpha=Math.max(0,1-p.life/p.max);cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;if(p.circ){cx.beginPath();cx.arc(0,0,p.w/2.5,0,6.28);cx.fill()}else cx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.life/6)));cx.restore()}if(parts.length)requestAnimationFrame(tick);else{running=false;cx.clearRect(0,0,innerWidth,innerHeight)}}
+function boom(l){if(!cx)return;fitC();const W=innerWidth,H=innerHeight;
+ if(l===1)burst(W/2,H*.6,100,90,90,15);
+ else if(l===2){burst(0,H*.8,80,60,50,19);burst(W,H*.8,80,120,50,19);setTimeout(()=>burst(W/2,H*.55,80,90,120,14),250)}
+ else{let t=0;const iv=setInterval(()=>{burst(0,H*.85,45,60,55,20);burst(W,H*.85,45,120,55,20);burst(Math.random()*W,H*.4,35,90,160,11);if(++t>10)clearInterval(iv)},220)}}
+
+/* ---------- estado ---------- */
+const $=id=>document.getElementById(id);
+let round=1,qi=0,pts=0,streak=0,rPts=0,rHits=0,best=0,cur=null,answered=false,hintUsed=false;
+try{best=parseInt(localStorage.getItem('pdent_best'))||0}catch(e){}
+const CHEERS=['¡Correcto!','¡Brillante!','¡Eso es!','¡Imparable!','¡Sonrisa perfecta!','¡Diez de diez!','¡Nivel experto!','¡Qué máquina!'];
+const worth=()=>streak>=3?20:10;
+
+function buildStages(){$('stages').innerHTML=STAGES.map((s,i)=>'<div class="seg '+(s.k==='U'?'u':'n')+'" id="seg'+i+'"><i></i></div>').join('')}
+function hud(anim){$('hRound').textContent=round;$('hPts').textContent=pts;$('hStreak').textContent=streak;$('hBest').textContent=best;
+ if(anim)['hPts','hStreak'].forEach(k=>{const e=$(k);e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop')})}
+function progress(){let done=qi;STAGES.forEach((s,i)=>{const start=PLAN.indexOf(i);const d=Math.max(0,Math.min(s.n,done-start));const seg=$('seg'+i);seg.firstChild.style.width=(d/s.n*100)+'%';seg.classList.toggle('cur',qi<20&&PLAN[qi]===i)})}
+
+let guided=false,gSteps=null,gStep=0,gTries=0,gDone=[],lastInput=null;
+const half=()=>Math.round(worth()/2);
+function setGuidedBtn(){}
+function startScreen(){
+ $('sName').textContent='Listos para jugar';$('sProg').textContent='';
+ $('main').innerHTML='<div class="center" style="font-size:44px">🦷🎲</div><h2 class="center" style="margin:6px 0 4px">Rondas de 20 preguntas</h2><p class="center" style="color:var(--mut);margin:0 0 10px">Cada ronda sube de dificultad, de uniformes a normales.</p>'+
+ '<ul class="rules"><li>✅ Correcta: <b>+10</b> · ❌ Incorrecta: <b>−5</b></li><li>🔥 Con 3 o más correctas seguidas, cada acierto vale <b>doble (+20)</b></li><li>💡 Pista: <b>−3</b> (muestra el dibujo del área que hay que calcular)</li>'+
+ '<li>🧭 <b>Modo guiado</b> (botón junto a la pista, en cada pregunta): te lleva paso a paso por los cálculos, pero <b>tú los haces</b>. Si te equivocas en un paso, te explica y lo vuelves a intentar sin perder puntos. Al terminar ganas <b>la mitad</b> del puntaje, y tu racha se mantiene (ni sube ni se pierde). Se activa solo para esa pregunta</li>'+
+ '<li>📊 Tabla Z, 🧮 Calculadora y 🚪 Salir están siempre disponibles arriba</li>'+
+ '<li>Orden de cada ronda: uniformes hacia un extremo → al otro extremo → centrales → normales "menor que" a la derecha de la media → a la izquierda → valores centrales</li></ul>'+
+ '<div class="center"><button class="btn pri" id="play" style="font-size:18px;padding:12px 28px">¡Jugar! ▶</button></div>';
+ $('play').onclick=()=>{qi=0;rPts=0;rHits=0;next()};
+}
+function setVal(){const v=$('valpill');if(!v)return;
+ if(guided){v.className='pill';v.textContent='🧭 Guiado: vale +'+half()}
+ else if(worth()===20){v.className='pill x2';v.textContent='⚡ Vale doble: +20'}
+ else{v.className='pill';v.textContent='Vale +10'}}
+function next(){
+ if(qi>=20)return summary();
+ const st=STAGES[PLAN[qi]];answered=false;hintUsed=false;guided=false;
+ cur=st.k==='U'?genU(st.t,round):genN(st.t,round);
+ $('sName').textContent=st.name(round);$('sProg').textContent='Pregunta '+(qi+1)+' de 20 · Dificultad '+DIFF(round);
+ progress();
+ $('main').innerHTML='<div class="pills"><span class="pill '+(cur.k==='U'?'u':'n')+'">'+(cur.k==='U'?'Uniforme':'Normal')+'</span><span class="pill">Ronda '+round+'</span><span id="valpill"></span></div>'+
+ '<div class="q">'+cur.text+'</div><div id="area"></div><div class="err" id="err"></div><div id="hintbox"></div><div id="fb"></div>';
+ renderArea();
+}
+function renderArea(){
+ setVal();$('err').textContent='';if(!guided)$('hintbox').innerHTML='';
+ if(guided){startGuide();return}
+ $('area').innerHTML='<div class="ansrow"><input type="text" id="ans" placeholder="Ej: 0,25 · 1/4 · 25%" autocomplete="off"><button class="btn pri" id="go">Responder ➜</button><button class="btn sm" id="hint">💡 Pista (−3)</button><button class="btn sm" id="gmode">🧭 Guíame paso a paso (½ pts)</button></div>';
+ $('go').onclick=answer;$('hint').onclick=hint;$('gmode').onclick=()=>{if(answered)return;guided=true;renderArea()};
+ $('ans').addEventListener('input',()=>$('err').textContent='');
+ $('ans').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.stopPropagation();answer()}});
+ $('ans').focus();lastInput=$('ans');
+}
+function parse(v){v=v.trim().replace(/\s/g,'').replace(/,/g,'.').replace(/−/g,'-');if(!v)return NaN;const pct=v.endsWith('%');if(pct)v=v.slice(0,-1);let n;
+ if(v.includes('/')){const[a,b]=v.split('/');n=parseFloat(a)/parseFloat(b)}else n=parseFloat(v);
+ if(!isFinite(n))return NaN;if(pct||n>1)n/=100;return n}
+function parseNum(v){v=v.trim().replace(/\s/g,'').replace(/,/g,'.').replace(/−/g,'-');if(!v)return NaN;let n;
+ if(v.includes('/')){const[a,b]=v.split('/');n=parseFloat(a)/parseFloat(b)}else n=parseFloat(v);return isFinite(n)?n:NaN}
+function hint(){if(answered||hintUsed)return;hintUsed=true;pts=Math.max(0,pts-3);rPts-=3;hud(true);
+ $('hint').style.display='none';
+ $('hintbox').innerHTML='<div class="fb hint"><span class="t">💡 Pista (−3)</span>Esta es el área que tienes que calcular:'+cur.plot()+'<div style="margin-top:6px">'+cur.rule+'</div></div>'}
+function answer(){
+ if(answered)return;const n=parse($('ans').value);
+ if(isNaN(n)){$('err').textContent='Escribe una respuesta primero (por ejemplo 0,25 · 1/4 · 25%)';return}
+ $('ans').disabled=true;$('go').style.display='none';const h=$('hint');if(h)h.style.display='none';
+ finish(Math.abs(n-cur.ans)<=cur.tol?'ok':'bad',n);
+}
+function finish(outcome,n){
+ if(answered)return;answered=true;let head;const m=$('main');
+ if(outcome==='ok'){const w=worth();pts+=w;rPts+=w;streak++;rHits++;
+  head='<div class="fb ok"><span class="t">🎉 '+pick(CHEERS)+' +'+w+' pts</span>';
+  setTimeout(()=>boom(qi===19?3:(w===20?2:1)),30)}
+ else if(outcome==='guided'){const w=half();pts+=w;rPts+=w;rHits++;
+  head='<div class="fb ok"><span class="t">🧭 ¡Lo resolviste paso a paso! +'+w+' pts</span>Modo guiado: mitad del puntaje, la racha se mantiene en '+streak+'.<br>';
+  setTimeout(()=>boom(qi===19?3:1),30)}
+ else if(outcome==='gaveup'){streak=0;
+  head='<div class="fb bad"><span class="t">🏳️ Solución revelada · 0 pts</span>La racha vuelve a 0. Respuesta correcta: <b>'+cur.show+'</b><br>'}
+ else{pts=Math.max(0,pts-5);rPts-=5;streak=0;
+  head='<div class="fb bad"><span class="t">😬 Casi… −5 pts, la racha vuelve a 0</span>Tu respuesta: '+fmt(n)+' · Correcta: <b>'+cur.show+'</b><br>';
+  m.classList.remove('shake');void m.offsetWidth;m.classList.add('shake')}
+ hud(true);
+ $('fb').innerHTML=head+'<b>Cómo se resuelve:</b><ol class="steps">'+cur.steps.map(s=>'<li>'+s+'</li>').join('')+'</ol><div style="margin-top:6px;color:#d8dcff">📌 '+cur.rule+'</div>'+cur.plot()+
+  '<div class="center" style="margin-top:12px"><button class="btn pri" id="nx">'+(qi===19?'Ver resultados 🏁':'Siguiente ➜')+'</button></div></div>';
+ const nx=$('nx');nx.disabled=true;nx.style.opacity='.5';setTimeout(()=>{nx.disabled=false;nx.style.opacity='';nx.focus({preventScroll:true})},1200);nx.onclick=()=>{if(nx.disabled)return;qi++;next()};$('fb').scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+
+/* ---------- modo guiado ---------- */
+function zStep(lab,n,x,mu,sg,zv,neg){return{lab,val:zv,tol:.006,
+ q:'<b>Paso '+n+' · Estandarizar.</b> Pasa el valor a la escala Z con <b>Z = (x − μ) ÷ σ</b>. Aquí x = '+fmt(x)+', μ = '+fmt(mu)+' y σ = '+fmt(sg)+'. Primero resta y después divide. Redondea a 2 decimales.',
+ tip:neg?'Este valor está bajo la media, así que tu Z tiene que salir <b>negativo</b>. Revisa el signo de la resta.':'Este valor está sobre la media, así que tu Z tiene que salir positivo. Primero haz la resta (x − μ) y recién después divide por σ.',
+ tip2:'Calcula ('+fmt(x)+' − '+fmt(mu)+') ÷ '+fmt(sg)+'.'}}
+function tStep(lab,n,z,intro){const[r,c]=rowcol(z);return{lab,val:T(z),tol:.0006,prob:true,
+ q:'<b>Paso '+n+' · Buscar en la tabla.</b> '+intro+' En la tabla, la <b>fila</b> es la unidad y el primer decimal, y la <b>columna</b> es el segundo decimal. Escribe el número de la celda (puedes abrir 📊 Tabla Z).',
+ tip:'Es un número de 4 decimales entre 0,5 y 1, por ejemplo 0,8413.',tip2:'Busca la fila <b>'+r+'</b> y la columna <b>'+c+'</b>.'}}
+function buildGuide(c){const g=c.g;
+ if(g.type==='U'){
+  const tq=g.t==='lt'?'Te preguntan "menos de '+fmt(g.x)+'": el tramo parte en el inicio del rango (a = '+fmt(g.a)+') y llega hasta '+fmt(g.x)+'.':
+   g.t==='gt'?'Te preguntan "más de '+fmt(g.x)+'": el tramo parte en '+fmt(g.x)+' y llega hasta el final del rango (b = '+fmt(g.b)+').':
+   'Te preguntan "entre '+fmt(g.x1)+' y '+fmt(g.x2)+'": el tramo va de '+fmt(g.x1)+' a '+fmt(g.x2)+'.';
+  const t2=g.t==='lt'?fmt(g.x)+' − '+fmt(g.a):g.t==='gt'?fmt(g.b)+' − '+fmt(g.x):fmt(g.x2)+' − '+fmt(g.x1);
+  return[
+   {lab:'Largo total del rango',val:g.total,tol:.001,q:'<b>Paso 1 · Largo total del rango.</b> En una uniforme la probabilidad se reparte pareja entre a = '+fmt(g.a)+' y b = '+fmt(g.b)+'. ¿Cuánto mide el rango completo?',tip:'Al valor final del rango réstale el valor inicial (b − a).',tip2:'Calcula '+fmt(g.b)+' − '+fmt(g.a)+'.'},
+   {lab:'Largo del tramo pedido',val:g.tramo,tol:.001,q:'<b>Paso 2 · Tramo pedido.</b> '+tq+' ¿Cuánto mide ese tramo?',tip:'El largo de un tramo es su extremo derecho menos su extremo izquierdo.',tip2:'Calcula '+t2+'.'},
+   {lab:'Probabilidad',val:g.ans,tol:.005,prob:true,q:'<b>Paso 3 · Probabilidad.</b> La probabilidad es la parte del rango que ocupa tu tramo: <b>tramo ÷ total</b>. Usa tus resultados de los pasos 1 y 2 (puedes dejarlo como fracción o decimal).',tip:'Divide el resultado del paso 2 por el del paso 1. Puedes usar la 🧮 calculadora.',tip2:'Calcula '+fmt(g.tramo)+' ÷ '+fmt(g.total)+'.'}];
+ }
+ if(g.type==='N1'){
+  const neg=g.zc<0,big=(g.kind==='lt'&&!neg)||(g.kind==='gt'&&neg);
+  const why=g.kind==='lt'?(neg?'A la izquierda de un valor bajo la media solo queda la colita izquierda: el área es chica.':'A la izquierda de un valor sobre la media está toda la mitad izquierda y un poco más: el área es grande.'):
+   (neg?'A la derecha de un valor bajo la media está toda la mitad derecha y un poco más: el área es grande.':'A la derecha de un valor sobre la media solo queda la colita derecha: el área es chica.');
+  return[
+   zStep('Z',1,g.x,g.mu,g.sg,g.zc,neg),
+   tStep('Valor de tabla',2,g.zc,neg?'Tu Z es negativo: búscalo <b>sin el signo menos</b>, porque la tabla solo trae positivos.':'Busca tu Z.'),
+   {lab:'Tipo de área',choice:true,val:big?'d':'m',opts:[{v:'d',l:'Grande (más de la mitad) → la respuesta es la tabla directo'},{v:'m',l:'Chica (una colita) → la respuesta es 1 − tabla'}],
+    q:'<b>Paso 3 · ¿Área grande o chica?</b> Te preguntan "<b>'+(g.kind==='lt'?'menos de':'más de')+'</b>" y tu Z es <b>'+(neg?'negativo':'positivo')+'</b>. Imagina la campana y pinta el área que te piden: ¿es más de la mitad o es solo una colita?',
+    tip:'La tabla siempre entrega el área a la izquierda. Piensa de qué lado de la media está tu valor y hacia dónde apunta la pregunta.',tip2:why+c.plot()},
+   big?{lab:'Probabilidad',val:g.ans,tol:.002,prob:true,q:'<b>Paso 4 · Respuesta final.</b> Como el área es grande, la respuesta es directamente tu valor de tabla. Escríbela.',tip:'Es el mismo número del paso 2.',tip2:'Copia tu resultado del paso 2.'}
+      :{lab:'Probabilidad',val:g.ans,tol:.002,prob:true,q:'<b>Paso 4 · Respuesta final.</b> Como el área es una colita, réstale tu valor de tabla a 1.',tip:'Haz 1 − (resultado del paso 2).',tip2:'Calcula 1 − '+f4(g.Tv)+'.'}];
+ }
+ return[
+  zStep('Z₁ (valor menor)',1,g.x1,g.mu,g.sg,g.z1,true),
+  zStep('Z₂ (valor mayor)',2,g.x2,g.mu,g.sg,g.z2,false),
+  tStep('P(Z < Z₂)',3,g.z2,'Como Z₂ es positivo, la tabla te da directamente P(Z &lt; Z₂). Busca Z₂.'),
+  tStep('Tabla con |Z₁|',4,g.z1,'Ahora busca Z₁ <b>sin el signo menos</b>.'),
+  {lab:'P(Z < Z₁)',val:g.p1,tol:.0006,prob:true,q:'<b>Paso 5 · P(Z &lt; Z₁).</b> Como Z₁ es negativo, P(Z &lt; Z₁) es la colita izquierda: <b>1 − (valor del paso 4)</b>.',tip:'Es el espejo: la colita izquierda mide lo mismo que la colita derecha de |Z₁|.',tip2:'Calcula 1 − '+f4(g.T1)+'.'},
+  {lab:'Probabilidad',val:g.ans,tol:.002,prob:true,q:'<b>Paso 6 · Respuesta final.</b> "Entre" es lo que queda bajo el valor mayor menos lo que queda bajo el valor menor: <b>P(Z &lt; Z₂) − P(Z &lt; Z₁)</b>. Resta el paso 3 menos el paso 5.',tip:'Al área grande (paso 3) le sacas la colita (paso 5).',tip2:'Calcula '+f4(g.T2)+' − '+f4(g.p1)+'.'}];
+}
+function startGuide(){gSteps=buildGuide(cur);gStep=0;gTries=0;gDone=[];renderGuide()}
+function renderGuide(){
+ const st=gSteps[gStep];
+ let h='<ul class="gdone">'+gDone.map(d=>'<li>✔ '+d+'</li>').join('')+'</ul><div class="gcur"><div style="font-size:12px;color:var(--mut);margin-bottom:4px">🧭 MODO GUIADO · paso '+(gStep+1)+' de '+gSteps.length+'</div>'+st.q;
+ if(st.choice)h+='<div class="choice">'+st.opts.map(o=>'<button class="btn" data-v="'+o.v+'">'+o.l+'</button>').join('')+'</div>';
+ else h+='<div class="ansrow" style="margin-top:10px"><input type="text" id="gin" placeholder="Tu resultado" autocomplete="off"><button class="btn pri" id="gchk">Comprobar ✓</button></div>';
+ h+='<div class="err" id="gerr"></div><div id="gtip"></div></div><div style="text-align:right;margin-top:10px"><button class="btn sm" id="gup">🏳️ Ver solución (0 pts)</button></div>';
+ $('area').innerHTML=h;
+ $('gup').onclick=()=>{$('area').querySelectorAll('button,input').forEach(e=>e.disabled=true);finish('gaveup')};
+ if(st.choice){$('area').querySelectorAll('.choice .btn').forEach(b=>b.onclick=()=>checkStep(b.dataset.v,b.textContent))}
+ else{const gi=$('gin');gi.addEventListener('input',()=>$('gerr').textContent='');
+  gi.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.stopPropagation();checkStep()}});
+  $('gchk').onclick=()=>checkStep();gi.focus({preventScroll:true});lastInput=gi}
+}
+function checkStep(choice,label){
+ if(answered)return;const st=gSteps[gStep];let ok,shown;
+ if(st.choice){ok=choice===st.val;shown=label}
+ else{const raw=$('gin').value;const v=st.prob?parse(raw):parseNum(raw);
+  if(isNaN(v)){$('gerr').textContent='Escribe tu resultado primero';return}
+  ok=Math.abs(v-st.val)<=st.tol;shown=raw.trim()}
+ if(ok){gDone.push('Paso '+(gStep+1)+' · '+st.lab+': <b>'+shown+'</b>');gStep++;gTries=0;
+  if(gStep>=gSteps.length){$('area').innerHTML='<ul class="gdone">'+gDone.map(d=>'<li>✔ '+d+'</li>').join('')+'</ul>';finish('guided')}
+  else renderGuide();return}
+ gTries++;
+ $('gtip').innerHTML='<div class="gtip">🤔 <b>No es ese valor, inténtalo de nuevo</b> (no pierdes puntos).<br>'+st.tip+(gTries>=2?'<br>👉 '+st.tip2:'<br><span style="color:var(--mut)">Si vuelves a fallar te doy una ayuda más concreta.</span>')+'</div>';
+ if(!st.choice){const gi=$('gin');gi.select();}
+}
+
+/* ---------- resumen y salir ---------- */
+function summary(){
+ progress();rPts=Math.max(0,rPts);
+ const nb=rPts>best;if(nb){best=rPts;try{localStorage.setItem('pdent_best',best)}catch(e){}}
+ hud(false);$('sName').textContent='Ronda '+round+' completada';$('sProg').textContent='';
+ const msg=rHits>=18?'¡Dominan la materia! 🏆':rHits>=14?'¡Muy bien! Un poco más y es perfecto 💪':rHits>=10?'Van bien, repasen las etapas donde fallaron 📚':'Repitan la ronda con calma y usen el modo guiado 🧭';
+ $('main').innerHTML='<div class="center" style="font-size:44px">🏁</div><h2 class="center" style="margin:4px 0">Ronda '+round+' ('+DIFF(round)+') completada</h2>'+(nb?'<p class="center" style="color:var(--gold);font-weight:800;margin:4px 0">⭐ ¡Nuevo récord!</p>':'')+
+ '<div class="sumgrid"><div class="stat center"><div class="l">Puntos de la ronda</div><div class="v">'+rPts+'</div></div><div class="stat center"><div class="l">Aciertos</div><div class="v">'+rHits+'/20</div></div><div class="stat center"><div class="l">Récord ronda</div><div class="v">'+best+'</div></div></div>'+
+ '<p class="center">'+msg+'</p><div class="center" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn sm" id="rep">↻ Repetir ronda '+round+'</button><button class="btn pri" id="up">Ronda '+(round+1)+': '+DIFF(round+1)+' ➜</button></div>';
+ if(rHits>=14)setTimeout(()=>boom(3),100);
+ $('rep').onclick=()=>{qi=0;rPts=0;rHits=0;next()};
+ $('up').onclick=()=>{round++;qi=0;rPts=0;rHits=0;hud(false);next()};
+}
+function exitGame(){
+ $('ov').classList.remove('on');$('calcP').classList.remove('on');
+ $('main').innerHTML='<div class="center" style="font-size:40px">🚪</div><h2 class="center" style="margin:6px 0">¿Salir del juego?</h2><p class="center" style="color:var(--mut)">Se pierde el avance de la ronda actual. Tus puntos totales ('+pts+') y tu récord se quedan guardados.</p>'+
+ '<div class="center" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn" id="exNo">Seguir jugando</button><button class="btn pri" id="exYes">Sí, salir</button></div>';
+ $('exNo').onclick=()=>{if(qi>0||cur){next()}else startScreen()};
+ $('exYes').onclick=()=>{
+  $('sName').textContent='Fuera del juego';$('sProg').textContent='';
+  $('main').innerHTML='<div class="center" style="font-size:44px">👋</div><h2 class="center" style="margin:6px 0">¡Hasta la próxima!</h2><p class="center">Puntos totales: <b>'+pts+'</b> · Récord de ronda: <b>'+best+'</b></p>'+
+  '<p class="center" style="color:var(--mut)">Si esta ventana no se cierra sola, ciérrala con <b>Cmd + W</b> (Mac) o <b>Ctrl + W</b> (Windows), o con la ✕ de tu navegador.</p>'+
+  '<div class="center"><button class="btn pri" id="again">Volver a jugar ▶</button></div>';
+  $('again').onclick=()=>{qi=0;rPts=0;rHits=0;cur=null;progress();startScreen()};
+  try{window.close()}catch(e){}
+ };
+}
+
+/* ---------- calculadora ---------- */
+let cExpr='',cLast=null;
+function calcEval(src){const s=src.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/,/g,'.').replace(/\s/g,'');let i=0;
+ function num(){const st=i;while(i<s.length&&/[0-9.]/.test(s[i]))i++;if(st===i)throw 0;const v=Number(s.slice(st,i));if(!isFinite(v))throw 0;return v}
+ function fac(){if(s[i]==='-'){i++;return -fac()}if(s[i]==='+'){i++;return fac()}if(s[i]==='('){i++;const v=ex();if(s[i]!==')')throw 0;i++;return v}return num()}
+ function term(){let v=fac();while(s[i]==='*'||s[i]==='/'){const o=s[i++],r=fac();v=o==='*'?v*r:v/r}return v}
+ function ex(){let v=term();while(s[i]==='+'||s[i]==='-'){const o=s[i++],r=term();v=o==='+'?v+r:v-r}return v}
+ if(!s)throw 0;const v=ex();if(i!==s.length||!isFinite(v))throw 0;return v}
+const cShow=v=>String(rnd(v,6)).replace('-','−').replace('.',',');
+function cRender(){$('cExpr').textContent=cExpr;let r='';try{if(cExpr)r=cShow(calcEval(cExpr))}catch(e){}$('cRes').textContent=r||(cLast!==null?cShow(cLast):'0')}
+function cKey(k){$('cErr').textContent='';
+ if(k==='C'){cExpr='';cLast=null}
+ else if(k==='back')cExpr=cExpr.slice(0,-1);
+ else if(k==='='){try{cLast=calcEval(cExpr);cExpr=cShow(cLast)}catch(e){$('cErr').textContent='Revisa la operación (paréntesis o signos)'}}
+ else{if(cLast!==null&&/^[0-9,(]$/.test(k)&&cExpr===cShow(cLast)){cExpr='';cLast=null}cExpr+=k}
+ cRender()}
+$('cKeys').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b)cKey(b.dataset.k)});
+const CP=$('calcP'),CH=$('cHead');let cdrag=null,cPlaced=false;
+function cPlace(x,y){const w=CP.offsetWidth,h=CP.offsetHeight;x=Math.max(0,Math.min(innerWidth-w,x));y=Math.max(0,Math.min(innerHeight-Math.min(h,60),y));CP.style.left=x+'px';CP.style.top=y+'px';CP.style.right='auto'}
+CH.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;const r=CP.getBoundingClientRect();cdrag={dx:e.clientX-r.left,dy:e.clientY-r.top};try{CH.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault()});
+CH.addEventListener('pointermove',e=>{if(cdrag)cPlace(e.clientX-cdrag.dx,e.clientY-cdrag.dy)});
+const cEnd=()=>{cdrag=null};CH.addEventListener('pointerup',cEnd);CH.addEventListener('pointercancel',cEnd);
+addEventListener('resize',()=>{if(CP.classList.contains('on')){const r=CP.getBoundingClientRect();cPlace(r.left,r.top)}});
+$('calcB').onclick=()=>{const on=CP.classList.toggle('on');if(on){if(!cPlaced){cPlace(innerWidth-CP.offsetWidth-16,80);cPlaced=true}cRender();CP.focus({preventScroll:true})}};
+$('closeC').onclick=()=>CP.classList.remove('on');
+CP.addEventListener('pointerdown',()=>CP.focus({preventScroll:true}));
+function cVal(){try{return calcEval(cExpr)}catch(e){return cLast}}
+function cMsg(t,ok){const e=$('cErr');e.textContent=t;e.classList.toggle('ok',!!ok)}
+const cTxt=v=>String(rnd(v,4)).replace('.',',').replace('-','−');
+$('cCopy').onclick=()=>{const v=cVal();if(v===null||v===undefined){cMsg('Primero haz un cálculo');return}
+ const t=String(rnd(v,4)).replace('.',',');
+ const fallback=()=>{const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();cMsg(ok?'📋 Copiado: '+t+' (pégalo con Cmd/Ctrl + V)':'No se pudo copiar; usa los botones ↳',ok)};
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>cMsg('📋 Copiado: '+t+' (pégalo con Cmd/Ctrl + V)',true),fallback);else fallback()};
+$('cUse').onclick=()=>{const v=cVal();if(v===null||v===undefined){cMsg('Primero haz un cálculo');return}
+ if(!lastInput||!document.body.contains(lastInput)||lastInput.disabled||lastInput.id==='zin'){const a=$('gin')||$('ans');if(a&&!a.disabled)lastInput=a;else{cMsg('No hay una casilla de respuesta abierta ahora');return}}
+ lastInput.value=String(rnd(v,4)).replace('.',',');lastInput.dispatchEvent(new Event('input'));cMsg('↳ Puesto en tu respuesta',true);lastInput.focus({preventScroll:true})};
+$('cZ').onclick=()=>{const v=cVal();if(v===null||v===undefined){cMsg('Primero haz un cálculo');return}
+ $('ov').classList.add('on');$('zin').value=cTxt(rnd(v,2));lookup();cMsg('↳ Buscado en la Tabla Z (Z redondeado a 2 decimales)',true)};
+document.addEventListener('focusin',e=>{const t=e.target;if(t&&(t.id==='ans'||t.id==='gin'))lastInput=t});
+document.addEventListener('keydown',e=>{if(!CP.classList.contains('on')||!CP.contains(document.activeElement))return;const k=e.key;let m=null;
+ if(/^[0-9]$/.test(k)||k==='('||k===')'||k==='+')m=k;else if(k==='-')m='−';else if(k==='*'||k==='x')m='×';else if(k==='/')m='÷';else if(k===','||k==='.')m=',';
+ else if(k==='Enter'||k==='=')m='=';else if(k==='Backspace')m='back';else if(k==='Delete'||k==='c'||k==='C')m='C';
+ if(m){e.preventDefault();e.stopPropagation();cKey(m)}});
+$('exitB').onclick=exitGame;
+
+/* ---------- acciones de la tabla Z ---------- */
+function zRow(lab,v){const t=f4(v);return'<div class="zrow"><span style="flex:1;min-width:150px">'+lab+': <b>'+t+'</b></span><button class="btn" data-za="copy" data-v="'+v+'">📋 Copiar</button><button class="btn gold" data-za="ans" data-v="'+v+'">↳ Respuesta</button><button class="btn gold" data-za="calc" data-v="'+v+'">↳ Calculadora</button></div>'}
+function copyText(t,msg){const fb=()=>{const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();msg(ok?'📋 Copiado: '+t+' (pégalo con Cmd/Ctrl + V)':'No se pudo copiar; usa los botones ↳',ok)};
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>msg('📋 Copiado: '+t+' (pégalo con Cmd/Ctrl + V)',true),fb);else fb()}
+function answerBox(){if(lastInput&&document.body.contains(lastInput)&&!lastInput.disabled&&lastInput.id!=='zin')return lastInput;const a=$('gin')||$('ans');return a&&!a.disabled?a:null}
+$('zres').addEventListener('click',e=>{const b=e.target.closest('[data-za]');if(!b)return;const v=parseFloat(b.dataset.v),t=v.toFixed(4).replace('.',',');
+ const msg=(m,ok)=>{const el=$('zmsg');if(el){el.textContent=m;el.classList.toggle('ok',!!ok)}};
+ if(b.dataset.za==='copy')copyText(t,msg);
+ else if(b.dataset.za==='ans'){const box=answerBox();if(!box){msg('No hay una casilla de respuesta abierta ahora');return}
+  box.value=t;box.dispatchEvent(new Event('input'));$('ov').classList.remove('on');box.focus({preventScroll:true})}
+ else{if(!CP.classList.contains('on')){CP.classList.add('on');if(!cPlaced){cPlace(innerWidth-CP.offsetWidth-16,80);cPlaced=true}}
+  if(cExpr===''||/[+−×÷(]$/.test(cExpr))cExpr+=t;else{cExpr=t;cLast=null}
+  cRender();msg('↳ Agregado a la calculadora: '+t,true)}});
+
+/* ---------- tabla Z ---------- */
+function buildTable(){let h='<tr><th>z</th>';for(let c=0;c<10;c++)h+='<th>0.0'+c+'</th>';h+='</tr>';
+ for(let r=0;r<36;r++){const rv=(r/10).toFixed(1);h+='<tr><td class="hr" data-r="'+rv+'"><b>'+rv+'</b></td>';for(let c=0;c<10;c++){const z=rnd(r/10+c/100,2);h+='<td data-z="'+z+'" id="c'+Math.round(z*100)+'">'+T(z).toFixed(4)+'</td>'}h+='</tr>'}
+ $('tz').innerHTML=h;
+ $('tz').addEventListener('click',e=>{const td=e.target.closest('td[data-z]');if(td){$('zin').value=String(td.dataset.z).replace('.',',');lookup()}})}
+function lookup(){
+ const raw=$('zin').value.trim().replace(/\s/g,'').replace(/,/g,'.').replace('−','-');const z=parseFloat(raw);
+ if(!raw||!isFinite(z)){$('zerr').textContent='Escribe un número, por ejemplo 1,25 o −0,67';return}
+ $('zerr').textContent='';document.querySelectorAll('.tz td.hit').forEach(e=>e.classList.remove('hit'));
+ const a=rnd(Math.abs(z),2);
+ if(a>3.59){$('zres').innerHTML='Z = '+fz(z)+' está fuera de la tabla (llega hasta 3,59). En la práctica P(Z &lt; '+fz(a)+') ≈ 0,9998 o más, casi 1.'+(z<0?'<br>Y P(Z &lt; '+fz(z)+') ≈ 0,0002 o menos, casi 0.':'');return}
+ const[r,c]=rowcol(a);const t=T(a);const cell=$('c'+Math.round(a*100));if(cell){cell.classList.add('hit');cell.scrollIntoView({block:'center',inline:'center',behavior:'smooth'})}
+ let s='Fila <b>'+r+'</b> · columna <b>'+c+'</b> → la tabla da <b>'+f4(t)+'</b>';
+ if(rnd(Math.abs(z),2)!==rnd(Math.abs(parseFloat(raw)),4))s+='<br><span style="color:var(--mut)">(Redondeé tu Z a dos decimales: '+fz(a)+')</span>';
+ if(z<0)s+='<br>⚠️ Z es negativo y la tabla solo trae positivos: busqué <b>'+fz(a)+'</b> sin el signo.<br>Por el espejo: P(Z &lt; '+fz(-a)+') = 1 − '+f4(t)+' = <b>'+f4(rnd(1-t,4))+'</b>';
+ s+='<div style="margin-top:6px">P(Z &lt; '+fz(z<0?-a:a)+') = <span class="big">'+f4(z<0?rnd(1-t,4):t)+'</span></div>';
+ s+='<div style="color:var(--mut);font-size:13px">Para "más de" usa 1 − este valor. Para "entre", resta los dos "menos de".</div>';
+ s+='<div style="margin-top:10px">'+zRow('Valor de la tabla',t)+(z<0?zRow('P(Z &lt; '+fz(-a)+')',rnd(1-t,4)):'')+'</div><div class="err" id="zmsg"></div>';
+ $('zres').innerHTML=s}
+$('openT').onclick=()=>{$('ov').classList.add('on');setTimeout(()=>$('zin').focus(),50)};
+$('closeT').onclick=()=>$('ov').classList.remove('on');
+$('ov').addEventListener('click',e=>{if(e.target.id==='ov')$('ov').classList.remove('on')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('ov').classList.remove('on');$('calcP').classList.remove('on')}});
+$('zgo').onclick=lookup;$('zin').addEventListener('keydown',e=>{if(e.key==='Enter')lookup()});
+$('zin').addEventListener('input',()=>$('zerr').textContent='');
+addEventListener('resize',()=>{if(running)fitC()});
+
+buildStages();buildTable();hud(false);progress();setGuidedBtn();startScreen();
+</script>
+</body>
+</html>
