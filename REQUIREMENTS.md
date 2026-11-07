@@ -325,3 +325,17 @@ If the thing you remembered asking for and not getting is one of the two
     Implemented as a fully separate static page, deliberately
     outside the 14-file shared-scope JS app — see "The ELISA game
     link" in `CLAUDE.md`.
+79. ✅ *(next day)* Uploaded a much bigger second version of the same
+    file (1301 lines vs. the original 540) and asked to update it.
+    Swapped `games/elisa.html` for the new version, byte-for-byte,
+    same filename — no changes needed anywhere else (button markup,
+    `06-deck-list.js` wiring, cache-buster all untouched, since
+    nothing about the integration point changed). The new version
+    expands from two topics (Uniform/Normal) to eight — adds
+    Probabilidades básicas (incl. Bayes), Binomial, Poisson,
+    Exponencial, Regresión lineal, and Descriptiva — plus a topic
+    picker screen, a formula-cheat-sheet review step before each
+    round, and a timed two-part exam-simulation mode. Verified safe
+    the same way as the original (no external network calls, no
+    eval of untrusted input, same localStorage-only pattern) and
+    tested end-to-end with Playwright before shipping.

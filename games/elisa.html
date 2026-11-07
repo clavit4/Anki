@@ -22,13 +22,18 @@ h1 span{color:var(--gold)}
 .stages{display:flex;gap:4px;margin:4px 0 6px}
 .seg{flex:1;height:10px;border-radius:5px;background:var(--line);position:relative;overflow:hidden}
 .seg>i{position:absolute;left:0;top:0;bottom:0;width:0;transition:width .4s}
-.seg.u>i{background:#4fb3ff}.seg.n>i{background:#b77bff}
+.seg.u>i{background:#4fb3ff}.seg.p>i{background:#ffb347}.seg.b>i{background:#2ecc8f}.seg.pb>i{background:#ff6fb1}.seg.ed>i{background:#7cc8ff}.seg.ex>i{background:#ffc23d}.seg.rl>i{background:#b77bff}.seg.n>i{background:#b77bff}
 .seg.cur{outline:2px solid var(--gold);outline-offset:1px}
 .stagelbl{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut);margin-bottom:10px;flex-wrap:wrap}
 .card{background:var(--panel);border-radius:18px;padding:20px;border:1px solid var(--line)}
 .pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .pill{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--panel2);color:var(--mut)}
-.pill.u{background:#123d5c;color:#7cc8ff}.pill.n{background:#3c1f5c;color:#d4a8ff}.pill.x2{background:#5c4300;color:var(--gold)}
+.pill.u{background:#123d5c;color:#7cc8ff}.pill.p{background:#5c3a0f;color:#ffcf8a}.pill.b{background:#0f4a33;color:#8ff0c4}.pill.pb{background:#5c1f45;color:#ffb3dc}.pill.ed{background:#123d5c;color:#bfe3ff}.pill.ex{background:#5c4300;color:#ffe08a}.pill.rl{background:#3c1f5c;color:#d4a8ff}.choice .btn.sel{outline:3px solid var(--gold);background:#2f3a78}.expart{border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}.expart:first-of-type{border-top:0}.dt td{padding:4px 8px}
+math{font-family:'STIX Two Math','Cambria Math','Latin Modern Math','Times New Roman',serif;font-size:1.15em}.fbox math{font-size:1.25em}.steps li{margin:4px 0}
+.bt{border-collapse:collapse;margin:10px auto;font-variant-numeric:tabular-nums}.bt td,.bt th{border:1px solid var(--line);padding:5px 12px;text-align:center}.bt th{background:var(--panel2);color:var(--mut)}
+.flist{display:grid;gap:6px;margin:8px 0}.fl{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#141a3a;border-radius:10px;padding:8px 12px}.fl span{color:var(--mut);font-size:14px}.cheat{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:8px 0}.mini{background:#141a3a;border-radius:12px;padding:8px}.mini svg{max-width:100%;margin:0}.mini .cap{font-size:13.5px;line-height:1.5;text-align:center;margin-top:4px}.fbox{font-size:21px;font-weight:800;text-align:center;background:#0f1330;border:1px solid var(--gold);color:var(--gold);border-radius:12px;padding:10px;margin:6px 0}.cnote{color:#d8dcff;font-size:14.5px;line-height:1.6;margin:6px 0}.chr{border:0;border-top:1px dashed var(--line);margin:18px 0}h3{margin:6px 0}code{background:#0f1330;padding:1px 6px;border-radius:5px}
+.topics .btn.nt{opacity:.6}.ntb{display:block;margin:5px auto 0;width:max-content;font-size:11px;font-weight:700;background:#5c1f2a;color:#ffb3bf;border-radius:6px;padding:2px 7px}.topics.two{grid-template-columns:1fr 1fr}.rstrip{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0 4px}.rstrip span{background:#141a3a;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px}
+.topics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 14px}.topics .btn{padding:14px 8px;line-height:1.4}.topics .btn small{display:block;font-weight:400;color:var(--mut);font-size:12px}.topics .btn.sel{outline:3px solid var(--gold)}@media(max-width:560px){.topics{grid-template-columns:1fr}}.pill.n{background:#3c1f5c;color:#d4a8ff}.pill.x2{background:#5c4300;color:var(--gold)}
 .q{font-size:18px;line-height:1.6;margin:6px 0 16px}
 .ansrow{display:flex;gap:8px;flex-wrap:wrap}
 input[type=text]{font:inherit;font-size:18px;flex:1;min-width:150px;padding:10px 14px;border-radius:10px;border:2px solid var(--line);background:#0f1330;color:var(--txt);outline:none}
@@ -68,7 +73,7 @@ svg.plot{width:100%;max-width:540px;display:block;margin:10px auto 0}
 .cdisp{background:#0f1330;border-radius:10px;padding:8px 10px;text-align:right;min-height:64px;word-break:break-all}
 .cdisp .e{font-size:16px;color:var(--mut);min-height:22px}.cdisp .r{font-size:30px;font-weight:800}
 .ckeys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}.ckeys .btn{padding:10px 0;font-size:18px}
-.ckeys .op{background:#2f3a78}.ckeys .eq{background:var(--acc)}.ckeys .cl{background:#5c1f2a}
+.ckeys .op{background:#2f3a78}.ckeys .eq{background:var(--acc)}.ckeys .cl{background:#5c1f2a}.ckeys .fn{background:#1d5c4a;font-size:16px}
 ul.rules{line-height:1.9;padding-left:20px;margin:8px 0 16px}
 .sumgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
 @media(max-width:560px){.hud{grid-template-columns:repeat(2,1fr)}.q{font-size:16px}.sumgrid{grid-template-columns:1fr}}
@@ -90,7 +95,7 @@ ul.rules{line-height:1.9;padding-left:20px;margin:8px 0 16px}
   <div class="stages" id="stages"></div>
   <div class="stagelbl"><span id="sName">Listos para jugar</span><span id="sProg"></span></div>
   <div class="card" id="main"></div>
-  <div class="foot">Respuestas: 0,25 · 1/4 · 25%. Margen de error por redondeo: ±0,005 en uniformes y ±0,002 en normales.</div>
+  <div class="foot">Responde con decimales (0,25), fracciones (1/4) o porcentajes (25%). Se acepta un pequeño margen por redondeo.</div>
 </div>
 
 <div class="overlay" id="ov">
@@ -121,6 +126,8 @@ ul.rules{line-height:1.9;padding-left:20px;margin:8px 0 16px}
     <button class="btn" data-k="4">4</button><button class="btn" data-k="5">5</button><button class="btn" data-k="6">6</button><button class="btn op" data-k="×">×</button>
     <button class="btn" data-k="1">1</button><button class="btn" data-k="2">2</button><button class="btn" data-k="3">3</button><button class="btn op" data-k="−">−</button>
     <button class="btn" data-k="0">0</button><button class="btn" data-k=",">,</button><button class="btn eq" data-k="=">=</button><button class="btn op" data-k="+">+</button>
+    <button class="btn fn" data-k="e^(">eˣ</button><button class="btn fn" data-k="^">xʸ</button><button class="btn fn" data-k="!">n!</button><button class="btn fn" data-k="ncr">nCr</button>
+    <button class="btn fn" data-k="√(">√</button><button class="btn fn" data-k="^2">x²</button>
   </div>
   <div class="crow"><button class="btn" id="cCopy">📋 Copiar</button><button class="btn gold" id="cUse">↳ Respuesta</button><button class="btn gold" id="cZ">↳ Tabla Z</button></div>
   <div class="err" id="cErr"></div>
@@ -165,7 +172,7 @@ const NC=[
 ];
 
 /* ---------- etapas de cada ronda (20 preguntas) ---------- */
-const STAGES=[
+const STAGES_UN=[
  {k:'U',t:'lt',n:3,name:()=>'Uniforme · hacia el extremo inferior (menos de)'},
  {k:'U',t:'gt',n:3,name:()=>'Uniforme · hacia el extremo superior (más de)'},
  {k:'U',t:'bt',n:3,name:()=>'Uniforme · tramo central (entre)'},
@@ -173,7 +180,7 @@ const STAGES=[
  {k:'N',t:'L',n:4,name:r=>r===1?'Normal · menor que, a la izquierda de la media':'Normal · a la izquierda de la media (menor o mayor que)'},
  {k:'N',t:'C',n:3,name:r=>r===1?'Normal · valores centrales (simétricos)':'Normal · valores centrales'}
 ];
-const PLAN=[];STAGES.forEach((s,i)=>{for(let k=0;k<s.n;k++)PLAN.push(i)});
+let STAGES=STAGES_UN,PLAN=[],topic='UN';function rebuildPlan(){PLAN=[];STAGES.forEach((s,i)=>{for(let k=0;k<s.n;k++)PLAN.push(i)})}rebuildPlan();
 const DIFF=r=>r===1?'Fácil':r===2?'Media':r===3?'Difícil':'Experta';
 
 /* ---------- generadores ---------- */
@@ -201,7 +208,7 @@ function genU(t,r){
   const steps=[
    'Largo total del rango: '+fmt(b)+' − '+fmt(a)+' = <b>'+fmt(total)+'</b>',
    'Tramo que te piden ('+(t==='lt'?'desde '+fmt(a)+' hasta '+fmt(x):t==='gt'?'desde '+fmt(x)+' hasta '+fmt(b):'entre '+fmt(x1)+' y '+fmt(x2))+'): '+tramoTxt+' = <b>'+fmt(tramo)+'</b>',
-   'P = tramo / total = '+fmt(tramo)+' / '+fmt(total)+' = <b>'+frac+' ≈ '+f4(ans)+'</b>'];
+   M('P='+MF('\\text{tramo}','\\text{total}')+'='+MF(fmt(tramo),fmt(total))+'='+MF(N/g,D/g)+'\\approx '+f4(ans))];
   const rule=t==='lt'?'"Menos de": el tramo va desde el inicio del rango (a) hasta el valor.':t==='gt'?'"Más de": el tramo va desde el valor hasta el final del rango (b).':'"Entre": el tramo es la distancia entre los dos valores.';
   return{g:{type:'U',a,b,t,x,x1,x2,total,tramo,ans},k:'U',text:qtext,ans,tol:.005,steps,rule,plot:()=>plotU(a,b,lo,hi),show:frac+' ≈ '+f4(ans)};
  }
@@ -219,7 +226,7 @@ function genN(t,r){
    const kind=r===1?'lt':pick(['lt','gt']);
    const plt=Plt(zc);const ans=kind==='lt'?plt:rnd(1-plt,4);
    const cond=(kind==='lt'?'menos de ':'más de ')+fmt(x)+U+'?';
-   const steps=['Z = ('+fmt(x)+' − '+fmt(mu)+') / '+fmt(sg)+' = <b>'+fz(zc)+'</b>',lookupTxt(zc)];
+   const steps=[M('Z='+MF(fmt(x)+'−'+fmt(mu),fmt(sg))+'='+fz(zc)),lookupTxt(zc)];
    let rule;
    if(kind==='lt'&&zc>0){rule='"Menos de" con Z positivo: área grande, se usa la tabla directo.';steps.push('P = <b>'+f4(ans)+'</b>')}
    else if(kind==='lt'){rule='"Menos de" con Z negativo: es la colita izquierda (área chica), se usa 1 − tabla.';steps.push('P = 1 − '+f4(T(zc))+' = <b>'+f4(ans)+'</b>')}
@@ -233,7 +240,7 @@ function genN(t,r){
    const p2=Plt(B.zc),p1=Plt(A.zc);const ans=rnd(p2-p1,4);
    const cond='entre '+fmt(A.x)+' y '+fmt(B.x)+U+'?';
    const steps=[
-    'Z₁ = ('+fmt(A.x)+' − '+fmt(mu)+') / '+fmt(sg)+' = <b>'+fz(A.zc)+'</b> &nbsp;·&nbsp; Z₂ = ('+fmt(B.x)+' − '+fmt(mu)+') / '+fmt(sg)+' = <b>'+fz(B.zc)+'</b>',
+    M('Z_{1}='+MF(fmt(A.x)+'−'+fmt(mu),fmt(sg))+'='+fz(A.zc))+' &nbsp;·&nbsp; '+M('Z_{2}='+MF(fmt(B.x)+'−'+fmt(mu),fmt(sg))+'='+fz(B.zc)),
     'P(Z &lt; '+fz(B.zc)+'): '+lookupTxt(B.zc)+' → '+f4(p2),
     'P(Z &lt; '+fz(A.zc)+'): '+lookupTxt(A.zc)+' → Z negativo, espejo: 1 − '+f4(T(A.zc))+' = '+f4(p1),
     'P = '+f4(p2)+' − '+f4(p1)+' = <b>'+f4(ans)+'</b>'];
@@ -250,7 +257,7 @@ function plotN(lo,hi,marks){
  const a=Math.max(lo,-3.6),b=Math.min(hi,3.6);let s='M'+X(a).toFixed(1)+' 140';
  for(let z=a;z<=b+1e-9;z+=.02)s+='L'+X(z).toFixed(1)+' '+Y(Math.exp(-z*z/2)/Math.sqrt(2*Math.PI)).toFixed(1);
  s+='L'+X(b).toFixed(1)+' 140Z';
- let m='';marks.forEach(([z,x])=>{m+='<line x1="'+X(z)+'" y1="14" x2="'+X(z)+'" y2="142" stroke="#ffc23d" stroke-dasharray="4 3"/><text x="'+X(z)+'" y="157" text-anchor="middle" font-size="12" fill="#eef0ff">'+fmt(x)+'</text><text x="'+X(z)+'" y="172" text-anchor="middle" font-size="11" fill="#a3a9d6">Z='+fz(z)+'</text>'});
+ let m='';marks.forEach(([z,x])=>{m+='<line x1="'+X(z)+'" y1="14" x2="'+X(z)+'" y2="142" stroke="#ffc23d" stroke-dasharray="4 3"/><text x="'+X(z)+'" y="157" text-anchor="middle" font-size="12" fill="#eef0ff">'+(typeof x==='string'?x:fmt(x))+'</text><text x="'+X(z)+'" y="172" text-anchor="middle" font-size="11" fill="#a3a9d6">Z='+fz(z)+'</text>'});
  return'<svg class="plot" viewBox="0 0 540 178"><path d="'+s+'" fill="#ff5d6c" opacity=".75"/><path d="'+p+'" fill="none" stroke="#5b8cff" stroke-width="2.5"/><line x1="20" y1="140" x2="520" y2="140" stroke="#5a6399"/><line x1="'+X(0)+'" y1="140" x2="'+X(0)+'" y2="146" stroke="#a3a9d6"/>'+m+'</svg>';
 }
 function plotU(a,b,lo,hi){
@@ -278,43 +285,51 @@ try{best=parseInt(localStorage.getItem('pdent_best'))||0}catch(e){}
 const CHEERS=['¡Correcto!','¡Brillante!','¡Eso es!','¡Imparable!','¡Sonrisa perfecta!','¡Diez de diez!','¡Nivel experto!','¡Qué máquina!'];
 const worth=()=>streak>=3?20:10;
 
-function buildStages(){$('stages').innerHTML=STAGES.map((s,i)=>'<div class="seg '+(s.k==='U'?'u':'n')+'" id="seg'+i+'"><i></i></div>').join('')}
+function buildStages(){$('stages').innerHTML=STAGES.map((s,i)=>'<div class="seg '+s.k.toLowerCase()+'" id="seg'+i+'"><i></i></div>').join('')}
 function hud(anim){$('hRound').textContent=round;$('hPts').textContent=pts;$('hStreak').textContent=streak;$('hBest').textContent=best;
  if(anim)['hPts','hStreak'].forEach(k=>{const e=$(k);e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop')})}
-function progress(){let done=qi;STAGES.forEach((s,i)=>{const start=PLAN.indexOf(i);const d=Math.max(0,Math.min(s.n,done-start));const seg=$('seg'+i);seg.firstChild.style.width=(d/s.n*100)+'%';seg.classList.toggle('cur',qi<20&&PLAN[qi]===i)})}
+function progress(){let done=qi;STAGES.forEach((s,i)=>{const start=PLAN.indexOf(i);const d=Math.max(0,Math.min(s.n,done-start));const seg=$('seg'+i);seg.firstChild.style.width=(d/s.n*100)+'%';seg.classList.toggle('cur',qi<PLAN.length&&PLAN[qi]===i)})}
 
 let guided=false,gSteps=null,gStep=0,gTries=0,gDone=[],lastInput=null;
 const half=()=>Math.round(worth()/2);
 function setGuidedBtn(){}
+const TOPIC_INFO={PB:['🃏 Probabilidades','Clásica, suma, condicional, Bayes'],B:['🎯 Binomial','Exactamente, al menos, a lo más'],P:['🔢 Poisson','Exactamente, a lo más, más de'],N:['🔔 Normal','Con tabla Z'],EX:['⏳ Exponencial','Tiempos de espera y Poisson'],RL:['📈 Regresión lineal','Pendiente, predicción, r'],U:['📏 Uniforme','Menos de, más de, entre',1],ED:['📊 Descriptiva','Media, desviación, cuartiles',1]};
+function setTopic(t){if(t!==topic)round=1;topic=t;STAGES=(t==='EX'?STAGES_EX:t==='RL'?STAGES_RL:t==='ED'?STAGES_ED:t==='PB'?STAGES_PB:t==='U'?STAGES_U:t==='N'?STAGES_N:t==='P'?STAGES_P:t==='B'?STAGES_B:STAGES_MIX).filter(x=>x.n>0);rebuildPlan();buildStages();progress();hud(false)}
 function startScreen(){
- $('sName').textContent='Listos para jugar';$('sProg').textContent='';
- $('main').innerHTML='<div class="center" style="font-size:44px">🦷🎲</div><h2 class="center" style="margin:6px 0 4px">Rondas de 20 preguntas</h2><p class="center" style="color:var(--mut);margin:0 0 10px">Cada ronda sube de dificultad, de uniformes a normales.</p>'+
- '<ul class="rules"><li>✅ Correcta: <b>+10</b> · ❌ Incorrecta: <b>−5</b></li><li>🔥 Con 3 o más correctas seguidas, cada acierto vale <b>doble (+20)</b></li><li>💡 Pista: <b>−3</b> (muestra el dibujo del área que hay que calcular)</li>'+
- '<li>🧭 <b>Modo guiado</b> (botón junto a la pista, en cada pregunta): te lleva paso a paso por los cálculos, pero <b>tú los haces</b>. Si te equivocas en un paso, te explica y lo vuelves a intentar sin perder puntos. Al terminar ganas <b>la mitad</b> del puntaje, y tu racha se mantiene (ni sube ni se pierde). Se activa solo para esa pregunta</li>'+
- '<li>📊 Tabla Z, 🧮 Calculadora y 🚪 Salir están siempre disponibles arriba</li>'+
- '<li>Orden de cada ronda: uniformes hacia un extremo → al otro extremo → centrales → normales "menor que" a la derecha de la media → a la izquierda → valores centrales</li></ul>'+
- '<div class="center"><button class="btn pri" id="play" style="font-size:18px;padding:12px 28px">¡Jugar! ▶</button></div>';
- $('play').onclick=()=>{qi=0;rPts=0;rHits=0;next()};
+ updZ(false);$('sName').textContent='Elige un tema';$('sProg').textContent='';
+ const tb=k=>'<button class="btn'+(k===topic?' sel':'')+(TOPIC_INFO[k][2]?' nt':'')+'" data-t="'+k+'">'+TOPIC_INFO[k][0]+'<small>'+TOPIC_INFO[k][1]+'</small>'+(TOPIC_INFO[k][2]?'<span class="ntb">No entra en la Prueba 2</span>':'')+'</button>';
+ const best=k=>{let b='';try{b=localStorage.getItem('pdent_exam_'+k)||''}catch(e){}return b?'<br>⭐ Mejor nota: '+String(b).replace('.',','):''};
+ $('main').innerHTML='<h2 class="center" style="margin:0 0 10px">🎮 Rondas cortas · 5 preguntas</h2>'+
+ '<div class="topics">'+Object.keys(TOPIC_INFO).map(tb).join('')+'</div>'+
+ '<div class="center"><button class="btn pri" id="play" style="font-size:18px;padding:12px 28px">¡Jugar! ▶</button></div>'+
+ '<h2 class="center" style="margin:22px 0 10px">📝 Simulacro Prueba 2 · ⏱ 40 min</h2><div class="topics two">'+
+ '<button class="btn" data-exam="1">🏫 Parte 1 · en sala<small>9 preguntas · 50 pts · calculadora y Tabla Z'+best(1)+'</small></button>'+
+ '<button class="btn" data-exam="2">💻 Parte 2 · laboratorio con Excel<small>5 preguntas · 30 pts'+best(2)+'</small></button></div>';
+ $('main').querySelectorAll('.topics .btn[data-t]').forEach(b=>b.onclick=()=>{setTopic(b.dataset.t);$('main').querySelectorAll('.topics .btn[data-t]').forEach(x=>x.classList.toggle('sel',x.dataset.t===topic))});
+ $('play').onclick=showCheat;
+ $('main').querySelectorAll('[data-exam]').forEach(b=>b.onclick=()=>startExam(+b.dataset.exam));
 }
 function setVal(){const v=$('valpill');if(!v)return;
  if(guided){v.className='pill';v.textContent='🧭 Guiado: vale +'+half()}
  else if(worth()===20){v.className='pill x2';v.textContent='⚡ Vale doble: +20'}
  else{v.className='pill';v.textContent='Vale +10'}}
 function next(){
- if(qi>=20)return summary();
+ if(qi>=RLEN())return summary();
  const st=STAGES[PLAN[qi]];answered=false;hintUsed=false;guided=false;
- cur=st.k==='U'?genU(st.t,round):genN(st.t,round);
- $('sName').textContent=st.name(round);$('sProg').textContent='Pregunta '+(qi+1)+' de 20 · Dificultad '+DIFF(round);
+ cur=st.k==='U'?genU(st.t,round):st.k==='N'?genN(st.t,round):st.k==='P'?genP(st.t,round):st.k==='PB'?genPB(st.t,round):st.k==='ED'?genED(st.t,round):st.k==='EX'?genEX(st.t,round):st.k==='RL'?genRL(st.t,round):genB(st.t,round);updZ(cur.k==='N');
+ $('sName').textContent=st.name(round);$('sProg').textContent='Pregunta '+(qi+1)+' de '+RLEN()+' · Dificultad '+DIFF(round);
  progress();
- $('main').innerHTML='<div class="pills"><span class="pill '+(cur.k==='U'?'u':'n')+'">'+(cur.k==='U'?'Uniforme':'Normal')+'</span><span class="pill">Ronda '+round+'</span><span id="valpill"></span></div>'+
+ $('main').innerHTML='<div class="pills"><span class="pill '+cur.k.toLowerCase()+'">'+({U:'Uniforme',N:'Normal',P:'Poisson',B:'Binomial',PB:'Probabilidades',ED:'Descriptiva',EX:'Exponencial',RL:'Regresión'})[cur.k]+'</span><span class="pill">Ronda '+round+'</span><span id="valpill"></span></div>'+
  '<div class="q">'+cur.text+'</div><div id="area"></div><div class="err" id="err"></div><div id="hintbox"></div><div id="fb"></div>';
  renderArea();
 }
 function renderArea(){
  setVal();$('err').textContent='';if(!guided)$('hintbox').innerHTML='';
  if(guided){startGuide();return}
- $('area').innerHTML='<div class="ansrow"><input type="text" id="ans" placeholder="Ej: 0,25 · 1/4 · 25%" autocomplete="off"><button class="btn pri" id="go">Responder ➜</button><button class="btn sm" id="hint">💡 Pista (−3)</button><button class="btn sm" id="gmode">🧭 Guíame paso a paso (½ pts)</button></div>';
- $('go').onclick=answer;$('hint').onclick=hint;$('gmode').onclick=()=>{if(answered)return;guided=true;renderArea()};
+ if(cur.choices){$('area').innerHTML='<div class="choice">'+cur.choices.map(c=>'<button class="btn" data-v="'+c.v+'">'+c.l+'</button>').join('')+'</div><div style="margin-top:8px"><button class="btn sm" id="hint">💡 Pista (−3)</button></div>';
+  $('area').querySelectorAll('.choice .btn').forEach(b=>b.onclick=()=>{if(answered)return;$('area').querySelectorAll('button').forEach(x=>x.disabled=true);b.style.outline='3px solid var(--gold)';finish(b.dataset.v===cur.ansChoice?'ok':'bad',b.textContent)});$('hint').onclick=hint;return}
+ $('area').innerHTML='<div class="ansrow"><input type="text" id="ans" placeholder="'+(cur.num?'Ej: 4,52':'Ej: 0,25 · 1/4 · 25%')+'" autocomplete="off"><button class="btn pri" id="go">Responder ➜</button><button class="btn sm" id="hint">💡 Pista (−3)</button><button class="btn sm" id="gmode">🧭 Guíame paso a paso (½ pts)</button></div>';
+ $('go').onclick=answer;$('hint').onclick=hint;$('gmode').onclick=()=>{if(answered)return;guided=true;renderArea()};if(!cur.g)$('gmode').style.display='none';
  $('ans').addEventListener('input',()=>$('err').textContent='');
  $('ans').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.stopPropagation();answer()}});
  $('ans').focus();lastInput=$('ans');
@@ -326,41 +341,41 @@ function parseNum(v){v=v.trim().replace(/\s/g,'').replace(/,/g,'.').replace(/−
  if(v.includes('/')){const[a,b]=v.split('/');n=parseFloat(a)/parseFloat(b)}else n=parseFloat(v);return isFinite(n)?n:NaN}
 function hint(){if(answered||hintUsed)return;hintUsed=true;pts=Math.max(0,pts-3);rPts-=3;hud(true);
  $('hint').style.display='none';
- $('hintbox').innerHTML='<div class="fb hint"><span class="t">💡 Pista (−3)</span>Esta es el área que tienes que calcular:'+cur.plot()+'<div style="margin-top:6px">'+cur.rule+'</div></div>'}
+ $('hintbox').innerHTML='<div class="fb hint"><span class="t">💡 Pista (−3)</span>'+(cur.hint?cur.hint:'Esto es lo que tienes que calcular:'+cur.plot()+'<div style="margin-top:6px">'+cur.rule+'</div>')+'</div>'}
 function answer(){
- if(answered)return;const n=parse($('ans').value);
+ if(answered)return;const n=(cur.num?parseNum:parse)($('ans').value);
  if(isNaN(n)){$('err').textContent='Escribe una respuesta primero (por ejemplo 0,25 · 1/4 · 25%)';return}
  $('ans').disabled=true;$('go').style.display='none';const h=$('hint');if(h)h.style.display='none';
- finish(Math.abs(n-cur.ans)<=cur.tol?'ok':'bad',n);
+ finish((cur.alts||[cur.ans]).some(a=>Math.abs(n-a)<=cur.tol)?'ok':'bad',n);
 }
 function finish(outcome,n){
  if(answered)return;answered=true;let head;const m=$('main');
  if(outcome==='ok'){const w=worth();pts+=w;rPts+=w;streak++;rHits++;
   head='<div class="fb ok"><span class="t">🎉 '+pick(CHEERS)+' +'+w+' pts</span>';
-  setTimeout(()=>boom(qi===19?3:(w===20?2:1)),30)}
+  setTimeout(()=>boom(qi===RLEN()-1?3:(w===20?2:1)),30)}
  else if(outcome==='guided'){const w=half();pts+=w;rPts+=w;rHits++;
   head='<div class="fb ok"><span class="t">🧭 ¡Lo resolviste paso a paso! +'+w+' pts</span>Modo guiado: mitad del puntaje, la racha se mantiene en '+streak+'.<br>';
-  setTimeout(()=>boom(qi===19?3:1),30)}
+  setTimeout(()=>boom(qi===RLEN()-1?3:1),30)}
  else if(outcome==='gaveup'){streak=0;
   head='<div class="fb bad"><span class="t">🏳️ Solución revelada · 0 pts</span>La racha vuelve a 0. Respuesta correcta: <b>'+cur.show+'</b><br>'}
  else{pts=Math.max(0,pts-5);rPts-=5;streak=0;
-  head='<div class="fb bad"><span class="t">😬 Casi… −5 pts, la racha vuelve a 0</span>Tu respuesta: '+fmt(n)+' · Correcta: <b>'+cur.show+'</b><br>';
+  head='<div class="fb bad"><span class="t">😬 Casi… −5 pts, la racha vuelve a 0</span>Tu respuesta: '+(typeof n==='number'?fmt(n):n)+' · Correcta: <b>'+cur.show+'</b><br>';
   m.classList.remove('shake');void m.offsetWidth;m.classList.add('shake')}
  hud(true);
  $('fb').innerHTML=head+'<b>Cómo se resuelve:</b><ol class="steps">'+cur.steps.map(s=>'<li>'+s+'</li>').join('')+'</ol><div style="margin-top:6px;color:#d8dcff">📌 '+cur.rule+'</div>'+cur.plot()+
-  '<div class="center" style="margin-top:12px"><button class="btn pri" id="nx">'+(qi===19?'Ver resultados 🏁':'Siguiente ➜')+'</button></div></div>';
+  '<div class="center" style="margin-top:12px"><button class="btn pri" id="nx">'+(qi===RLEN()-1?'Ver resultados 🏁':'Siguiente ➜')+'</button></div></div>';
  const nx=$('nx');nx.disabled=true;nx.style.opacity='.5';setTimeout(()=>{nx.disabled=false;nx.style.opacity='';nx.focus({preventScroll:true})},1200);nx.onclick=()=>{if(nx.disabled)return;qi++;next()};$('fb').scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 
 /* ---------- modo guiado ---------- */
 function zStep(lab,n,x,mu,sg,zv,neg){return{lab,val:zv,tol:.006,
- q:'<b>Paso '+n+' · Estandarizar.</b> Pasa el valor a la escala Z con <b>Z = (x − μ) ÷ σ</b>. Aquí x = '+fmt(x)+', μ = '+fmt(mu)+' y σ = '+fmt(sg)+'. Primero resta y después divide. Redondea a 2 decimales.',
+ q:'<b>Paso '+n+' · Estandarizar.</b> Pasa el valor a la escala Z con '+M('Z='+MF('x−μ','σ'))+'. Aquí x = '+fmt(x)+', μ = '+fmt(mu)+' y σ = '+fmt(sg)+'. Primero resta y después divide. Redondea a 2 decimales.',
  tip:neg?'Este valor está bajo la media, así que tu Z tiene que salir <b>negativo</b>. Revisa el signo de la resta.':'Este valor está sobre la media, así que tu Z tiene que salir positivo. Primero haz la resta (x − μ) y recién después divide por σ.',
  tip2:'Calcula ('+fmt(x)+' − '+fmt(mu)+') ÷ '+fmt(sg)+'.'}}
 function tStep(lab,n,z,intro){const[r,c]=rowcol(z);return{lab,val:T(z),tol:.0006,prob:true,
  q:'<b>Paso '+n+' · Buscar en la tabla.</b> '+intro+' En la tabla, la <b>fila</b> es la unidad y el primer decimal, y la <b>columna</b> es el segundo decimal. Escribe el número de la celda (puedes abrir 📊 Tabla Z).',
  tip:'Es un número de 4 decimales entre 0,5 y 1, por ejemplo 0,8413.',tip2:'Busca la fila <b>'+r+'</b> y la columna <b>'+c+'</b>.'}}
-function buildGuide(c){const g=c.g;
+function buildGuide(c){const g=c.g;if(g.type==='PB')return g.gs;if(g.type==='P')return guideP(g,c);if(g.type==='B')return guideB(g,c);
  if(g.type==='U'){
   const tq=g.t==='lt'?'Te preguntan "menos de '+fmt(g.x)+'": el tramo parte en el inicio del rango (a = '+fmt(g.a)+') y llega hasta '+fmt(g.x)+'.':
    g.t==='gt'?'Te preguntan "más de '+fmt(g.x)+'": el tramo parte en '+fmt(g.x)+' y llega hasta el final del rango (b = '+fmt(g.b)+').':
@@ -422,23 +437,23 @@ function checkStep(choice,label){
 
 /* ---------- resumen y salir ---------- */
 function summary(){
- progress();rPts=Math.max(0,rPts);
+ updZ(false);progress();rPts=Math.max(0,rPts);
  const nb=rPts>best;if(nb){best=rPts;try{localStorage.setItem('pdent_best',best)}catch(e){}}
  hud(false);$('sName').textContent='Ronda '+round+' completada';$('sProg').textContent='';
- const msg=rHits>=18?'¡Dominan la materia! 🏆':rHits>=14?'¡Muy bien! Un poco más y es perfecto 💪':rHits>=10?'Van bien, repasen las etapas donde fallaron 📚':'Repitan la ronda con calma y usen el modo guiado 🧭';
- $('main').innerHTML='<div class="center" style="font-size:44px">🏁</div><h2 class="center" style="margin:4px 0">Ronda '+round+' ('+DIFF(round)+') completada</h2>'+(nb?'<p class="center" style="color:var(--gold);font-weight:800;margin:4px 0">⭐ ¡Nuevo récord!</p>':'')+
- '<div class="sumgrid"><div class="stat center"><div class="l">Puntos de la ronda</div><div class="v">'+rPts+'</div></div><div class="stat center"><div class="l">Aciertos</div><div class="v">'+rHits+'/20</div></div><div class="stat center"><div class="l">Récord ronda</div><div class="v">'+best+'</div></div></div>'+
- '<p class="center">'+msg+'</p><div class="center" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn sm" id="rep">↻ Repetir ronda '+round+'</button><button class="btn pri" id="up">Ronda '+(round+1)+': '+DIFF(round+1)+' ➜</button></div>';
- if(rHits>=14)setTimeout(()=>boom(3),100);
- $('rep').onclick=()=>{qi=0;rPts=0;rHits=0;next()};
+ const msg=rHits>=RLEN()*.9?'¡Dominan la materia! 🏆':rHits>=RLEN()*.7?'¡Muy bien! Un poco más y es perfecto 💪':rHits>=RLEN()*.5?'Van bien, repasen las etapas donde fallaron 📚':'Repitan la ronda con calma y usen el modo guiado 🧭';
+ $('main').innerHTML='<div class="center" style="font-size:44px">🏁</div><h2 class="center" style="margin:4px 0">Ronda '+round+' ('+DIFF(round)+') completada</h2><p class="center" style="color:var(--mut);margin:0">'+TOPIC_INFO[topic][0]+'</p>'+(nb?'<p class="center" style="color:var(--gold);font-weight:800;margin:4px 0">⭐ ¡Nuevo récord!</p>':'')+
+ '<div class="sumgrid"><div class="stat center"><div class="l">Puntos de la ronda</div><div class="v">'+rPts+'</div></div><div class="stat center"><div class="l">Aciertos</div><div class="v">'+rHits+'/'+RLEN()+'</div></div><div class="stat center"><div class="l">Récord ronda</div><div class="v">'+best+'</div></div></div>'+
+ '<p class="center">'+msg+'</p><div class="center" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn sm" id="chg">🏠 Inicio</button><button class="btn sm" id="rep">↻ Repetir ronda '+round+'</button><button class="btn pri" id="up">Ronda '+(round+1)+': '+DIFF(round+1)+' ➜</button></div>';
+ if(rHits>=RLEN()*.7)setTimeout(()=>boom(3),100);
+ $('rep').onclick=()=>{qi=0;rPts=0;rHits=0;next()};$('chg').onclick=()=>{qi=0;rPts=0;rHits=0;cur=null;progress();startScreen()};
  $('up').onclick=()=>{round++;qi=0;rPts=0;rHits=0;hud(false);next()};
 }
 function exitGame(){
- $('ov').classList.remove('on');$('calcP').classList.remove('on');
- $('main').innerHTML='<div class="center" style="font-size:40px">🚪</div><h2 class="center" style="margin:6px 0">¿Salir del juego?</h2><p class="center" style="color:var(--mut)">Se pierde el avance de la ronda actual. Tus puntos totales ('+pts+') y tu récord se quedan guardados.</p>'+
- '<div class="center" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn" id="exNo">Seguir jugando</button><button class="btn pri" id="exYes">Sí, salir</button></div>';
- $('exNo').onclick=()=>{if(qi>0||cur){next()}else startScreen()};
- $('exYes').onclick=()=>{
+ $('ov').classList.remove('on');$('calcP').classList.remove('on');let ox=$('ovX');
+ if(!ox){ox=document.createElement('div');ox.className='overlay';ox.id='ovX';document.body.appendChild(ox)}
+ ox.innerHTML='<div class="modal" style="max-width:420px;margin-top:15vh"><div class="center" style="font-size:40px">🚪</div><h2 class="center" style="margin:6px 0">¿Salir?</h2><p class="center" style="color:var(--mut)">'+(exam&&!exam.done?'Se pierde el simulacro en curso.':'Se pierde el avance de la ronda actual. Tus puntos totales ('+pts+') y tu récord se quedan guardados.')+'</p><div class="center" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn" id="exNo">Seguir</button><button class="btn pri" id="exYes">Sí, salir</button></div></div>';
+ ox.classList.add('on');$('exNo').onclick=()=>ox.classList.remove('on');
+ $('exYes').onclick=()=>{ox.classList.remove('on');updZ(false);clearInterval(exTimer);exam=null;
   $('sName').textContent='Fuera del juego';$('sProg').textContent='';
   $('main').innerHTML='<div class="center" style="font-size:44px">👋</div><h2 class="center" style="margin:6px 0">¡Hasta la próxima!</h2><p class="center">Puntos totales: <b>'+pts+'</b> · Récord de ronda: <b>'+best+'</b></p>'+
   '<p class="center" style="color:var(--mut)">Si esta ventana no se cierra sola, ciérrala con <b>Cmd + W</b> (Mac) o <b>Ctrl + W</b> (Windows), o con la ✕ de tu navegador.</p>'+
@@ -452,8 +467,11 @@ function exitGame(){
 let cExpr='',cLast=null;
 function calcEval(src){const s=src.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/,/g,'.').replace(/\s/g,'');let i=0;
  function num(){const st=i;while(i<s.length&&/[0-9.]/.test(s[i]))i++;if(st===i)throw 0;const v=Number(s.slice(st,i));if(!isFinite(v))throw 0;return v}
- function fac(){if(s[i]==='-'){i++;return -fac()}if(s[i]==='+'){i++;return fac()}if(s[i]==='('){i++;const v=ex();if(s[i]!==')')throw 0;i++;return v}return num()}
- function term(){let v=fac();while(s[i]==='*'||s[i]==='/'){const o=s[i++],r=fac();v=o==='*'?v*r:v/r}return v}
+ function prim(){if(s[i]==='('){i++;const v=ex();if(s[i]!==')')throw 0;i++;return v}if(s[i]==='e'){i++;return Math.E}return num()}
+ function post(){let v=prim();while(s[i]==='!'){i++;if(v<0||v>170||Math.abs(v-Math.round(v))>1e-9)throw 0;let f=1;for(let k=2;k<=Math.round(v);k++)f*=k;v=f}return v}
+ function pw(){const b=post();if(s[i]==='^'){i++;return Math.pow(b,un())}if(s[i]==='C'){i++;const k=post();if(b<0||k<0||k>b||Math.abs(b-Math.round(b))>1e-9||Math.abs(k-Math.round(k))>1e-9)throw 0;let c=1;for(let j=1;j<=k;j++)c=c*(b-k+j)/j;return Math.round(c)}return b}
+ function un(){if(s[i]==='√'){i++;return Math.sqrt(un())}if(s[i]==='-'){i++;return -un()}if(s[i]==='+'){i++;return un()}return pw()}
+ function term(){let v=un();while(s[i]==='*'||s[i]==='/'||s[i]==='('||s[i]==='e'){if(s[i]==='('||s[i]==='e'){v*=un();continue}const o=s[i++],r=un();v=o==='*'?v*r:v/r}return v}
  function ex(){let v=term();while(s[i]==='+'||s[i]==='-'){const o=s[i++],r=term();v=o==='+'?v+r:v-r}return v}
  if(!s)throw 0;const v=ex();if(i!==s.length||!isFinite(v))throw 0;return v}
 const cShow=v=>String(rnd(v,6)).replace('-','−').replace('.',',');
@@ -461,8 +479,9 @@ function cRender(){$('cExpr').textContent=cExpr;let r='';try{if(cExpr)r=cShow(ca
 function cKey(k){$('cErr').textContent='';
  if(k==='C'){cExpr='';cLast=null}
  else if(k==='back')cExpr=cExpr.slice(0,-1);
+ else if(k==='ncr'){cExpr+='C'}
  else if(k==='='){try{cLast=calcEval(cExpr);cExpr=cShow(cLast)}catch(e){$('cErr').textContent='Revisa la operación (paréntesis o signos)'}}
- else{if(cLast!==null&&/^[0-9,(]$/.test(k)&&cExpr===cShow(cLast)){cExpr='';cLast=null}cExpr+=k}
+ else{if(cLast!==null&&(/^[0-9,(]$/.test(k)||k==='e'||k==='e^('||k==='√(')&&cExpr===cShow(cLast)){cExpr='';cLast=null}cExpr+=k}
  cRender()}
 $('cKeys').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b)cKey(b.dataset.k)});
 const CP=$('calcP'),CH=$('cHead');let cdrag=null,cPlaced=false;
@@ -482,14 +501,14 @@ $('cCopy').onclick=()=>{const v=cVal();if(v===null||v===undefined){cMsg('Primero
  const fallback=()=>{const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();cMsg(ok?'📋 Copiado: '+t+' (pégalo con Cmd/Ctrl + V)':'No se pudo copiar; usa los botones ↳',ok)};
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>cMsg('📋 Copiado: '+t+' (pégalo con Cmd/Ctrl + V)',true),fallback);else fallback()};
 $('cUse').onclick=()=>{const v=cVal();if(v===null||v===undefined){cMsg('Primero haz un cálculo');return}
- if(!lastInput||!document.body.contains(lastInput)||lastInput.disabled||lastInput.id==='zin'){const a=$('gin')||$('ans');if(a&&!a.disabled)lastInput=a;else{cMsg('No hay una casilla de respuesta abierta ahora');return}}
+ if(!lastInput||!document.body.contains(lastInput)||lastInput.disabled||lastInput.id==='zin'){const a=$('gin')||$('ans')||document.querySelector('.exin:not(:disabled)');if(a&&!a.disabled)lastInput=a;else{cMsg('No hay una casilla de respuesta abierta ahora');return}}
  lastInput.value=String(rnd(v,4)).replace('.',',');lastInput.dispatchEvent(new Event('input'));cMsg('↳ Puesto en tu respuesta',true);lastInput.focus({preventScroll:true})};
 $('cZ').onclick=()=>{const v=cVal();if(v===null||v===undefined){cMsg('Primero haz un cálculo');return}
  $('ov').classList.add('on');$('zin').value=cTxt(rnd(v,2));lookup();cMsg('↳ Buscado en la Tabla Z (Z redondeado a 2 decimales)',true)};
-document.addEventListener('focusin',e=>{const t=e.target;if(t&&(t.id==='ans'||t.id==='gin'))lastInput=t});
+document.addEventListener('focusin',e=>{const t=e.target;if(t&&(t.id==='ans'||t.id==='gin'||(t.classList&&t.classList.contains('exin'))))lastInput=t});
 document.addEventListener('keydown',e=>{if(!CP.classList.contains('on')||!CP.contains(document.activeElement))return;const k=e.key;let m=null;
- if(/^[0-9]$/.test(k)||k==='('||k===')'||k==='+')m=k;else if(k==='-')m='−';else if(k==='*'||k==='x')m='×';else if(k==='/')m='÷';else if(k===','||k==='.')m=',';
- else if(k==='Enter'||k==='=')m='=';else if(k==='Backspace')m='back';else if(k==='Delete'||k==='c'||k==='C')m='C';
+ if(/^[0-9]$/.test(k)||k==='('||k===')'||k==='+'||k==='^'||k==='!'||k==='e')m=k;else if(k==='-')m='−';else if(k==='*'||k==='x')m='×';else if(k==='/')m='÷';else if(k===','||k==='.')m=',';
+ else if(k==='Enter'||k==='=')m='=';else if(k==='Backspace')m='back';else if(k==='Delete'||k==='c'||k==='C')m='C';else if(k==='E')m='e^(';
  if(m){e.preventDefault();e.stopPropagation();cKey(m)}});
 $('exitB').onclick=exitGame;
 
@@ -497,7 +516,7 @@ $('exitB').onclick=exitGame;
 function zRow(lab,v){const t=f4(v);return'<div class="zrow"><span style="flex:1;min-width:150px">'+lab+': <b>'+t+'</b></span><button class="btn" data-za="copy" data-v="'+v+'">📋 Copiar</button><button class="btn gold" data-za="ans" data-v="'+v+'">↳ Respuesta</button><button class="btn gold" data-za="calc" data-v="'+v+'">↳ Calculadora</button></div>'}
 function copyText(t,msg){const fb=()=>{const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();msg(ok?'📋 Copiado: '+t+' (pégalo con Cmd/Ctrl + V)':'No se pudo copiar; usa los botones ↳',ok)};
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>msg('📋 Copiado: '+t+' (pégalo con Cmd/Ctrl + V)',true),fb);else fb()}
-function answerBox(){if(lastInput&&document.body.contains(lastInput)&&!lastInput.disabled&&lastInput.id!=='zin')return lastInput;const a=$('gin')||$('ans');return a&&!a.disabled?a:null}
+function answerBox(){if(lastInput&&document.body.contains(lastInput)&&!lastInput.disabled&&lastInput.id!=='zin')return lastInput;if(exam&&!exam.done){const f=document.querySelector('.exin:not(:disabled)');if(f)return f}const a=$('gin')||$('ans');return a&&!a.disabled?a:null}
 $('zres').addEventListener('click',e=>{const b=e.target.closest('[data-za]');if(!b)return;const v=parseFloat(b.dataset.v),t=v.toFixed(4).replace('.',',');
  const msg=(m,ok)=>{const el=$('zmsg');if(el){el.textContent=m;el.classList.toggle('ok',!!ok)}};
  if(b.dataset.za==='copy')copyText(t,msg);
@@ -506,6 +525,748 @@ $('zres').addEventListener('click',e=>{const b=e.target.closest('[data-za]');if(
  else{if(!CP.classList.contains('on')){CP.classList.add('on');if(!cPlaced){cPlace(innerWidth-CP.offsetWidth-16,80);cPlaced=true}}
   if(cExpr===''||/[+−×÷(]$/.test(cExpr))cExpr+=t;else{cExpr=t;cLast=null}
   cRender();msg('↳ Agregado a la calculadora: '+t,true)}});
+
+/* ---------- Poisson ---------- */
+const STAGES_P=[
+ {k:'P',t:'eq',n:2,name:()=>'Poisson · exactamente k'},
+ {k:'P',t:'le',n:1,name:r=>r===1?'Poisson · a lo más k (suma desde 0)':'Poisson · a lo más / menos de k (suma desde 0)'},
+ {k:'P',t:'gt',n:2,name:r=>r===1?'Poisson · más de k (complemento)':'Poisson · más de / al menos k (complemento)'}];
+const PC=[
+ {s:L=>'En una clínica, el promedio de caries que presenta un paciente es '+L+' por visita.',q:'un paciente tenga',n:'caries'},
+ {s:L=>'En una clínica, el promedio de pacientes con gingivitis que se atienden por día es '+L+'.',q:'un día se atiendan',n:'pacientes con gingivitis'},
+ {s:L=>'En una clínica odontológica se atienden en promedio '+L+' urgencias dentales por semana.',q:'se atiendan',n:'urgencias en una semana'},
+ {s:L=>'En promedio, '+L+' pacientes por semana requieren extracción de muelas del juicio en una clínica.',q:'esta semana haya',n:'extracciones'},
+ {s:L=>'Una clínica recibe un promedio de '+L+' visitas de emergencia odontológica por día.',q:'hoy lleguen',n:'pacientes de emergencia'},
+ {s:L=>'En una clínica dental, el promedio de consultas sin cita previa es de '+L+' al día.',q:'hoy se presenten',n:'consultas sin cita'},
+ {s:L=>'Un laboratorio dental recibe en promedio '+L+' prótesis para reparar por semana.',q:'esta semana lleguen',n:'prótesis para reparar'}];
+const fact=n=>{let f=1;for(let i=2;i<=n;i++)f*=i;return f};
+const pmf=(L,k)=>Math.exp(-L)*Math.pow(L,k)/fact(k);
+const cdfP=(L,m)=>{let s=0;for(let i=0;i<=m;i++)s+=pmf(L,i);return s};
+const PRULE={eq:'"Exactamente k": se usa la fórmula una sola vez, con ese k.',alomas:'"A lo más k" incluye el k: P(X ≤ k) = P(0) + P(1) + … + P(k).',menos:'"Menos de k" NO incluye el k: P(X < k) = P(X ≤ k − 1).',mas:'"Más de k" NO incluye el k: P(X > k) = 1 − P(X ≤ k).',almenos:'"Al menos k" incluye el k: P(X ≥ k) = 1 − P(X ≤ k − 1).'};
+let lastPctx='';
+function genP(t,r){
+ for(let tries=0;tries<80;tries++){
+  let c;do{c=pick(PC)}while(c.n===lastPctx&&PC.length>1);lastPctx=c.n;
+  const L=r===1?rint(1,5):r===2?stepGrid(1.5,7,.5):stepGrid(.8,9,.1);
+  let kind,k,m;
+  if(t==='eq'){kind='eq';k=rint(r===1?1:0,Math.max(2,Math.round(L)+3));m=k}
+  else if(t==='le'){kind=r===1?'alomas':pick(['alomas','menos']);if(kind==='alomas'){k=rint(1,r===1?3:5);m=k}else{k=rint(2,r===1?4:6);m=k-1}}
+  else{kind=r===1?'mas':pick(['mas','almenos']);if(kind==='mas'){k=rint(1,r===1?4:5);m=k}else{k=rint(2,6);m=k-1}}
+  const comp=kind==='mas'||kind==='almenos';
+  const cdf=cdfP(L,m);const ans=kind==='eq'?pmf(L,k):comp?1-cdf:cdf;
+  if(ans<.005||ans>.995)continue;
+  const Ls=fmt(L);const cond={eq:'exactamente ',alomas:'a lo más ',menos:'menos de ',mas:'más de ',almenos:'al menos '}[kind]+k;
+  const text=c.s(Ls)+' ¿Cuál es la probabilidad de que '+c.q+' '+cond+' '+c.n+'?';
+  const e=Math.exp(-L),pw=Math.pow(L,k);let steps;
+  if(kind==='eq')steps=['λ = <b>'+Ls+'</b> (el promedio) · k = <b>'+k+'</b> (lo que preguntan)',
+   M('P(X='+k+')='+MF('e^{−'+Ls+'}\\cdot '+Ls+'^{'+k+'}',k+'!')),
+   M('='+MF(f4(e)+'\\times '+fmt(pw),fact(k))+'='+f4(ans)),
+   'En Excel: <code>=POISSON.DIST('+k+'; '+Ls+'; FALSO)</code>'];
+  else{const terms=[];for(let i=0;i<=m;i++)terms.push('P('+i+') = '+f4(pmf(L,i)));
+   steps=['λ = <b>'+Ls+'</b> · Te preguntan "'+cond+'": '+PRULE[kind],
+    'Términos: '+terms.join(' · '),
+    'P(X ≤ '+m+') = '+f4(cdf)+(comp?'':' → <b>'+f4(ans)+'</b>')];
+   if(comp)steps.push('Complemento: 1 − '+f4(cdf)+' = <b>'+f4(ans)+'</b>');
+   steps.push('En Excel: <code>='+(comp?'1 − ':'')+'POISSON.DIST('+m+'; '+Ls+'; VERDADERO)</code>')}
+  const hl=i=>kind==='eq'?i===k:comp?i>m:i<=m;
+  return{g:{type:'P',L,k,m,kind,comp,cdf,ans,e,pw,cond},k:'P',text,ans,tol:kind==='eq'?.002:.003,steps,rule:PRULE[kind],plot:()=>plotP(L,Math.max(m,k),hl),show:f4(ans)};
+ }
+}
+function plotP(L,top,hl){const N=Math.min(16,Math.max(8,top+4,Math.ceil(L)+4));const vals=[];let mx=0;for(let i=0;i<=N;i++){const v=pmf(L,i);vals.push(v);mx=Math.max(mx,v)}
+ const bw=480/(N+1);let h='';
+ vals.forEach((v,i)=>{const H=v/mx*110,x=40+i*bw;h+='<rect x="'+(x+bw*.12).toFixed(1)+'" y="'+(130-H).toFixed(1)+'" width="'+(bw*.76).toFixed(1)+'" height="'+H.toFixed(1)+'" rx="3" fill="'+(hl(i)?'#ff5d6c':'#5b8cff')+'" opacity="'+(hl(i)?'.9':'.45')+'"/><text x="'+(x+bw/2).toFixed(1)+'" y="146" text-anchor="middle" font-size="11" fill="#a3a9d6">'+i+(i===N?'…':'')+'</text>'});
+ return'<svg class="plot" viewBox="0 0 540 160"><line x1="30" y1="130" x2="530" y2="130" stroke="#5a6399"/>'+h+'<text x="34" y="14" font-size="11" fill="#a3a9d6">Rojo = los valores de X que te piden</text></svg>'}
+function guideP(g,c){const Ls=fmt(g.L);
+ const S=[{lab:'λ',val:g.L,tol:.001,q:'<b>Paso 1 · Identificar λ.</b> λ es el <b>promedio</b> que da el enunciado. ¿Cuánto vale?',tip:'Busca la frase con "promedio" o "en promedio".',tip2:'Relee la primera oración: ahí aparece el '+Ls+'.'}];
+ if(g.kind==='eq'){const k=g.k;
+  S.push({lab:'k',val:k,tol:.001,q:'<b>Paso 2 · Identificar k.</b> k es el número <b>exacto</b> por el que te preguntan. ¿Cuánto vale?',tip:'k no es el promedio: es el número que aparece después de "exactamente".',tip2:'Fíjate en "'+g.cond+'".'});
+  S.push({lab:'e^(−λ)',val:g.e,tol:Math.max(.00006,g.e*.01),q:'<b>Paso 3 · Calcula e^(−λ).</b> En la calculadora usa la tecla eˣ con <b>−λ</b> (¡con el signo menos!). Usa 4 decimales o más.',tip:'Tiene que darte un número entre 0 y 1. Si te da más que 1, te faltó el signo menos.',tip2:'Calcula e^(−'+Ls+').'});
+  S.push({lab:'λ^k',val:g.pw,tol:Math.max(.001,g.pw*.001),q:'<b>Paso 4 · Calcula λ^k.</b> Eleva el promedio a k.',tip:k===0?'Cualquier número elevado a 0 da 1.':'Es λ multiplicado por sí mismo k veces.',tip2:'Calcula '+Ls+'^'+k+'.'});
+  const fl=[];for(let i=k;i>=1;i--)fl.push(i);
+  S.push({lab:'k!',val:fact(k),tol:.001,q:'<b>Paso 5 · Calcula k! (factorial).</b>',tip:'k! = k · (k − 1) · … · 1. Ojo: 0! = 1.',tip2:k<=1?k+'! = 1.':'Calcula '+fl.join(' · ')+'.'});
+  S.push({lab:'Probabilidad',val:g.ans,tol:.002,prob:true,q:'<b>Paso 6 · Junta todo:</b> '+M(MF('e^{−λ}\\cdot λ^{k}','k!'))+'. Multiplica los pasos 3 y 4 y divide por el paso 5.',tip:'Puedes usar la 🧮 calculadora y los botones ↳.',tip2:'Calcula '+f4(g.e)+' × '+fmt(g.pw)+' ÷ '+fact(g.k)+'.'});
+  return S}
+ S.push({lab:'Sumar hasta X =',val:g.m,tol:.001,q:'<b>Paso 2 · ¿Hasta qué valor de X tienes que sumar?</b> Te preguntan "'+g.cond+'". Piensa si ese número se incluye o no'+(g.comp?', y fíjate que conviene usar el complemento: 1 − P(X ≤ algo)':'')+'. Las sumas siempre parten en X = 0.',tip:PRULE[g.kind],tip2:'Tienes que sumar desde P(X = 0) hasta P(X = '+g.m+').'});
+ for(let i=0;i<=g.m;i++){const v=pmf(g.L,i);S.push({lab:'P(X = '+i+')',val:v,tol:.0006,prob:true,q:'<b>Paso '+(S.length+1)+' · Calcula P(X = '+i+')</b> = e^(−λ) · λ^'+i+' ÷ '+i+'!',tip:'Es la fórmula de siempre con k = '+i+'. Recuerda que 0! = 1 y λ⁰ = 1.',tip2:'Calcula e^(−'+Ls+') × '+Ls+'^'+i+' ÷ '+fact(i)+'.'})}
+ S.push({lab:'P(X ≤ '+g.m+')',val:g.cdf,tol:.002,prob:true,q:'<b>Paso '+(S.length+1)+' · Suma</b> todos los P(X = …) que calculaste. Eso es P(X ≤ '+g.m+').',tip:'Suma los resultados de los pasos anteriores, desde P(X = 0).',tip2:'Son '+(g.m+1)+' términos: P(0) + … + P('+g.m+').'});
+ if(g.comp)S.push({lab:'Probabilidad',val:g.ans,tol:.003,prob:true,q:'<b>Paso '+(S.length+1)+' · Complemento.</b> Como te preguntan "'+g.cond+'", la respuesta es <b>1 − P(X ≤ '+g.m+')</b>.',tip:'Lo que te piden es "todo lo demás": resta tu suma a 1.',tip2:'Calcula 1 − '+f4(g.cdf)+'.'});
+ return S}
+
+const STAGES_U=[Object.assign({},STAGES_UN[0],{n:2}),Object.assign({},STAGES_UN[1],{n:2}),Object.assign({},STAGES_UN[2],{n:1})];
+const STAGES_N=[Object.assign({},STAGES_UN[3],{n:2}),Object.assign({},STAGES_UN[4],{n:2}),Object.assign({},STAGES_UN[5],{n:1})];
+function updZ(on){$('openT').style.display=on?'':'none';const cz=$('cZ');if(cz){cz.style.display=on?'':'none';cz.parentNode.style.gridTemplateColumns=on?'1fr 1fr 1fr':'1fr 1fr'}if(!on)$('ov').classList.remove('on')}
+
+
+/* ---------- fórmulas bonitas: mini TeX → MathML (nativo del navegador) ---------- */
+function M(src,block){let i=0;const s=String(src);
+ const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+ const SYM={sum:'∑',cdot:'·',times:'×',div:'÷',le:'≤',ge:'≥',approx:'≈',cap:'∩',cup:'∪',mid:'|',neq:'≠',to:'→',ldots:'…'};
+ function seq(stop){const out=[];while(i<s.length){if(stop&&s[i]===stop){i++;break}let n=atom();if(n===null)continue;
+  while(s[i]==='^'||s[i]==='_'){const t=s[i++];const a=grp();n=(t==='^'?'<msup>':'<msub>')+n+a+(t==='^'?'</msup>':'</msub>')}
+  out.push(n)}return'<mrow>'+out.join('')+'</mrow>'}
+ function grp(){while(s[i]===' ')i++;if(s[i]==='{'){i++;return seq('}')}return atom()||'<mrow></mrow>'}
+ function raw(){while(s[i]===' ')i++;if(s[i]!=='{')return'';i++;let d=1,st=i;while(i<s.length&&d){if(s[i]==='{')d++;else if(s[i]==='}')d--;i++}return s.slice(st,i-1)}
+ function atom(){const c=s[i];
+  if(c===' '){i++;return null}
+  if(c==='\\'){i++;let nm='';while(i<s.length&&/[a-zA-Z]/.test(s[i]))nm+=s[i++];
+   if(!nm){const ch=s[i++];return ch===','?'<mspace width="0.2em"/>':'<mo>'+esc(ch)+'</mo>'}
+   if(nm==='frac')return'<mfrac>'+grp()+grp()+'</mfrac>';
+   if(nm==='binom')return'<mrow><mo>(</mo><mfrac linethickness="0">'+grp()+grp()+'</mfrac><mo>)</mo></mrow>';
+   if(nm==='text')return'<mtext>'+esc(raw())+'</mtext>';
+   if(nm==='sqrt')return'<msqrt>'+grp()+'</msqrt>';
+   if(nm==='bar')return'<mover accent="true">'+grp()+'<mo>¯</mo></mover>';
+   if(nm==='hat')return'<mover accent="true">'+grp()+'<mo>^</mo></mover>';
+   if(nm==='overline')return'<mover accent="true">'+grp()+'<mo>‾</mo></mover>';
+   if(SYM[nm])return'<mo>'+SYM[nm]+'</mo>';return'<mi>'+esc(nm)+'</mi>'}
+  if(c==='{'){i++;return seq('}')}
+  if(/[0-9]/.test(c)){let t='';while(i<s.length&&(/[0-9]/.test(s[i])||((s[i]===','||s[i]==='.')&&/[0-9]/.test(s[i+1]||''))))t+=s[i++];return'<mn>'+t+'</mn>'}
+  if(/\p{L}/u.test(c)){i++;return'<mi>'+esc(c)+'</mi>'}
+  i++;if(c==='('||c===')'||c==='|')return'<mo stretchy="false" lspace="0" rspace="0">'+c+'</mo>';return'<mo>'+esc(c==='-'?'−':c)+'</mo>'}
+ return'<math displaystyle="true"'+(block?' display="block"':'')+'>'+seq(null)+'</math>'}
+const MF=(n,d)=>'\\frac{'+n+'}{'+d+'}';
+
+/* ---------- Probabilidades básicas (guía) ---------- */
+const STAGES_PB=[
+ {k:'PB',t:'cl',n:1,name:()=>'Probabilidades · clásica y complemento'},
+ {k:'PB',t:'suma',n:1,name:()=>'Probabilidades · regla de la suma ("o")'},
+ {k:'PB',t:'ind',n:1,name:()=>'Probabilidades · independientes o combinaciones'},
+ {k:'PB',t:'cond',n:1,name:()=>'Probabilidades · condicional ("dado que")'},
+ {k:'PB',t:'bayes',n:1,name:()=>'Probabilidades · condicional invertida (Bayes)'},
+ {k:'PB',t:'comb',n:0,name:()=>'Probabilidades · elegir al azar (combinaciones)'}];
+const simp=(a,b)=>{const g=gcd(a,b);return[a/g,b/g]};
+const fracTex=(a,b)=>{const[n,d]=simp(a,b);return MF(a,b)+(d!==b?'='+MF(n,d):'')};
+const pct=v=>fmt(rnd(v/100,4));
+const WM=['cero','un','dos','tres','cuatro','cinco','seis'],WF=['cero','una','dos','tres','cuatro','cinco','seis'];
+const GS={g:['O','A','B','AB'],pos:[39,35,8,4],neg:[6,5,2,1]};
+function bloodHTML(T){const td=a=>a.map(v=>'<td>'+v+'</td>').join('');return'<table class="bt"><tr><th></th><th>O</th><th>A</th><th>B</th><th>AB</th></tr><tr><th>Rh⁺</th>'+td(T.pos)+'</tr><tr><th>Rh⁻</th>'+td(T.neg)+'</tr></table>'}
+function randBlood(){return{g:GS.g,pos:[rint(30,45),rint(25,40),rint(5,12),rint(2,6)],neg:[rint(4,9),rint(3,8),rint(1,4),rint(1,3)]}}
+const sum=a=>a.reduce((x,y)=>x+y,0);
+function gstep(lab,val,q,tip,tip2,prob){return{lab,val,tol:prob?.005:.001,prob:!!prob,q,tip,tip2}}
+function pbOut(text,ans,steps,rule,gs,plot,show){return{g:{type:'PB',gs},k:'PB',text,ans,tol:.005,steps,rule,plot:plot||(()=>''),show:show||f4(ans)}}
+function venn(mode){const id='v'+Math.floor(Math.random()*1e6);
+ const A='<circle cx="230" cy="80" r="62"/>',B='<circle cx="310" cy="80" r="62"/>';
+ let fill='';
+ if(mode==='union')fill='<g fill="#ff5d6c" opacity=".8">'+A+B+'</g>';
+ else if(mode==='none')fill='<rect x="120" y="8" width="300" height="144" rx="10" fill="#ff5d6c" opacity=".8"/><g fill="#1a1f3d">'+A+B+'</g>';
+ else if(mode==='inter'||mode==='cond')fill='<defs><clipPath id="'+id+'">'+A+'</clipPath></defs>'+(mode==='cond'?'<circle cx="230" cy="80" r="62" fill="#ffc23d" opacity=".25"/>':'')+'<g clip-path="url(#'+id+')"><circle cx="310" cy="80" r="62" fill="#ff5d6c" opacity=".85"/></g>';
+ else if(mode==='notA')fill='<rect x="120" y="8" width="300" height="144" rx="10" fill="#ff5d6c" opacity=".8"/><circle cx="230" cy="80" r="62" fill="#1a1f3d"/>';
+ return'<svg class="plot" viewBox="110 0 320 160">'+fill+'<rect x="120" y="8" width="300" height="144" rx="10" fill="none" stroke="#5a6399"/><g fill="none" stroke="#eef0ff" stroke-width="2">'+A+B+'</g><text x="190" y="40" font-size="16" fill="#eef0ff">A</text><text x="340" y="40" font-size="16" fill="#eef0ff">B</text>'+(mode==='cond'?'<text x="130" y="146" font-size="11" fill="#ffc23d">amarillo = el nuevo "total" (lo que ya sabemos)</text>':'')+'</svg>'}
+
+function pbCl(r){
+ if(Math.random()<.5){
+  const o=r===1?pick(['impar','m5']):pick(['impar','par','m3','m4','m5','m6','mayor','rango']);let fav,desc,how;
+  if(o==='impar'){fav=18;desc='un número impar';how='Impares del 1 al 36: 1, 3, 5, …, 35 → 18 (el 0 y el 00 no cuentan)'}
+  else if(o==='par'){fav=18;desc='un número par (el 0 y el 00 no cuentan como pares)';how='Pares del 1 al 36: 2, 4, …, 36 → 18'}
+  else if(/^m\d$/.test(o)){const m=+o.slice(1);fav=Math.floor(36/m);desc='un múltiplo de '+m;how='Múltiplos de '+m+' entre 1 y 36: '+Array.from({length:fav},(_,j)=>m*(j+1)).join(', ')+' → '+fav}
+  else if(o==='mayor'){const m=rint(20,30);fav=36-m;desc='un número mayor que '+m;how='Del '+(m+1)+' al 36 → '+fav+' números'}
+  else{const a=rint(5,15),b=a+rint(4,10);fav=b-a+1;desc='un número entre '+a+' y '+b+' (ambos incluidos)';how='Del '+a+' al '+b+' → '+fav+' números'}
+  const ans=fav/38,[n,d]=simp(fav,38);
+  const text='<b>Cálculo de posibilidades en la ruleta.</b> Una rueda de ruleta tiene 38 ranuras, una ranura es 0, otra es 00 y cada una de las demás están numeradas del 1 al 36. Usted está apostando a '+desc+'. ¿Cuál es su probabilidad de ganar?';
+  return pbOut(text,ans,['Casos totales: <b>38</b> ranuras (no 36: el 0 y el 00 también cuentan)',how,M('P='+fracTex(fav,38)+'\\approx '+f4(ans))],
+   'Probabilidad clásica: casos favorables ÷ casos totales.',
+   [gstep('Casos totales',38,'<b>Paso 1 · Casos totales.</b> ¿Cuántas ranuras tiene la ruleta en total?','Cuenta todas las ranuras, incluidas el 0 y el 00.','Son 36 numeradas + el 0 + el 00.'),
+    gstep('Casos favorables',fav,'<b>Paso 2 · Casos favorables.</b> ¿Cuántas ranuras le hacen ganar si apuesta a '+desc+'?','Escribe la lista de números que sirven y cuéntalos. El 0 y el 00 nunca ganan.',how),
+    gstep('Probabilidad',ans,'<b>Paso 3 · Probabilidad clásica:</b> '+M(MF('\\text{favorables}','\\text{totales}')),'Divide el paso 2 por el paso 1. Puedes dejarlo como fracción.','Calcula '+fav+' ÷ 38.',true)],null,n+'/'+d+' ≈ '+f4(ans));
+ }
+ const T=r===1?GS:randBlood(),N=sum(T.pos)+sum(T.neg);
+ const kind=r===1?pick(['noA','noRh']):pick(['noG','noRh','siG','neg']);const gi=kind==='noA'?1:rint(0,3),G=T.g[gi],col=T.pos[gi]+T.neg[gi],tp=sum(T.pos),tn=sum(T.neg);
+ let cnt,lab,comp,qt;
+ if(kind==='noA'||kind==='noG'){cnt=col;lab='del grupo '+G;comp=true;qt='que no sea del grupo '+G}
+ else if(kind==='siG'){cnt=col;lab='del grupo '+G;comp=false;qt='que sea del grupo '+G}
+ else if(kind==='noRh'){cnt=tp;lab='del tipo Rh⁺';comp=true;qt='que no sea del tipo Rh⁺'}
+ else{cnt=tn;lab='del tipo Rh⁻';comp=false;qt='que sea del tipo Rh⁻'}
+ const pA=cnt/N,ans=comp?1-pA:pA;
+ const text='La siguiente tabla resume los grupos sanguíneos y los factores Rh de '+N+' personas comunes.'+bloodHTML(T)+'Si se elige a una persona al azar, calcule la probabilidad de seleccionar a alguien '+qt+'.';
+ const how=lab.includes('grupo')?'Personas '+lab+': '+T.pos[gi]+' (Rh⁺) + '+T.neg[gi]+' (Rh⁻) = '+cnt:'Personas '+lab+': suma de esa fila = '+cnt;
+ const steps=['Total de personas: <b>'+N+'</b>',how,M('P(\\text{'+lab+'})='+MF(cnt,N)+'\\approx '+f4(pA))];
+ if(comp)steps.push('Complemento: '+M('P(\\text{no})=1−'+f4(pA)+'='+f4(ans)));
+ const gs=[gstep('Total',N,'<b>Paso 1 · Total.</b> ¿Cuántas personas hay en la tabla?','Suma todas las celdas.','Suma las dos filas completas.'),
+  gstep('Personas '+lab,cnt,'<b>Paso 2 · Cuenta</b> cuántas personas son '+lab+'.',lab.includes('grupo')?'Un grupo es una columna: suma Rh⁺ y Rh⁻.':'Un tipo Rh es una fila: suma sus 4 celdas.',how),
+  gstep('P('+lab+')',pA,'<b>Paso 3 · Probabilidad</b> de ser '+lab+': casos ÷ total.','Divide el paso 2 por el paso 1.','Calcula '+cnt+' ÷ '+N+'.',true)];
+ if(comp)gs.push(gstep('Probabilidad',ans,'<b>Paso 4 · Complemento.</b> Te preguntan por "no ser '+lab+'": '+M('P(\\overline{A})=1−P(A)'),'Resta a 1 el resultado del paso 3.','Calcula 1 − '+f4(pA)+'.',true));
+ return pbOut(text,ans,steps,comp?'Complemento: P(no A) = 1 − P(A).':'Probabilidad clásica: casos favorables ÷ casos totales.',gs,comp&&!lab.includes('grupo')?null:null);
+}
+const PSUM=[
+ {pre:'En cierta ciudad, ',pop:'de la población',a:'tiene cabellos castaños',b:'tiene ojos castaños',ab:'tiene cabellos y ojos castaños',who:'una persona',qU:'tenga cabellos castaños u ojos castaños',qN:'no tenga ni cabellos ni ojos castaños',o:[40,25,15]},
+ {pre:'En una clínica dental, ',pop:'de los pacientes',a:'tiene caries',b:'tiene gingivitis',ab:'tiene caries y gingivitis',who:'un paciente',qU:'tenga caries o gingivitis',qN:'no tenga ni caries ni gingivitis'},
+ {pre:'En una clínica dental, ',pop:'de los pacientes',a:'usa hilo dental a diario',b:'usa enjuague bucal a diario',ab:'usa ambos a diario',who:'un paciente',qU:'use hilo dental o enjuague bucal a diario',qN:'no use ninguno de los dos a diario'},
+ {pre:'En un consultorio, ',pop:'de los pacientes',a:'tiene sensibilidad dental',b:'tiene bruxismo',ab:'tiene sensibilidad y bruxismo',who:'un paciente',qU:'tenga sensibilidad o bruxismo',qN:'no tenga ni sensibilidad ni bruxismo'}];
+function pbSuma(r){
+ if(Math.random()<.5){
+  const T=r===1?GS:randBlood(),N=sum(T.pos)+sum(T.neg);const gi=r===1?1:rint(0,3),G=T.g[gi],neg=r===1?true:Math.random()<.5;
+  const col=T.pos[gi]+T.neg[gi],row=neg?sum(T.neg):sum(T.pos),cell=neg?T.neg[gi]:T.pos[gi],rh=neg?'Rh⁻':'Rh⁺';
+  const ans=(col+row-cell)/N;
+  const text='La siguiente tabla resume los grupos sanguíneos y los factores Rh de '+N+' personas comunes.'+bloodHTML(T)+'Si se elige a una persona al azar, calcule la probabilidad de seleccionar a alguien que sea del grupo '+G+' o del tipo '+rh+'.';
+  return pbOut(text,ans,['P(grupo '+G+') = '+col+'/'+N+' · P('+rh+') = '+row+'/'+N+' · P(ambos) = '+cell+'/'+N,
+   M('P(A\\cup B)=P(A)+P(B)−P(A\\cap B)'),M('='+MF(col+'+'+row+'−'+cell,N)+'='+MF(col+row-cell,N)+'='+f4(ans))],
+   'Regla de la suma: P(A o B) = P(A) + P(B) − P(A y B). Se resta lo común porque se contó dos veces.',
+   [gstep('P(grupo '+G+')',col/N,'<b>Paso 1 · P(A)</b>: probabilidad de ser del grupo '+G+' (una columna).','Suma Rh⁺ y Rh⁻ del grupo '+G+' y divide por el total.','Calcula ('+T.pos[gi]+' + '+T.neg[gi]+') ÷ '+N+'.',true),
+    gstep('P('+rh+')',row/N,'<b>Paso 2 · P(B)</b>: probabilidad de ser '+rh+' (una fila).','Suma la fila '+rh+' y divide por el total.','Calcula '+row+' ÷ '+N+'.',true),
+    gstep('P(A y B)',cell/N,'<b>Paso 3 · P(A ∩ B)</b>: ser del grupo '+G+' <b>y</b> '+rh+' a la vez (una sola celda).','Es la celda donde se cruzan la columna '+G+' y la fila '+rh+'.','Calcula '+cell+' ÷ '+N+'.',true),
+    gstep('Probabilidad',ans,'<b>Paso 4 · Regla de la suma:</b> '+M('P(A\\cup B)=P(A)+P(B)−P(A\\cap B)'),'Suma los pasos 1 y 2, y resta el paso 3.','Calcula '+f4(col/N)+' + '+f4(row/N)+' − '+f4(cell/N)+'.',true)],()=>venn('union'));
+ }
+ const c=r===1?PSUM[0]:pick(PSUM);let a,b,ab;
+ if(r===1&&c.o)[a,b,ab]=c.o;else{a=stepGrid(20,60,5);b=stepGrid(15,50,5);ab=stepGrid(5,Math.min(a,b)-5,5)}
+ const none=Math.random()<.5,U=(a+b-ab)/100,ans=none?1-U:U;
+ const text=c.pre+'el '+a+'% '+c.pop+' '+c.a+', el '+b+'% '+c.b+' y el '+ab+'% '+c.ab+'. Se escoge '+c.who+' al azar. ¿Cuál es la probabilidad de que '+(none?c.qN:c.qU)+'?';
+ const steps=[M('P(A\\cup B)=P(A)+P(B)−P(A\\cap B)='+pct(a)+'+'+pct(b)+'−'+pct(ab)+'='+fmt(U))];
+ if(none)steps.push('"Ni A ni B" es lo que queda fuera de los dos círculos: '+M('1−P(A\\cup B)=1−'+fmt(U)+'='+fmt(rnd(ans,4))));
+ const gs=[gstep('P(A)',a/100,'<b>Paso 1 · P(A)</b>: escribe como decimal el primer porcentaje ('+c.a+').','Divide el porcentaje por 100.','Es '+a+'% → '+pct(a)+'.',true),
+  gstep('P(B)',b/100,'<b>Paso 2 · P(B)</b> como decimal ('+c.b+').','Divide el porcentaje por 100.','Es '+b+'% → '+pct(b)+'.',true),
+  gstep('P(A y B)',ab/100,'<b>Paso 3 · P(A ∩ B)</b>: los que tienen las dos cosas a la vez.','Busca el porcentaje que dice "y" o "ambos".','Es '+ab+'% → '+pct(ab)+'.',true),
+  gstep('P(A o B)',U,'<b>Paso 4 · Regla de la suma:</b> '+M('P(A\\cup B)=P(A)+P(B)−P(A\\cap B)'),'Suma los pasos 1 y 2, y resta el paso 3 (lo común se contó dos veces).','Calcula '+pct(a)+' + '+pct(b)+' − '+pct(ab)+'.',true)];
+ if(none)gs.push(gstep('Probabilidad',ans,'<b>Paso 5 · Complemento.</b> "Ni A ni B" es todo lo que está fuera de A ∪ B.','Resta a 1 el resultado del paso 4.','Calcula 1 − '+fmt(U)+'.',true));
+ return pbOut(text,ans,steps,none?'"Ni A ni B" = 1 − P(A o B).':'Regla de la suma: P(A o B) = P(A) + P(B) − P(A y B).',gs,()=>venn(none?'none':'union'));
+}
+function pbInd(r){
+ const v=r===1?pick(['hx','hn','ex','mu']):pick(['hx','hn','ex','mu','ex']);
+ if(v==='hx'||v==='hn'){const n=r===1?3:r===2?rint(3,4):rint(4,5);const tot=Math.pow(2,n);
+  if(v==='hx'){const k=r===1?2:rint(1,n-1),C=comb(n,k),ans=C/tot;
+   const text='<b>Género de los hijos.</b> Determine la probabilidad de que exactamente '+WM[k].replace('un','uno')+' de los '+WM[n]+' hijos de una pareja sean varones. Suponga que es igualmente probable dar a luz un niño que una niña, y que el género de cualquier hijo no influye en el género de otro.';
+   return pbOut(text,ans,['Cada hijo tiene 2 posibilidades → '+M('2^{'+n+'}='+tot)+' combinaciones igual de probables',
+    'Combinaciones con exactamente '+k+' varones: '+M('\\binom{'+n+'}{'+k+'}='+C),M('P='+fracTex(C,tot)+'='+fmt(rnd(ans,4)))],
+    'Si todos los resultados son igual de probables: casos favorables ÷ casos totales.',
+    [gstep('Casos totales',tot,'<b>Paso 1 · Casos totales.</b> Cada hijo puede ser niño o niña. ¿Cuántas combinaciones hay para '+n+' hijos?','Son 2 opciones por hijo, multiplicadas: 2 × 2 × …','Calcula 2^'+n+'.'),
+     gstep('Casos favorables',C,'<b>Paso 2 · Casos favorables.</b> ¿En cuántas de esas combinaciones hay exactamente '+k+' varones? (Puedes usar '+n+' nCr '+k+')','Puedes listarlas (VVN, VNV, NVV…) o usar combinaciones.','Es C('+n+', '+k+').'),
+     gstep('Probabilidad',ans,'<b>Paso 3 · Probabilidad:</b> favorables ÷ totales.','Divide el paso 2 por el paso 1.','Calcula '+C+' ÷ '+tot+'.',true)],null,simp(C,tot).join('/')+' = '+fmt(rnd(ans,4)));}
+  const ans=1-1/tot;
+  const text='<b>Género de hijos.</b> Calcule la probabilidad de que una pareja tenga al menos 1 niña entre '+WM[n]+' hijos. Suponga que los niños y las niñas son igualmente probables y que el género de un hijo es independiente del género de cualquier hermano o hermana.';
+  return pbOut(text,ans,['"Al menos 1 niña" es lo contrario de "ninguna niña" (todos niños)',M('P(\\text{todos niños})={(\\frac{1}{2})}^{'+n+'}='+MF(1,tot)),M('P(\\text{al menos 1 niña})=1−'+MF(1,tot)+'='+MF(tot-1,tot))],
+   '"Al menos uno" = 1 − P(ninguno).',
+   [gstep('P(todos niños)',1/tot,'<b>Paso 1 · Lo contrario.</b> "Al menos 1 niña" es lo opuesto a "ninguna niña", o sea, todos niños. Calcula P(todos niños).','Cada hijo es niño con probabilidad 1/2, y son independientes: multiplica.','Calcula (1/2)^'+n+' = 1/'+tot+'.',true),
+    gstep('Probabilidad',ans,'<b>Paso 2 · Complemento:</b> 1 − P(todos niños).','Resta a 1 el resultado del paso 1.','Calcula 1 − 1/'+tot+'.',true)],null,(tot-1)+'/'+tot+' = '+fmt(rnd(ans,4)));}
+ if(v==='ex'){const m=r===1?4:pick([4,5]),two=r>=2&&Math.random()<.4;const ans=(1/2)*(1/m)*(two?1/m:1),den=2*m*(two?m:1);
+  const text='<b>Respuestas al azar.</b> Un examen rápido consiste en una pregunta de verdadero/falso, seguida de '+(two?'dos preguntas':'una pregunta')+' de opción múltiple con '+WF[m]+' respuestas posibles'+(m===4?' (a, b, c y d)':' (a, b, c, d y e)')+'. Si todas las preguntas se responden al azar, calcule la probabilidad de que '+(two?'las tres respuestas':'las dos respuestas')+' sean correctas.';
+  const parts=['\\frac{1}{2}','\\frac{1}{'+m+'}'].concat(two?['\\frac{1}{'+m+'}']:[]);
+  return pbOut(text,ans,['Verdadero/falso: '+M('\\frac{1}{2}')+' · Opción múltiple: '+M('\\frac{1}{'+m+'}'),'Son independientes → se multiplican: '+M('P='+parts.join('\\cdot ')+'='+MF(1,den)+'='+fmt(rnd(ans,4))),'Responder al azar es mala estrategia: la probabilidad de acertar todo es muy baja.'],
+   'Eventos independientes: P(A y B) = P(A) · P(B).',
+   [gstep('P(V/F correcta)',.5,'<b>Paso 1 ·</b> ¿Cuál es la probabilidad de acertar la de verdadero/falso al azar?','Hay 2 opciones y una sola es correcta.','Es 1/2.',true),
+    gstep('P(opción múltiple correcta)',1/m,'<b>Paso 2 ·</b> ¿Y la de acertar una de opción múltiple al azar?','Hay '+m+' opciones y una sola es correcta.','Es 1/'+m+'.',true),
+    gstep('Probabilidad',ans,'<b>Paso 3 · Independientes:</b> multiplica las probabilidades de cada pregunta'+(two?' (son dos de opción múltiple)':'')+'.','P(A y B) = P(A) · P(B).','Calcula '+parts.map(t=>t.replace('\\frac{','').replace('}{','/').replace('}','')).join(' × ')+'.',true)],null,'1/'+den+' = '+fmt(rnd(ans,4)));}
+ const n=r===1?3:rint(2,5),p=r===1?.1:pick([.05,.1,.15,.2]),q=rnd(1-p,2),ans=1-Math.pow(q,n);
+ const text='<b>Uso de muestras de sangre compuestas.</b> Cuando se hacen pruebas de sangre para detectar infecciones por VIH, el procedimiento puede hacerse de forma más eficiente y menos costosa mezclando muestras de sangre. Así, si las muestras de '+WF[n]+' personas se combinan y la mezcla resulta negativa, sabemos que las '+WF[n]+' muestras individuales son negativas. Calcule la probabilidad de un resultado positivo para '+WF[n]+' muestras combinadas en una mezcla, suponiendo que la probabilidad de que una muestra de sangre individual dé resultado positivo es de '+fmt(p)+'.';
+ return pbOut(text,ans,['La mezcla da positivo si <b>al menos una</b> muestra es positiva → mejor calcular lo contrario',M('P(\\text{todas negativas})='+fmt(q)+'^{'+n+'}='+f4(Math.pow(q,n))),M('P(\\text{positivo})=1−'+f4(Math.pow(q,n))+'='+f4(ans))],
+  '"Al menos uno" = 1 − P(ninguno). Si son independientes, P(ninguno) es el producto.',
+  [gstep('P(una negativa)',q,'<b>Paso 1 ·</b> ¿Cuál es la probabilidad de que <b>una</b> muestra sea negativa?','Es el complemento de dar positivo.','Calcula 1 − '+fmt(p)+'.',true),
+   gstep('P(todas negativas)',Math.pow(q,n),'<b>Paso 2 ·</b> ¿Cuál es la probabilidad de que las '+n+' sean negativas? (son independientes)','Multiplica la del paso 1 por sí misma '+n+' veces.','Calcula '+fmt(q)+'^'+n+'.',true),
+   gstep('Probabilidad',ans,'<b>Paso 3 ·</b> La mezcla es positiva si al menos una lo es: 1 − P(todas negativas).','Resta a 1 el paso 2.','Calcula 1 − '+f4(Math.pow(q,n))+'.',true)]);
+}
+const PCOND=[
+ {o:[15,null,8],t:(a,b,c)=>'<b>Probabilidad de tener enfermedad periodontal dado que tiene gingivitis.</b> En una clínica dental, el '+a+'% de los pacientes tienen gingivitis, y el '+c+'% de los pacientes tienen tanto gingivitis como enfermedad periodontal. Si un paciente tiene gingivitis, ¿cuál es la probabilidad de que también tenga enfermedad periodontal?',giv:'a',nG:'tener gingivitis',nB:'periodontal'},
+ {o:[25,10,5],t:(a,b,c)=>'<b>Probabilidad de ser un paciente adulto dado que tiene ortodoncia.</b> En una consulta odontológica, el '+a+'% de los pacientes son adultos y el '+b+'% de los pacientes tienen ortodoncia. El '+c+'% de los pacientes son adultos con ortodoncia. Si un paciente tiene ortodoncia, ¿cuál es la probabilidad de que sea un adulto?',giv:'b',nG:'tener ortodoncia',nB:'adulto'},
+ {o:[20,10,8],t:(a,b,c)=>'<b>Probabilidad de que el paciente necesite un tratamiento de conducto dado que tiene dolor severo.</b> En una clínica dental, el '+a+'% de los pacientes tienen dolor dental severo y el '+b+'% de todos los pacientes requieren un tratamiento de conducto. El '+c+'% de los pacientes tienen dolor severo y necesitan un tratamiento de conducto. Si un paciente tiene dolor severo, ¿cuál es la probabilidad de que necesite un tratamiento de conducto?',giv:'a',nG:'tener dolor severo',nB:'conducto'},
+ {o:[40,25,15],t:(a,b,c)=>'En cierta ciudad, '+a+'% de la población tiene cabellos castaños, '+b+'% tiene ojos castaños y '+c+'% tiene cabellos y ojos castaños. Se escoge una persona al azar. Si tiene cabellos castaños, ¿cuál es la probabilidad de que también tenga ojos castaños?',giv:'a',nG:'tener cabellos castaños',nB:'ojos castaños'},
+ {o:[40,25,15],t:(a,b,c)=>'En cierta ciudad, '+a+'% de la población tiene cabellos castaños, '+b+'% tiene ojos castaños y '+c+'% tiene cabellos y ojos castaños. Se escoge una persona al azar. Si tiene ojos castaños, ¿cuál es la probabilidad de que tenga cabellos castaños?',giv:'b',nG:'tener ojos castaños',nB:'cabellos castaños'}];
+function pbCond(r){const c=pick(PCOND);let a,b,ab;
+ if(r===1)[a,b,ab]=[c.o[0],c.o[1]===null?rint(10,30):c.o[1],c.o[2]];else{a=stepGrid(10,45,5);b=stepGrid(10,45,5);ab=rint(2,Math.min(a,b)-2)}
+ const g=c.giv==='a'?a:b,ans=ab/g;
+ return pbOut(c.t(a,b,ab),ans,['Lo que ya sabemos (la condición) es "'+c.nG+'" → ese es el nuevo total',M('P(B\\mid A)='+MF('P(A\\cap B)','P(A)')+'='+MF(pct(ab),pct(g))+'\\approx '+f4(ans))],
+  'Condicional: P(B dado A) = P(A y B) ÷ P(A). Se divide por la probabilidad de lo que ya se sabe.',
+  [gstep('P(A y B)',ab/100,'<b>Paso 1 · P(A ∩ B)</b>: el porcentaje de los que cumplen <b>las dos cosas</b>, como decimal.','Busca la frase con "tanto … como", "con" o "y".','Es '+ab+'% → '+pct(ab)+'.',true),
+   gstep('P(condición)',g/100,'<b>Paso 2 · P(A)</b>: la probabilidad de lo que <b>ya sabemos</b> ("si un paciente…" / "si tiene…"): '+c.nG+'.','Es el porcentaje de la condición, no el de lo que preguntan.','Es '+g+'% → '+pct(g)+'.',true),
+   gstep('Probabilidad',ans,'<b>Paso 3 · Condicional:</b> '+M('P(B\\mid A)='+MF('P(A\\cap B)','P(A)')),'Divide el paso 1 por el paso 2.','Calcula '+pct(ab)+' ÷ '+pct(g)+'.',true)],()=>venn('cond'));
+}
+const PBAY=[
+ {o:[30,40,70],t:(a,b,d)=>'<b>Probabilidad de tener caries dado que el paciente no se cepilla regularmente.</b> En una clínica dental, se observa que el '+a+'% de los pacientes no se cepillan regularmente. El '+b+'% de todos los pacientes tienen caries, y el '+d+'% de los pacientes que no se cepillan regularmente tienen caries. Si un paciente tiene caries, ¿cuál es la probabilidad de que no se cepille regularmente?',A:'no se cepilla',B:'caries'},
+ {o:[60,25,40],t:(a,b,d)=>'<b>Probabilidad de tener sensibilidad dental dado que consume bebidas frías.</b> En una clínica dental, el '+a+'% de los pacientes consumen bebidas frías regularmente. El '+b+'% de los pacientes tienen sensibilidad dental, y el '+d+'% de los pacientes que consumen bebidas frías también presentan sensibilidad dental. Si un paciente tiene sensibilidad dental, ¿cuál es la probabilidad de que consuma bebidas frías?',A:'bebidas frías',B:'sensibilidad'},
+ {t:(a,b,d)=>'En una clínica dental, el '+a+'% de los pacientes consume bebidas azucaradas a diario. El '+b+'% de todos los pacientes tiene erosión dental, y el '+d+'% de los pacientes que consumen bebidas azucaradas a diario tiene erosión dental. Si un paciente tiene erosión dental, ¿cuál es la probabilidad de que consuma bebidas azucaradas a diario?',A:'azucaradas',B:'erosión'}];
+function pbBayes(r){let c,a,b,d;
+ if(r===1){c=pick(PBAY.slice(0,2));[a,b,d]=c.o}else{c=pick(PBAY);a=stepGrid(20,60,5);d=stepGrid(30,80,5);const min=Math.ceil(a*d/100/5)*5+5;b=Math.min(90,min+5*rint(0,3))}
+ const ab=a*d/100,ans=ab/b;
+ return pbOut(c.t(a,b,d),ans,['A = '+c.A+' · B = '+c.B+'. Te dan '+M('P(B\\mid A)')+' y te piden lo contrario: '+M('P(A\\mid B)'),
+  M('P(A\\cap B)=P(B\\mid A)\\cdot P(A)='+pct(d)+'\\cdot '+pct(a)+'='+fmt(rnd(ab/100,4))),M('P(A\\mid B)='+MF('P(A\\cap B)','P(B)')+'='+MF(fmt(rnd(ab/100,4)),pct(b))+'\\approx '+f4(ans))],
+  'Bayes: P(A dado B) = P(B dado A) · P(A) ÷ P(B).',
+  [gstep('P(A)',a/100,'<b>Paso 1 · P(A)</b> como decimal: el primer porcentaje ('+c.A+').','Divide por 100.','Es '+a+'% → '+pct(a)+'.',true),
+   gstep('P(B dado A)',d/100,'<b>Paso 2 · P(B | A)</b>: el porcentaje que dice "de los que…" (dentro del grupo A).','Es el porcentaje que se refiere solo a los del grupo A.','Es '+d+'% → '+pct(d)+'.',true),
+   gstep('P(A y B)',ab/100,'<b>Paso 3 · P(A ∩ B)</b> = '+M('P(B\\mid A)\\cdot P(A)'),'Multiplica los pasos 2 y 1.','Calcula '+pct(d)+' × '+pct(a)+'.',true),
+   gstep('Probabilidad',ans,'<b>Paso 4 · Condicional al revés:</b> '+M('P(A\\mid B)='+MF('P(A\\cap B)','P(B)'))+'. P(B) es el porcentaje total de '+c.B+' ('+b+'%).','Divide el paso 3 por P(B).','Calcula '+fmt(rnd(ab/100,4))+' ÷ '+pct(b)+'.',true)],()=>venn('cond'));
+}
+const PCOMB=[
+ {s:(a,b)=>'Una clase tiene '+a+' niños y '+b+' niñas.',who:'estudiantes de la clase',A:['niño','niños','m'],B:['niña','niñas','f'],o:[12,4,3]},
+ {s:(a,b)=>'En la sala de espera de una clínica hay '+a+' adultos y '+b+' niños.',who:'pacientes',A:['adulto','adultos','m'],B:['niño','niños','m']},
+ {s:(a,b)=>'Una bandeja tiene '+a+' instrumentos esterilizados y '+b+' sin esterilizar.',who:'instrumentos',A:['esterilizado','esterilizados','m'],B:['sin esterilizar','sin esterilizar','m']}];
+function pbComb(r){const c=r===1?PCOMB[0]:pick(PCOMB);let a,b,m;
+ if(r===1)[a,b,m]=c.o;else{a=rint(6,14);b=rint(3,7);m=r===2?3:rint(3,4)}
+ const all=Math.random()<.5;const x=all?m:rint(1,m-1),y=m-x;const N=a+b,T=comb(N,m),F=comb(a,x)*comb(b,y),ans=F/T;
+ const w=(n,arr)=>(arr[2]==='f'?WF:WM)[n]+' '+arr[n>1?1:0];
+ const text=c.s(a,b)+' Si se escogen '+WM[m].replace('un','uno')+' '+c.who+' al azar, ¿cuál es la probabilidad de que '+(all?'sean todos '+c.A[1]:'sean '+w(x,c.A)+' y '+w(y,c.B))+'?';
+ return pbOut(text,ans,['Formas de escoger '+m+' de '+N+': '+M('\\binom{'+N+'}{'+m+'}='+T),
+  'Formas favorables: '+M('\\binom{'+a+'}{'+x+'}'+(y?'\\cdot\\binom{'+b+'}{'+y+'}':'')+'='+F),M('P='+fracTex(F,T)+'\\approx '+f4(ans))],
+  'Elegir al azar sin reemplazo: (formas favorables) ÷ (formas totales), contando con combinaciones C(n, k).',
+  [gstep('Formas totales',T,'<b>Paso 1 · Formas totales</b> de escoger '+m+' de '+N+': '+M('\\binom{'+N+'}{'+m+'}')+' (tecla nCr: '+N+' nCr '+m+').','El orden no importa: son combinaciones.','Calcula '+N+' nCr '+m+'.'),
+   gstep('Formas favorables',F,'<b>Paso 2 · Formas favorables:</b> escoger '+x+' de los '+a+' '+c.A[1]+(y?' <b>y</b> '+y+' de los '+b+' '+c.B[1]+' (se multiplican)':'')+'.','Usa combinaciones para cada grupo y multiplícalas.','Calcula '+a+' nCr '+x+(y?' × '+b+' nCr '+y:'')+'.'),
+   gstep('Probabilidad',ans,'<b>Paso 3 · Probabilidad:</b> favorables ÷ totales.','Divide el paso 2 por el paso 1.','Calcula '+F+' ÷ '+T+'.',true)],null,simp(F,T).join('/')+' ≈ '+f4(ans));
+}
+function genPB(t,r){if(t==='ind'&&Math.random()<.35)t='comb';return({cl:pbCl,suma:pbSuma,ind:pbInd,cond:pbCond,bayes:pbBayes,comb:pbComb})[t](r)}
+
+
+/* ---------- Estadística descriptiva (Guía Unidad 1) ---------- */
+const STAGES_ED=[
+ {k:'ED',t:'vf',n:1,name:()=>'Descriptiva · para reflexionar (verdadero o falso)'},
+ {k:'ED',t:'cen',n:1,name:()=>'Descriptiva · tendencia central (media, mediana, moda)'},
+ {k:'ED',t:'dis',n:1,name:()=>'Descriptiva · dispersión (rango, desviación, CV)'},
+ {k:'ED',t:'pos',n:1,name:()=>'Descriptiva · posición (cuartiles)'},
+ {k:'ED',t:'frq',n:1,name:()=>'Descriptiva · tablas de frecuencia o intervalos'},
+ {k:'ED',t:'int',n:0,name:()=>'Descriptiva · datos en intervalos (marcas de clase)'}];
+const ED_NOTAS=[3.1,4.2,5,3.5,4.2,5,3.6,4.5,5.3,3.7,4.5,5.3,3.7,4.5,5.3,3.8,4.5,5.5,3.8,4.5,6.2,4,4.6,6.3,4,4.7,6.3,4,4.8,7];
+const ED_ESPERA=[5,7,8,9,10,10,11,12,12,13,14,15,15,16,16,17,18,18,19,20,21,22,23,24,25,27,29,31,34,45];
+const EDL=[
+ {t:'Notas de una asignatura',d:n=>'Se toma una muestra de notas de '+n+' alumnos de BOD en una asignatura.',u:'',g:()=>stepGrid(2,7,.1),dec:1},
+ {t:'Tiempo de espera en atención',d:n=>'Se registra el tiempo de espera, en minutos, de '+n+' personas atendidas en una sucursal.',u:'minutos',g:()=>rint(3,45),dec:0},
+ {t:'Caries por paciente',d:n=>'Se registra el número de caries detectadas en '+n+' pacientes.',u:'caries',g:()=>rint(0,7),dec:0},
+ {t:'Duración de consultas',d:n=>'Se registra la duración, en minutos, de '+n+' consultas odontológicas.',u:'minutos',g:()=>rint(15,60),dec:0},
+ {t:'Edad de pacientes',d:n=>'Se registra la edad, en años, de '+n+' pacientes de una clínica dental.',u:'años',g:()=>rint(18,75),dec:0}];
+const mean=a=>sum(a)/a.length;
+const sdS=a=>{const m=mean(a);return Math.sqrt(sum(a.map(x=>(x-m)*(x-m)))/(a.length-1))};
+const srt=a=>a.slice().sort((x,y)=>x-y);
+function median(a){const s=srt(a),n=s.length;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2}
+function modes(a){const c={};a.forEach(x=>c[x]=(c[x]||0)+1);const mx=Math.max(...Object.values(c));return mx<2?[]:Object.keys(c).filter(k=>c[k]===mx).map(Number)}
+function qInc(a,p){const s=srt(a),h=(s.length-1)*p,l=Math.floor(h);return s[l]+(h-l)*((s[l+1]??s[l])-s[l])}
+function qExc(a,p){const s=srt(a),n=s.length;let h=(n+1)*p-1;h=Math.max(0,Math.min(n-1,h));const l=Math.floor(h);return s[l]+(h-l)*((s[l+1]??s[l])-s[l])}
+function qTuk(a,p){const s=srt(a),n=s.length,half=Math.floor(n/2);return median(p<.5?s.slice(0,half):s.slice(n-half))}
+const uniq=a=>a.filter((v,i)=>a.findIndex(w=>Math.abs(w-v)<1e-9)===i);
+const f2=v=>fmt(rnd(v,2));
+const tolM=v=>Math.max(.011,Math.abs(v)*.002);
+function dataHTML(a){let h='<div class="tblwrap" style="max-height:none"><table class="bt dt"><tr>';const cols=Math.min(10,a.length);for(let j=1;j<=cols;j++)h+='<th>'+j+'</th>';h+='</tr>';
+ for(let i=0;i<a.length;i+=cols){h+='<tr>'+a.slice(i,i+cols).map(v=>'<td>'+fmt(v)+'</td>').join('')+'</tr>'}return h+'</table></div>'}
+function freqHTML(lx,xs,fs){return'<div class="tblwrap" style="max-height:none"><table class="bt"><tr><th>'+lx+'</th>'+xs.map(x=>'<td><b>'+x+'</b></td>').join('')+'</tr><tr><th>Frecuencia (fᵢ)</th>'+fs.map(f=>'<td>'+f+'</td>').join('')+'</tr></table></div>'}
+function intHTML(lx,iv,fs){return'<table class="bt"><tr><th>'+lx+'</th><th>Frecuencia</th></tr>'+iv.map((v,i)=>'<tr><td>'+fmt(v[0])+' − '+fmt(v[1])+'</td><td>'+fs[i]+'</td></tr>').join('')+'</table>'}
+const copyBtn='<div style="text-align:right;margin:-4px 0 8px"><button class="btn sm" data-copy="1">📋 Copiar datos (para Excel o calculadora)</button></div>';
+function plotBox(a){const s=srt(a),mn=s[0],mx=s[s.length-1],sp=(mx-mn)||1,X=v=>40+(v-mn)/sp*460;
+ const q1=qInc(a,.25),md=median(a),q3=qInc(a,.75);let dots='';const cnt={};
+ s.forEach(v=>{cnt[v]=(cnt[v]||0)+1;dots+='<circle cx="'+X(v).toFixed(1)+'" cy="'+(118-cnt[v]*7)+'" r="3" fill="#7cc8ff"/>'});
+ return'<svg class="plot" viewBox="0 0 540 170"><line x1="'+X(mn)+'" y1="40" x2="'+X(q1)+'" y2="40" stroke="#eef0ff"/><line x1="'+X(q3)+'" y1="40" x2="'+X(mx)+'" y2="40" stroke="#eef0ff"/><rect x="'+X(q1)+'" y="22" width="'+Math.max(1,X(q3)-X(q1))+'" height="36" fill="#5b8cff" opacity=".35" stroke="#5b8cff"/><line x1="'+X(md)+'" y1="22" x2="'+X(md)+'" y2="58" stroke="#ffc23d" stroke-width="3"/>'+
+ '<text x="'+X(mn)+'" y="16" font-size="11" fill="#a3a9d6" text-anchor="middle">mín</text><text x="'+X(q1)+'" y="16" font-size="11" fill="#a3a9d6" text-anchor="middle">Q1</text><text x="'+X(md)+'" y="16" font-size="11" fill="#ffc23d" text-anchor="middle">mediana</text><text x="'+X(q3)+'" y="16" font-size="11" fill="#a3a9d6" text-anchor="middle">Q3</text><text x="'+X(mx)+'" y="16" font-size="11" fill="#a3a9d6" text-anchor="middle">máx</text>'+
+ dots+'<line x1="30" y1="122" x2="510" y2="122" stroke="#5a6399"/><text x="'+X(mn)+'" y="140" font-size="11" fill="#eef0ff" text-anchor="middle">'+fmt(mn)+'</text><text x="'+X(mx)+'" y="140" font-size="11" fill="#eef0ff" text-anchor="middle">'+fmt(mx)+'</text><text x="270" y="162" font-size="11" fill="#a3a9d6" text-anchor="middle">caja = 50% central de los datos · puntos = cada dato</text></svg>'}
+function plotFreq(labels,fs,hl){const mx=Math.max(...fs),bw=480/labels.length;let h='';
+ fs.forEach((f,i)=>{const H=f/mx*105,x=40+i*bw,on=hl&&hl(i);h+='<rect x="'+(x+bw*.1).toFixed(1)+'" y="'+(125-H).toFixed(1)+'" width="'+(bw*.8).toFixed(1)+'" height="'+H.toFixed(1)+'" rx="3" fill="'+(on?'#ff5d6c':'#5b8cff')+'" opacity=".75"/><text x="'+(x+bw/2).toFixed(1)+'" y="'+(119-H).toFixed(1)+'" font-size="11" fill="#eef0ff" text-anchor="middle">'+f+'</text><text x="'+(x+bw/2).toFixed(1)+'" y="142" font-size="11" fill="#a3a9d6" text-anchor="middle">'+labels[i]+'</text>'});
+ return'<svg class="plot" viewBox="0 0 540 152"><line x1="30" y1="125" x2="530" y2="125" stroke="#5a6399"/>'+h+'</svg>'}
+function edOut(o){return Object.assign({k:'ED',num:true,plot:()=>'',show:f2(o.ans)},o)}
+function sdSteps(nm,m,ss,n,label){return[{lab:'Media',val:m,tol:tolM(m),q:'<b>Paso 1 · Media</b> '+M('\\bar{x}')+' (si no la tienes, súmalos y divide por n = '+n+').',tip:'Puedes usar 📋 Copiar datos y pegarlos en Excel con =PROMEDIO(…).',tip2:'La media es '+f2(m)+'.'},
+ {lab:'Suma de cuadrados',val:ss,tol:Math.max(.05,ss*.01),q:'<b>Paso 2 · Suma de cuadrados:</b> '+M(label)+'. Resta la media a cada dato, eleva al cuadrado y suma todo.',tip:'Cada término es positivo. Excel lo hace con =DESVEST.M, pero aquí va el paso a paso.',tip2:'Debe darte cerca de '+fmt(rnd(ss,1))+'.'},
+ {lab:'Varianza',val:ss/(n-1),tol:Math.max(.01,ss/(n-1)*.01),q:'<b>Paso 3 · Varianza muestral:</b> divide el paso 2 por <b>n − 1 = '+(n-1)+'</b>.',tip:'Se divide por n − 1 porque es una muestra.',tip2:'Calcula '+fmt(rnd(ss,2))+' ÷ '+(n-1)+'.'},
+ {lab:'Desviación estándar',val:Math.sqrt(ss/(n-1)),tol:Math.max(.011,Math.sqrt(ss/(n-1))*.005),q:'<b>Paso 4 · Desviación estándar:</b> raíz cuadrada de la varianza (tecla √).',tip:'s = √varianza.',tip2:'Calcula √'+fmt(rnd(ss/(n-1),3))+'.'}]}
+function edVF(r){const it=pick(ED_VF);return{k:'ED',text:'<b>Para reflexionar.</b> '+it.q,choices:it.c,ansChoice:it.a,ans:0,tol:0,steps:[it.e],rule:'Justificación con ejemplo: '+it.x,hint:it.h,plot:()=>'',show:it.c.find(c=>c.v===it.a).l}}
+const VF2=[{v:'v',l:'✔ Verdadero'},{v:'f',l:'✘ Falso'}];
+const ED_VF=[
+ {q:'Si todos los datos de una muestra aumentan en 5, ¿la media, la mediana y la moda también aumentan en 5?',c:VF2,a:'v',e:'Verdadero: sumar una constante desplaza todos los datos, y con ellos todas las medidas de tendencia central.',x:'1, 2, 2, 7 tiene media 3, mediana 2 y moda 2. Sumando 5: 6, 7, 7, 12 tiene media 8, mediana 7 y moda 7.',h:'Prueba con un ejemplo chico, como 1, 2, 2, 7.'},
+ {q:'Si todos los datos de una muestra se multiplican por 2, ¿la media, la mediana y la moda también se multiplican por 2?',c:VF2,a:'v',e:'Verdadero: multiplicar por una constante escala todas las medidas de tendencia central.',x:'1, 2, 2, 7 (media 3, mediana 2, moda 2) → 2, 4, 4, 14 (media 6, mediana 4, moda 4).',h:'Prueba con 1, 2, 2, 7 multiplicado por 2.'},
+ {q:'Si al grupo 6, 8, 1, 1, 5 se cambia solo el 8 por 100, ¿qué medida de tendencia central se ve más afectada?',c:[{v:'media',l:'La media'},{v:'mediana',l:'La mediana'},{v:'moda',l:'La moda'}],a:'media',e:'La media: es la única que usa el valor de todos los datos, por eso es sensible a valores extremos.',x:'Antes: media 4,2, mediana 5, moda 1. Después: media 22,6, mediana 5, moda 1.',h:'Calcula las tres medidas antes y después del cambio.'},
+ {q:'¿La media, la mediana o la moda de un grupo de datos debe ser necesariamente un dato del grupo?',c:[{v:'tres',l:'Sí, las tres siempre son datos del grupo'},{v:'moda',l:'Solo la moda (cuando existe) es siempre un dato'},{v:'ninguna',l:'Ninguna de las tres tiene por qué serlo'}],a:'moda',e:'Solo la moda: es el dato que más se repite, así que siempre es un dato. La media y la mediana pueden no serlo.',x:'En 1, 2, 4, 5 la media es 3 y la mediana es 3, y el 3 no está en el grupo.',h:'Busca un grupo con una cantidad par de datos.'},
+ {q:'Si el promedio de un grupo es 10 y el promedio de otro grupo es 50, ¿todos los datos del primer grupo deben ser menores que los del segundo?',c:VF2,a:'f',e:'Falso: el promedio resume, pero los grupos se pueden traslapar.',x:'Grupo 1: 0, 0, 30 (promedio 10). Grupo 2: 20, 60, 70 (promedio 50). El 30 del grupo 1 es mayor que el 20 del grupo 2.',h:'¿Puede el primer grupo tener un dato alto compensado con datos muy bajos?'},
+ {q:'Si la media, mediana y moda de un grupo de datos tienen el mismo valor, ¿necesariamente todos los datos son iguales?',c:VF2,a:'f',e:'Falso: basta con que los datos sean simétricos alrededor de un valor que se repite.',x:'1, 2, 2, 3: media 2, mediana 2, moda 2, y los datos no son todos iguales.',h:'Piensa en un grupo simétrico.'},
+ {q:'Si dos grupos tienen la misma media, ¿también deben tener la misma mediana?',c:VF2,a:'f',e:'Falso.',x:'1, 2, 9 (media 4, mediana 2) y 3, 4, 5 (media 4, mediana 4).',h:'Busca dos grupos de 3 datos con media 4.'},
+ {q:'Si dos grupos tienen la misma mediana, ¿también deben tener la misma media?',c:VF2,a:'f',e:'Falso.',x:'1, 5, 6 (mediana 5, media 4) y 4, 5, 30 (mediana 5, media 13).',h:'La mediana solo mira el dato del centro; los extremos pueden cambiar.'},
+ {q:'Si dos grupos tienen la misma media, ¿pueden tener distinta desviación estándar?',c:VF2,a:'v',e:'Verdadero: la media dice dónde está el centro y la desviación estándar cuánto se alejan los datos de él.',x:'10, 10, 10 (s = 0) y 0, 10, 20 (s = 10), los dos con media 10.',h:'Piensa en un grupo con todos los datos iguales y otro muy disperso.'},
+ {q:'¿Por qué un coeficiente de variación puede ser más útil que comparar directamente desviaciones estándar?',c:[{v:'rel',l:'Porque mide la dispersión en relación con la media (en %), y permite comparar grupos con medias o unidades distintas'},{v:'big',l:'Porque siempre es más grande que la desviación estándar'},{v:'neg',l:'Porque puede ser negativo e indica la dirección de la dispersión'}],a:'rel',e:'El CV = s ÷ media (× 100%) no tiene unidades, así que compara dispersión relativa.',x:'Peso de recién nacidos: media 3 kg, s = 0,5 kg (CV 17%). Peso de adultos: media 70 kg, s = 8 kg (CV 11%). La s de los adultos es mayor, pero en proporción varían menos.',h:'¿Qué pasa si comparas grupos con medias muy distintas o en unidades distintas?'},
+ {q:'Si todos los datos de una muestra aumentan en 5, ¿la desviación estándar también aumenta en 5?',c:VF2,a:'f',e:'Falso: sumar una constante mueve los datos, pero no cambia la distancia entre ellos. La desviación estándar no cambia.',x:'1, 2, 3 y 6, 7, 8 tienen la misma s = 1.',h:'¿Cambia la distancia de cada dato a la media?'},
+ {q:'Si todos los datos de una muestra se multiplican por 2, ¿la desviación estándar también se multiplica por 2?',c:VF2,a:'v',e:'Verdadero: las distancias a la media se duplican, y la desviación estándar también.',x:'1, 2, 3 (s = 1) → 2, 4, 6 (s = 2).',h:'Prueba con 1, 2, 3.'},
+ {q:'¿La desviación estándar puede ser negativa?',c:VF2,a:'f',e:'Falso: es la raíz de un promedio de cuadrados, así que siempre es 0 o positiva. Es 0 solo si todos los datos son iguales.',x:'Para 5, 5, 5 la s es 0. Para cualquier otro grupo es positiva.',h:'Fíjate en la fórmula: hay un cuadrado y una raíz.'},
+ {q:'El segundo cuartil (Q2) es lo mismo que la mediana.',c:VF2,a:'v',e:'Verdadero: Q2 deja el 50% de los datos por debajo, igual que la mediana.',x:'En 1, 3, 5, 7, 9 la mediana es 5 y Q2 = 5.',h:'¿Qué porcentaje de datos deja por debajo cada uno?'},
+ {q:'El rango es una medida de dispersión muy sensible a los valores extremos.',c:VF2,a:'v',e:'Verdadero: usa solo el máximo y el mínimo.',x:'2, 3, 4, 5 tiene rango 3. Cambiando el 5 por 50, el rango sube a 48.',h:'¿Qué datos usa el rango?'}];
+function edList(r){if(r===1){const g=Math.random()<.5;return{a:(g?ED_NOTAS:ED_ESPERA).slice(),c:g?{t:'Notas de una asignatura',d:()=>'Se toma una muestra de notas de 30 alumnos de BOD en una asignatura.',u:'',dec:1}:{t:'Tiempo de espera en atención',d:()=>'Se registra el tiempo de espera, en minutos, de 30 personas atendidas en una sucursal.',u:'minutos',dec:0}}}
+ const c=pick(EDL),n=r===2?rint(9,13):rint(12,20);const a=[];for(let i=0;i<n;i++)a.push(c.g());const rep=a[rint(0,n-1)];a[(a.indexOf(rep)+1+rint(0,n-2))%n]=rep;return{a,c}}
+function edListQ(t,r){
+ for(let tries=0;tries<60;tries++){const{a,c}=edList(r),n=a.length,s=srt(a),m=mean(a),md=median(a),mo=modes(a),sd=sdS(a),ss=sum(a.map(x=>(x-m)*(x-m)));
+  const head='<b>'+c.t+'.</b> '+c.d(n)+dataHTML(a)+copyBtn;const U=c.u?' '+c.u:'';
+  let kind=t==='cen'?pick(['media','mediana','moda']):t==='dis'?pick(r===1?['rango','sd','cv']:['rango','sd','cv','sd']):pick(r>=3?['q1','q3','riq']:['q1','q3']);
+  if(kind==='moda'&&mo.length!==1)continue;
+  const sorted='Datos ordenados: '+s.map(fmt).join(', ');
+  if(kind==='media')return edOut({text:head+'Calcule la <b>media</b>.',ans:m,tol:tolM(m),steps:[M('\\bar{x}='+MF('\\sum x_{i}','n')+'='+MF(fmt(rnd(sum(a),2)),n)+'\\approx '+f2(m)),'En Excel: <code>=PROMEDIO(rango)</code>'],rule:'La media es el promedio. Interpretación: en promedio, los datos valen '+f2(m)+U+'. Es sensible a valores extremos.',plot:()=>plotBox(a),
+   g:{type:'PB',gs:[gstep('Suma de los datos',rnd(sum(a),4),'<b>Paso 1 ·</b> Suma todos los datos: '+M('\\sum x_{i}'),'Puedes usar 📋 Copiar datos y pegarlos en la calculadora o en Excel (=SUMA).','Debe darte '+fmt(rnd(sum(a),2))+'.'),gstep('n',n,'<b>Paso 2 ·</b> ¿Cuántos datos hay (n)?','Cuenta los datos de la tabla.','Son '+n+'.'),{lab:'Media',val:m,tol:tolM(m),q:'<b>Paso 3 · Media:</b> '+M('\\bar{x}='+MF('\\sum x_{i}','n')),tip:'Divide el paso 1 por el paso 2.',tip2:'Calcula '+fmt(rnd(sum(a),2))+' ÷ '+n+'.'}]}});
+  if(kind==='mediana'){const p=(n+1)/2;return edOut({text:head+'Calcule la <b>mediana</b>.',ans:md,tol:tolM(md),steps:[sorted,'Posición central: '+M(MF('n+1',2)+'='+MF(n+1,2)+'='+fmt(p))+(n%2?' → el dato '+p:' → promedio de los datos '+(n/2)+' y '+(n/2+1)+': '+M(MF(fmt(s[n/2-1])+'+'+fmt(s[n/2]),2)+'='+fmt(md))),'En Excel: <code>=MEDIANA(rango)</code>'],
+   rule:'La mediana deja la mitad de los datos por debajo y la mitad por encima. Interpretación: el 50% de los datos es menor o igual a '+fmt(md)+U+'. No se ve afectada por valores extremos.',plot:()=>plotBox(a),
+   g:{type:'PB',gs:[gstep('n',n,'<b>Paso 1 ·</b> ¿Cuántos datos hay (n)? Después, ordénalos de menor a mayor.','Cuenta los datos de la tabla.','Son '+n+'.'),gstep('Posición',p,'<b>Paso 2 · Posición central:</b> '+M(MF('n+1',2)),'Si sale con ,5, la mediana es el promedio de los dos datos del medio.','Calcula ('+n+' + 1) ÷ 2.'),{lab:'Mediana',val:md,tol:tolM(md),q:'<b>Paso 3 ·</b> Con los datos <b>ordenados</b>, busca el dato en esa posición'+(n%2?'':' (promedio de los dos del medio)')+'.',tip:'Si no ordenas primero, la mediana sale mal.',tip2:sorted}]}});}
+  if(kind==='moda'){const cnt=a.filter(x=>x===mo[0]).length;return edOut({text:head+'Calcule la <b>moda</b>.',ans:mo[0],tol:.001,steps:['El dato que más se repite es <b>'+fmt(mo[0])+'</b> ('+cnt+' veces)','En Excel: <code>=MODA.UNO(rango)</code>'],rule:'La moda es el dato más frecuente. Interpretación: el valor más común es '+fmt(mo[0])+U+'.',plot:()=>plotBox(a),
+   g:{type:'PB',gs:[{lab:'Moda',val:mo[0],tol:.001,q:'<b>Paso 1 ·</b> Ordena los datos y busca el que <b>más se repite</b>.',tip:'Con los datos ordenados, los repetidos quedan juntos.',tip2:sorted}]}});}
+  if(kind==='rango'){const R=s[n-1]-s[0];return edOut({text:head+'Calcule el <b>rango</b>.',ans:R,tol:.011,steps:['Máximo = '+fmt(s[n-1])+' · Mínimo = '+fmt(s[0]),M('R=\\text{máx}−\\text{mín}='+fmt(s[n-1])+'−'+fmt(s[0])+'='+fmt(rnd(R,4))),'En Excel: <code>=MAX(rango)−MIN(rango)</code>'],rule:'El rango mide la distancia entre el dato mayor y el menor. Es fácil de calcular, pero muy sensible a valores extremos.',plot:()=>plotBox(a),
+   g:{type:'PB',gs:[gstep('Máximo',s[n-1],'<b>Paso 1 ·</b> ¿Cuál es el dato más grande?','Recorre toda la tabla.','Es '+fmt(s[n-1])+'.'),gstep('Mínimo',s[0],'<b>Paso 2 ·</b> ¿Cuál es el dato más chico?','Recorre toda la tabla.','Es '+fmt(s[0])+'.'),gstep('Rango',rnd(R,4),'<b>Paso 3 · Rango:</b> máximo − mínimo.','Resta el paso 2 al paso 1.','Calcula '+fmt(s[n-1])+' − '+fmt(s[0])+'.')]}});}
+  if(kind==='sd')return edOut({text:head+'Calcule la <b>desviación estándar muestral</b>.',ans:sd,tol:Math.max(.011,sd*.005),steps:['Media: '+M('\\bar{x}\\approx '+f2(m)),M('s=\\sqrt{'+MF('\\sum (x_{i}−\\bar{x})^{2}','n−1')+'}=\\sqrt{'+MF(fmt(rnd(ss,2)),n-1)+'}\\approx '+f2(sd)),'En Excel: <code>=DESVEST.M(rango)</code>'],
+   rule:'La desviación estándar mide cuánto se alejan, en promedio, los datos de la media. Interpretación: los datos se alejan unos '+f2(sd)+U+' de la media.',plot:()=>plotBox(a),g:{type:'PB',gs:sdSteps('s',m,ss,n,'\\sum (x_{i}−\\bar{x})^{2}')}});
+  if(kind==='cv'){const cv=sd/m;return edOut({text:head+'Calcule el <b>coeficiente de variación</b> (en %).',ans:cv,tol:.006,num:false,show:fmt(rnd(cv*100,1))+'%',steps:['Media '+M('\\bar{x}\\approx '+f2(m))+' · desviación '+M('s\\approx '+f2(sd)),M('CV='+MF('s','\\bar{x}')+'\\cdot 100\\%='+MF(f2(sd),f2(m))+'\\cdot 100\\%\\approx '+fmt(rnd(cv*100,1))+'\\%'),'En Excel: <code>=DESVEST.M(rango)/PROMEDIO(rango)</code>'],
+   rule:'El CV mide la dispersión relativa a la media. Como referencia: bajo 15% suele considerarse poca variación, y sobre 30%, mucha. Aquí es '+fmt(rnd(cv*100,1))+'%.',plot:()=>plotBox(a),
+   g:{type:'PB',gs:[{lab:'Media',val:m,tol:tolM(m),q:'<b>Paso 1 · Media</b> '+M('\\bar{x}'),tip:'Suma los datos y divide por n.',tip2:'La media es '+f2(m)+'.'},{lab:'Desviación estándar',val:sd,tol:Math.max(.011,sd*.005),q:'<b>Paso 2 · Desviación estándar muestral</b> s (Excel: =DESVEST.M).',tip:'Usa la fórmula con n − 1.',tip2:'Debe darte cerca de '+f2(sd)+'.'},{lab:'CV',val:cv,tol:.006,prob:true,q:'<b>Paso 3 ·</b> '+M('CV='+MF('s','\\bar{x}')+'\\cdot 100\\%'),tip:'Divide el paso 2 por el paso 1. Puedes escribirlo como % o como decimal.',tip2:'Calcula '+f2(sd)+' ÷ '+f2(m)+'.'}]}});}
+  const p=kind==='q3'?.75:.25,qi=qInc(a,p),alts=uniq([qi,qExc(a,p),qTuk(a,p)]);
+  if(kind==='riq'){const riq=qInc(a,.75)-qInc(a,.25),ra=uniq([riq,qExc(a,.75)-qExc(a,.25),qTuk(a,.75)-qTuk(a,.25)]);
+   return edOut({text:head+'Calcule el <b>rango intercuartílico</b> (Q3 − Q1).',ans:riq,alts:ra,tol:.011,steps:[sorted,'Q1 = '+fmt(rnd(qInc(a,.25),3))+' · Q3 = '+fmt(rnd(qInc(a,.75),3))+' (método de Excel, CUARTIL.INC)',M('RIC=Q_{3}−Q_{1}='+fmt(rnd(riq,3))),'También se aceptan los otros métodos de cuartiles que se enseñan.'],rule:'El rango intercuartílico es el ancho del 50% central de los datos. No lo afectan los extremos.',plot:()=>plotBox(a),
+    g:{type:'PB',gs:[{lab:'Q1',val:qInc(a,.25),tol:.011,q:'<b>Paso 1 · Q1</b> con Excel: <code>=CUARTIL.INC(rango; 1)</code>, o a mano en la posición '+M('(n−1)\\cdot 0,25+1'),tip:'Ordena los datos primero.',tip2:sorted},{lab:'Q3',val:qInc(a,.75),tol:.011,q:'<b>Paso 2 · Q3</b> con <code>=CUARTIL.INC(rango; 3)</code>, o a mano en la posición '+M('(n−1)\\cdot 0,75+1'),tip:'Mismo método, con 0,75.',tip2:sorted},gstep('RIC',riq,'<b>Paso 3 ·</b> Q3 − Q1.','Resta.','Calcula '+fmt(rnd(qInc(a,.75),3))+' − '+fmt(rnd(qInc(a,.25),3))+'.')]}})}
+  const pos=(n-1)*p+1;
+  return edOut({text:head+'Calcule el <b>'+(p<.5?'primer cuartil (Q1)':'tercer cuartil (Q3)')+'</b>.',ans:qi,alts,tol:.011,steps:[sorted,'Método de Excel (CUARTIL.INC): posición '+M('(n−1)\\cdot '+fmt(p)+'+1='+fmt(rnd(pos,2)))+' → '+M('Q='+fmt(rnd(qi,3))),'En Excel: <code>=CUARTIL.INC(rango; '+(p<.5?1:3)+')</code>. Hay varios métodos para los cuartiles y dan valores parecidos; el juego acepta los más usados.'],
+   rule:(p<.5?'Q1 deja el 25% de los datos por debajo':'Q3 deja el 75% de los datos por debajo')+'. Interpretación: el '+(p<.5?'25':'75')+'% de los datos es menor o igual a '+fmt(rnd(qi,2))+U+'.',plot:()=>plotBox(a),
+   g:{type:'PB',gs:[gstep('n',n,'<b>Paso 1 ·</b> ¿Cuántos datos hay (n)? Después, ordénalos de menor a mayor.','Cuenta los datos.','Son '+n+'.'),gstep('Posición',rnd(pos,4),'<b>Paso 2 · Posición</b> (método de Excel): '+M('(n−1)\\cdot '+fmt(p)+'+1'),'Si sale con decimales, el cuartil queda entre dos datos.','Calcula ('+n+' − 1) × '+fmt(p)+' + 1.'),{lab:p<.5?'Q1':'Q3',val:qi,tol:.011,q:'<b>Paso 3 ·</b> Busca ese lugar en los datos <b>ordenados</b>. Si la posición tiene decimales, avanza esa fracción entre los dos datos vecinos.',tip:'Ejemplo: posición 8,25 = dato 8 + 0,25 × (dato 9 − dato 8).',tip2:sorted}]}});
+ }}
+const EDF=[
+ {t:'Distribución de caries en pacientes',d:n=>'Se recopila el número de caries detectadas en una muestra de '+n+' pacientes.',lx:'Número de caries (xᵢ)',x:[0,1,2,3,4,5],o:[5,10,15,10,6,4]},
+ {t:'Citas odontológicas por paciente',d:n=>'En una clínica dental se analiza el número de citas anuales que realizan '+n+' pacientes.',lx:'Citas anuales (xᵢ)',x:[1,2,3,4,5],o:[8,12,6,3,1]},
+ {t:'Dientes con sellante por niño',d:n=>'Se registra el número de dientes con sellante en '+n+' niños atendidos en un consultorio.',lx:'Dientes con sellante (xᵢ)',x:[0,1,2,3,4]},
+ {t:'Controles al año',d:n=>'Se registra cuántos controles preventivos al año realizan '+n+' pacientes.',lx:'Controles (xᵢ)',x:[0,1,2,3,4,5]}];
+function edFreq(r){
+ for(let tries=0;tries<40;tries++){const c=r===1?pick(EDF.slice(0,2)):pick(EDF);const xs=c.x;const fs=r===1&&c.o?c.o.slice():xs.map(()=>rint(1,r===2?12:20));
+  const n=sum(fs),m=sum(xs.map((x,i)=>x*fs[i]))/n,sxf=sum(xs.map((x,i)=>x*fs[i])),ss=sum(xs.map((x,i)=>fs[i]*(x-m)*(x-m))),sd=Math.sqrt(ss/(n-1));
+  const mx=Math.max(...fs);if(fs.filter(f=>f===mx).length>1&&r>1)continue;const mo=xs[fs.indexOf(mx)];
+  const exp=[];let acc=0;fs.forEach((f,i)=>{acc+=f;exp.push(acc)});
+  const at=k=>xs[exp.findIndex(e=>e>=k)];const md=n%2?at((n+1)/2):(at(n/2)+at(n/2+1))/2;
+  const head='<b>'+c.t+'.</b> '+c.d(n)+freqHTML(c.lx,xs,fs);const kind=pick(['media','mediana','moda','sd']);
+  const cum='Frecuencia acumulada: '+xs.map((x,i)=>x+' → '+exp[i]).join(' · ');
+  const P=()=>plotFreq(xs,fs,i=>kind==='moda'?fs[i]===mx:false);
+  if(kind==='media')return edOut({text:head+'Calcule la <b>media</b>.',ans:m,tol:tolM(m),plot:P,steps:[M('\\bar{x}='+MF('\\sum x_{i}f_{i}','n')+'='+MF(sxf,n)+'\\approx '+f2(m)),'Productos xᵢ·fᵢ: '+xs.map((x,i)=>x+'·'+fs[i]+'='+x*fs[i]).join(' · ')],rule:'En una tabla de frecuencias, cada valor se repite fᵢ veces: por eso se multiplica xᵢ·fᵢ antes de sumar. Interpretación: en promedio, '+f2(m)+' por persona.',
+   g:{type:'PB',gs:[gstep('Σ xᵢ·fᵢ',sxf,'<b>Paso 1 ·</b> Multiplica cada valor por su frecuencia y súmalos: '+M('\\sum x_{i}f_{i}'),'Es como sumar cada dato tantas veces como se repite.','Productos: '+xs.map((x,i)=>x+'×'+fs[i]).join(' + ')+'.'),gstep('n',n,'<b>Paso 2 ·</b> n = suma de las frecuencias.','Suma la fila de frecuencias.','Suma '+fs.join(' + ')+'.'),{lab:'Media',val:m,tol:tolM(m),q:'<b>Paso 3 ·</b> '+M('\\bar{x}='+MF('\\sum x_{i}f_{i}','n')),tip:'Divide el paso 1 por el paso 2.',tip2:'Calcula '+sxf+' ÷ '+n+'.'}]}});
+  if(kind==='moda')return edOut({text:head+'¿Cuál es la <b>moda</b>?',ans:mo,alts:xs.filter((x,i)=>fs[i]===mx),tol:.001,plot:P,steps:['La frecuencia más alta es '+mx+', y corresponde a xᵢ = <b>'+mo+'</b>'],rule:'La moda es el valor con la mayor frecuencia (no la frecuencia misma). Interpretación: lo más común es '+mo+'.',
+   g:{type:'PB',gs:[{lab:'Moda',val:mo,tol:.001,q:'<b>Paso 1 ·</b> Busca la <b>frecuencia más alta</b> y escribe el valor xᵢ que le corresponde.',tip:'Ojo: la respuesta es el xᵢ, no la frecuencia.',tip2:'La frecuencia más alta es '+mx+'.'}]}});
+  if(kind==='mediana'){const p=(n+1)/2;return edOut({text:head+'Calcule la <b>mediana</b>.',ans:md,tol:.011,plot:P,steps:['n = '+n+' → posición '+M(MF('n+1',2)+'='+fmt(p)),cum,'El dato en la posición '+(n%2?p:(n/2)+' y '+(n/2+1))+' es <b>'+fmt(md)+'</b>'],rule:'Con la frecuencia acumulada se ve en qué valor "cae" la posición central. Interpretación: la mitad tiene '+fmt(md)+' o menos.',
+   g:{type:'PB',gs:[gstep('n',n,'<b>Paso 1 ·</b> n = suma de las frecuencias.','Suma la fila de frecuencias.','Suma '+fs.join(' + ')+'.'),gstep('Posición',p,'<b>Paso 2 · Posición central:</b> '+M(MF('n+1',2)),'Si sale con ,5, se promedian los datos en las dos posiciones vecinas.','Calcula ('+n+' + 1) ÷ 2.'),{lab:'Mediana',val:md,tol:.011,q:'<b>Paso 3 ·</b> Arma la <b>frecuencia acumulada</b> y busca el primer valor cuya acumulada alcanza esa posición.',tip:'La acumulada se obtiene sumando las frecuencias de izquierda a derecha.',tip2:cum}]}});}
+  return edOut({text:head+'Calcule la <b>desviación estándar muestral</b>.',ans:sd,tol:Math.max(.011,sd*.005),plot:P,steps:['Media '+M('\\bar{x}\\approx '+f2(m)),M('s=\\sqrt{'+MF('\\sum f_{i}(x_{i}−\\bar{x})^{2}','n−1')+'}=\\sqrt{'+MF(fmt(rnd(ss,2)),n-1)+'}\\approx '+f2(sd))],rule:'Interpretación: los datos se alejan en promedio unos '+f2(sd)+' de la media ('+f2(m)+').',
+   g:{type:'PB',gs:sdSteps('s',m,ss,n,'\\sum f_{i}(x_{i}−\\bar{x})^{2}')}});
+ }}
+const EDI=[
+ {t:'Tiempo de tratamiento de ortodoncia',d:n=>'Se registran los tiempos de tratamiento de ortodoncia, en meses, de '+n+' pacientes.',lx:'Tiempo (meses)',o:{iv:[[12,18],[19,24],[25,30],[31,36],[37,42]],f:[8,15,10,5,2]}},
+ {t:'Tiempo de compra de entradas',d:n=>'Los datos corresponden al tiempo, en minutos, de demora en el proceso de compra de entradas para un evento ('+n+' personas).',lx:'Tiempo (minutos)',o:{iv:[[0,5],[5,10],[10,15],[15,20],[20,25],[25,30]],f:[6,14,18,10,7,5]}},
+ {t:'Duración de limpiezas dentales',d:n=>'Se registra la duración, en minutos, de '+n+' limpiezas dentales.',lx:'Duración (minutos)',st:[20,10]},
+ {t:'Edad de pacientes de ortodoncia',d:n=>'Se registra la edad, en años, de '+n+' pacientes de ortodoncia.',lx:'Edad (años)',st:[8,4]}];
+function edInt(r){const c=r===1?pick(EDI.slice(0,2)):pick(EDI);let iv,fs;
+ if(r===1||!c.st){iv=c.o.iv;fs=c.o.f.slice();if(r>1)fs=fs.map(f=>Math.max(1,f+rint(-3,3)))}else{const k=rint(4,6);iv=[];for(let i=0;i<k;i++)iv.push([c.st[0]+i*c.st[1],c.st[0]+(i+1)*c.st[1]]);fs=iv.map(()=>rint(2,r===2?12:20))}
+ const mk=iv.map(v=>(v[0]+v[1])/2),n=sum(fs),smf=sum(mk.map((x,i)=>x*fs[i])),m=smf/n,ss=sum(mk.map((x,i)=>fs[i]*(x-m)*(x-m))),sd=Math.sqrt(ss/(n-1)),sdP=Math.sqrt(ss/n);
+ const head='<b>'+c.t+'.</b> '+c.d(n)+intHTML(c.lx,iv,fs);const kind=pick(['marca','media','sd','cv','acum']);const lab=iv.map(v=>fmt(v[0])+'−'+fmt(v[1]));
+ const P=hl=>()=>plotFreq(lab,fs,hl);const mks='Marcas de clase: '+mk.map(fmt).join(' · ');
+ if(kind==='marca'){const j=rint(0,iv.length-1);return edOut({text:head+'¿Cuál es la <b>marca de clase</b> del intervalo '+lab[j]+'?',ans:mk[j],tol:.011,plot:P(i=>i===j),steps:[M('m='+MF('L_{inf}+L_{sup}',2)+'='+MF(fmt(iv[j][0])+'+'+fmt(iv[j][1]),2)+'='+fmt(mk[j]))],rule:'La marca de clase es el punto medio del intervalo y representa a todos los datos de esa clase.',
+  g:{type:'PB',gs:[{lab:'Marca de clase',val:mk[j],tol:.011,q:'<b>Paso 1 ·</b> '+M('m='+MF('L_{inf}+L_{sup}',2)),tip:'Suma los dos límites del intervalo y divide por 2.',tip2:'Calcula ('+fmt(iv[j][0])+' + '+fmt(iv[j][1])+') ÷ 2.'}]}});}
+ if(kind==='acum'){const j=rint(1,iv.length-2);const fa=sum(fs.slice(0,j+1));return edOut({text:head+'Construya la tabla de frecuencia acumulada. ¿Cuántos datos hay <b>hasta</b> el intervalo '+lab[j]+' (inclusive)?',ans:fa,tol:.001,plot:P(i=>i<=j),steps:['Frecuencia acumulada: '+fs.map((f,i)=>lab[i]+' → '+sum(fs.slice(0,i+1))).join(' · '),'En porcentaje: '+fmt(rnd(fa/n*100,1))+'% de los datos'],rule:'La frecuencia acumulada suma las frecuencias desde el primer intervalo hasta el que se indica.',
+  g:{type:'PB',gs:[gstep('Frecuencia acumulada',fa,'<b>Paso 1 ·</b> Suma las frecuencias desde el primer intervalo hasta '+lab[j]+'.','Ve sumando hacia abajo en la tabla.','Suma '+fs.slice(0,j+1).join(' + ')+'.')]}});}
+ const gm=[gstep('Σ mᵢ·fᵢ',smf,'<b>Paso 1 ·</b> Calcula la marca de clase de cada intervalo, multiplícala por su frecuencia y suma: '+M('\\sum m_{i}f_{i}'),'La marca de clase es el punto medio de cada intervalo.',mks+'.'),gstep('n',n,'<b>Paso 2 ·</b> n = suma de las frecuencias.','Suma las frecuencias.','Suma '+fs.join(' + ')+'.'),{lab:'Media',val:m,tol:tolM(m),q:'<b>Paso 3 · Media estimada:</b> '+M('\\bar{x}='+MF('\\sum m_{i}f_{i}','n')),tip:'Divide el paso 1 por el paso 2.',tip2:'Calcula '+fmt(smf)+' ÷ '+n+'.'}];
+ if(kind==='media')return edOut({text:head+'Estime la <b>media</b> usando las marcas de clase.',ans:m,tol:tolM(m),plot:P(),steps:[mks,M('\\bar{x}='+MF('\\sum m_{i}f_{i}','n')+'='+MF(fmt(smf),n)+'\\approx '+f2(m))],rule:'Con datos agrupados, la media se <b>estima</b> suponiendo que cada dato vale la marca de clase de su intervalo.',g:{type:'PB',gs:gm}});
+ if(kind==='sd')return edOut({text:head+'Estime la <b>desviación estándar</b> (muestral) usando las marcas de clase.',ans:sd,alts:[sd,sdP],tol:Math.max(.02,sd*.01),plot:P(),steps:[mks+' · media '+M('\\bar{x}\\approx '+f2(m)),M('s=\\sqrt{'+MF('\\sum f_{i}(m_{i}−\\bar{x})^{2}','n−1')+'}=\\sqrt{'+MF(fmt(rnd(ss,2)),n-1)+'}\\approx '+f2(sd)),'(Si tu curso divide por n en vez de n − 1, da '+f2(sdP)+'; también se acepta.)'],rule:'Interpretación de la dispersión: los tiempos se alejan en promedio unos '+f2(sd)+' de la media estimada ('+f2(m)+').',
+  g:{type:'PB',gs:sdSteps('s',m,ss,n,'\\sum f_{i}(m_{i}−\\bar{x})^{2}').map((s,i)=>i===1?Object.assign({},s,{q:'<b>Paso 2 · Suma de cuadrados:</b> para cada intervalo calcula '+M('f_{i}(m_{i}−\\bar{x})^{2}')+' y súmalos. '+mks+'.'}):s)}});
+ const cv=sd/m;return edOut({text:head+'Estime el <b>coeficiente de variación</b> (en %).',ans:cv,alts:[cv,sdP/m],tol:.006,num:false,show:fmt(rnd(cv*100,1))+'%',plot:P(),steps:[mks,'Media '+M('\\bar{x}\\approx '+f2(m))+' · desviación '+M('s\\approx '+f2(sd)),M('CV='+MF('s','\\bar{x}')+'\\cdot 100\\%\\approx '+fmt(rnd(cv*100,1))+'\\%')],rule:'El CV compara la dispersión con la media. Aquí la desviación es el '+fmt(rnd(cv*100,1))+'% de la media.',
+  g:{type:'PB',gs:[gm[0],gm[1],gm[2],{lab:'Desviación estándar',val:sd,tol:Math.max(.02,sd*.01),q:'<b>Paso 4 · Desviación estándar</b> con las marcas: '+M('s=\\sqrt{'+MF('\\sum f_{i}(m_{i}−\\bar{x})^{2}','n−1')+'}'),tip:'Para cada intervalo: (marca − media)², por su frecuencia; súmalos, divide por n − 1 y saca la raíz.',tip2:'Debe darte cerca de '+f2(sd)+'.'},{lab:'CV',val:cv,tol:.006,prob:true,q:'<b>Paso 5 ·</b> '+M('CV='+MF('s','\\bar{x}')),tip:'Divide el paso 4 por el paso 3.',tip2:'Calcula '+f2(sd)+' ÷ '+f2(m)+'.'}]}});
+}
+function genED(t,r){if(t==='frq'&&Math.random()<.4)t='int';if(t==='vf')return edVF(r);if(t==='frq')return edFreq(r);if(t==='int')return edInt(r);const q=edListQ(t,r);q.copy=q.text.match(/<table class="bt dt">([\s\S]*?)<\/table>/)?[...q.text.matchAll(/<td>([^<]*)<\/td>/g)].map(x=>x[1]).join('\n'):'';return q}
+
+
+/* ---------- Exponencial ---------- */
+const STAGES_EX=[
+ {k:'EX',t:'lt',n:1,name:()=>'Exponencial · menos de t'},
+ {k:'EX',t:'gt',n:1,name:()=>'Exponencial · más de t'},
+ {k:'EX',t:'bt',n:1,name:()=>'Exponencial · entre dos tiempos'},
+ {k:'EX',t:'px',n:2,name:()=>'Exponencial y Poisson · del promedio de llegadas al tiempo entre llegadas'}];
+const EXC=[
+ {s:m=>'El tiempo entre llegadas de pacientes a la urgencia dental sigue una distribución exponencial con una media de '+m+' minutos.',q:'el próximo paciente llegue',u:'minutos',m:[5,30,5]},
+ {s:m=>'La vida útil de una restauración de resina sigue una distribución exponencial con una media de '+m+' años.',q:'una restauración dure',u:'años',m:[4,12,1]},
+ {s:m=>'El tiempo de espera para ser atendido en un consultorio sigue una distribución exponencial con una media de '+m+' minutos.',q:'un paciente espere',u:'minutos',m:[10,40,5]},
+ {s:m=>'El tiempo entre fallas de un equipo de rayos X dental sigue una distribución exponencial con una media de '+m+' meses.',q:'el equipo funcione sin fallar',u:'meses',m:[6,24,2]}];
+const ePlus=v=>Math.exp(-v);
+function plotE(lam,lo,hi,tmax){const T=tmax||5/lam,X=t=>40+t/T*470,Y=v=>130-v/lam*110;let p='',sh='';for(let t=0;t<=T+1e-9;t+=T/120)p+=(p?'L':'M')+X(t).toFixed(1)+' '+Y(lam*Math.exp(-lam*t)).toFixed(1);
+ const a=Math.max(0,lo),b=Math.min(T,hi);sh='M'+X(a).toFixed(1)+' 130';for(let t=a;t<=b+1e-9;t+=(b-a)/80||1)sh+='L'+X(t).toFixed(1)+' '+Y(lam*Math.exp(-lam*t)).toFixed(1);sh+='L'+X(b).toFixed(1)+' 130Z';
+ const mk=v=>v>0&&v<T?'<line x1="'+X(v)+'" y1="16" x2="'+X(v)+'" y2="132" stroke="#ffc23d" stroke-dasharray="4 3"/><text x="'+X(v)+'" y="146" text-anchor="middle" font-size="12" fill="#eef0ff">'+fmt(rnd(v,2))+'</text>':'';
+ return'<svg class="plot" viewBox="0 0 540 156"><path d="'+sh+'" fill="#ff5d6c" opacity=".75"/><path d="'+p+'" fill="none" stroke="#5b8cff" stroke-width="2.5"/><line x1="40" y1="130" x2="520" y2="130" stroke="#5a6399"/><text x="40" y="146" font-size="12" fill="#a3a9d6" text-anchor="middle">0</text>'+mk(lo)+mk(hi)+'</svg>'}
+function exGuide(lamTxt,lam,lamTip,kind,t1,t2,ans,u){const S=[{lab:'λ',val:lam,tol:Math.max(.0005,lam*.01),q:'<b>Paso 1 · Calcula λ</b> (la tasa). '+lamTxt,tip:lamTip,tip2:'λ = '+fmt(rnd(lam,4))+' por '+u.replace(/s$/,'')+'.'}];
+ if(kind==='bt'){S.push({lab:'e^(−λ·a)',val:Math.exp(-lam*t1),tol:.002,prob:true,q:'<b>Paso 2 ·</b> Calcula '+M('e^{−λ\\cdot '+fmt(t1)+'}'),tip:'Multiplica λ por el tiempo, cambia el signo y usa la tecla eˣ.',tip2:'Calcula e^(−'+fmt(rnd(lam*t1,4))+').'});
+  S.push({lab:'e^(−λ·b)',val:Math.exp(-lam*t2),tol:.002,prob:true,q:'<b>Paso 3 ·</b> Calcula '+M('e^{−λ\\cdot '+fmt(t2)+'}'),tip:'Igual que el paso anterior, con el otro tiempo.',tip2:'Calcula e^(−'+fmt(rnd(lam*t2,4))+').'});
+  S.push({lab:'Probabilidad',val:ans,tol:.003,prob:true,q:'<b>Paso 4 · Entre a y b:</b> '+M('P(a<X<b)=e^{−λa}−e^{−λb}'),tip:'Resta el paso 3 al paso 2.',tip2:'Calcula '+f4(Math.exp(-lam*t1))+' − '+f4(Math.exp(-lam*t2))+'.'});return S}
+ S.push({lab:'λ·t',val:lam*t1,tol:Math.max(.002,lam*t1*.01),q:'<b>Paso 2 ·</b> Multiplica λ por el tiempo t = '+fmt(t1)+' '+u+'.',tip:'Revisa que λ y t estén en la misma unidad.',tip2:'Calcula '+fmt(rnd(lam,4))+' × '+fmt(t1)+'.'});
+ S.push({lab:'e^(−λt)',val:Math.exp(-lam*t1),tol:.002,prob:true,q:'<b>Paso 3 ·</b> Calcula '+M('e^{−λt}')+' con la tecla eˣ.',tip:'Ojo con el signo menos: el resultado debe estar entre 0 y 1.',tip2:'Calcula e^(−'+fmt(rnd(lam*t1,4))+').'});
+ S.push({lab:'Probabilidad',val:ans,tol:.003,prob:true,q:kind==='lt'?'<b>Paso 4 · "Menos de t":</b> '+M('P(X<t)=1−e^{−λt}'):'<b>Paso 4 · "Más de t":</b> '+M('P(X>t)=e^{−λt}'),tip:kind==='lt'?'Resta a 1 el paso 3.':'Es directamente el paso 3.',tip2:kind==='lt'?'Calcula 1 − '+f4(Math.exp(-lam*t1))+'.':'Es '+f4(Math.exp(-lam*t1))+'.'});return S}
+function genEX(t,r){
+ if(t==='px'){const c=pick(EXC_P);const L=r===1?rint(2,6):r===2?pick([2,3,4,5,6,8,10,12]):stepGrid(1.5,9,.5);const unitMin=r>=2&&Math.random()<.6;
+  const kind=r===1?pick(['gt','lt']):pick(['gt','lt','mean']);
+  const tU=unitMin?pick([5,10,15,20,30,40,45]):pick([.25,.5,1,1.5,2]);const tt=unitMin?tU/60:tU;
+  const lam=L,txtT=unitMin?tU+' minutos':fmt(tU)+' '+(tU===1?c.u1:c.u);
+  const head=c.s(fmt(L))+' (proceso de Poisson). ';
+  if(kind==='mean'){const ans=(unitMin?60:1)/L;return{k:'EX',num:true,text:head+'¿Cuál es el tiempo promedio entre dos '+c.ev+', en '+(unitMin?'minutos':c.u)+'?',ans,tol:Math.max(.011,ans*.01),show:fmt(rnd(ans,2))+' '+(unitMin?'minutos':c.u),
+   steps:['Si llegan en promedio λ = '+fmt(L)+' por '+c.u1+', el tiempo entre llegadas es exponencial con media '+M(MF(1,'λ')),M('\\text{media}='+MF(1,fmt(L))+'='+fmt(rnd(1/L,4))+'\\text{ '+c.u+'}')+(unitMin?' = '+fmt(rnd(ans,2))+' minutos':'')],rule:'Poisson cuenta cuántos eventos pasan; la exponencial mide el tiempo entre eventos. Media del tiempo = 1/λ.',plot:()=>plotE(lam,0,0),
+   g:{type:'PB',gs:[gstep('λ',L,'<b>Paso 1 ·</b> ¿Cuál es el promedio de '+c.ev+' por '+c.u1+' (λ)?','Es el número que da el enunciado.','λ = '+fmt(L)+'.'),{lab:'Media',val:ans,tol:Math.max(.011,ans*.01),q:'<b>Paso 2 ·</b> El tiempo medio entre '+c.ev+' es '+M(MF(1,'λ'))+(unitMin?', pasado a minutos (× 60).':'.'),tip:'Divide 1 por λ'+(unitMin?' y multiplica por 60.':'.'),tip2:'Calcula '+(unitMin?'60':'1')+' ÷ '+fmt(L)+'.'}]}}}
+  const v=Math.exp(-lam*tt),ans=kind==='lt'?1-v:v;if(ans<.005||ans>.995)return genEX(t,r);
+  const text=head+'¿Cuál es la probabilidad de que el tiempo entre dos '+c.ev+' consecutivas sea '+(kind==='lt'?'menor':'mayor')+' a '+txtT+'?';
+  return{k:'EX',text,ans,tol:.003,show:f4(ans),steps:['Llegadas Poisson con λ = '+fmt(L)+' por '+c.u1+' → el tiempo entre llegadas es <b>exponencial</b> con la misma λ',unitMin?'Paso a horas: '+M('t='+MF(tU,60)+'='+fmt(rnd(tt,4))+'\\text{ '+c.u1+'}'):'Tiempo: t = '+fmt(tt)+' '+c.u,
+   M((kind==='lt'?'P(X<t)=1−e^{−λt}=1−':'P(X>t)=e^{−λt}=')+'e^{−'+fmt(L)+'\\cdot '+fmt(rnd(tt,4))+'}='+f4(ans)),'En Excel: <code>='+(kind==='lt'?'':'1−')+'DISTR.EXP.N('+fmt(rnd(tt,4))+'; '+fmt(L)+'; VERDADERO)</code>'],
+   rule:'Si los eventos siguen un proceso de Poisson con tasa λ, el tiempo entre eventos es exponencial con la misma λ. Ojo con las unidades.',plot:()=>plotE(lam,kind==='lt'?0:tt,kind==='lt'?tt:99,Math.max(5/lam,tt*1.4)),
+   g:{type:'PB',gs:exGuide('Llegan en promedio '+fmt(L)+' por '+c.u1+', así que λ = '+fmt(L)+' por '+c.u1+'.',lam,'Con Poisson, λ es directamente el promedio por unidad de tiempo.',kind,tt,0,ans,c.u).map((s,i)=>i===1&&unitMin?Object.assign({},s,{q:'<b>Paso 2 ·</b> Pasa '+tU+' minutos a '+c.u+' (÷ 60) y multiplícalo por λ.',tip:'λ está por '+c.u1+': el tiempo tiene que estar en '+c.u+'.',tip2:'Calcula '+fmt(L)+' × '+tU+' ÷ 60.'}):s)}};
+ }
+ const c=pick(EXC),m=stepGrid(c.m[0],c.m[1],c.m[2]),lam=1/m;let t1,t2,ans,cond;
+ const grid=x=>rnd(x,0)||1;
+ if(t==='bt'){t1=grid(m*pick([.25,.5,.75]));t2=grid(t1+m*pick([.5,1,1.5]));ans=Math.exp(-lam*t1)-Math.exp(-lam*t2);cond='entre '+fmt(t1)+' y '+fmt(t2)+' '+c.u}
+ else{t1=grid(m*pick(r===1?[.5,1,2]:[.25,.5,.75,1,1.5,2,3]));const v=Math.exp(-lam*t1);ans=t==='lt'?1-v:v;cond=(t==='lt'?'menos de ':'más de ')+fmt(t1)+' '+c.u}
+ const text=c.s(fmt(m))+' ¿Cuál es la probabilidad de que '+c.q+' '+cond+'?';
+ const steps=['Media = '+fmt(m)+' '+c.u+' → '+M('λ='+MF(1,'\\text{media}')+'='+MF(1,fmt(m))+'\\approx '+fmt(rnd(lam,4)))];
+ if(t==='bt')steps.push(M('P('+fmt(t1)+'<X<'+fmt(t2)+')=e^{−'+MF(fmt(t1),fmt(m))+'}−e^{−'+MF(fmt(t2),fmt(m))+'}='+f4(Math.exp(-lam*t1))+'−'+f4(Math.exp(-lam*t2))+'='+f4(ans)));
+ else steps.push(M((t==='lt'?'P(X<'+fmt(t1)+')=1−e^{−':'P(X>'+fmt(t1)+')=e^{−')+MF(fmt(t1),fmt(m))+'}='+f4(ans)));
+ steps.push('En Excel: <code>='+(t==='gt'?'1−':'')+'DISTR.EXP.N('+fmt(t2||t1)+'; '+fmt(rnd(lam,4))+'; VERDADERO)</code>'+(t==='bt'?' menos el de '+fmt(t1):''));
+ return{k:'EX',text,ans,tol:.003,show:f4(ans),steps,rule:t==='lt'?'"Menos de t": P(X < t) = 1 − e^(−λt).':t==='gt'?'"Más de t": P(X > t) = e^(−λt). (La exponencial "no tiene memoria".)':'"Entre a y b": e^(−λa) − e^(−λb).',
+  plot:()=>plotE(lam,t==='gt'?t1:t==='lt'?0:t1,t==='lt'?t1:t==='gt'?99:t2),g:{type:'PB',gs:exGuide('La media es '+fmt(m)+' '+c.u+', y '+M('λ='+MF(1,'\\text{media}'))+'.',lam,'λ es el inverso de la media: 1 ÷ media.',t,t1,t2,ans,c.u)}};
+}
+const EXC_P=[
+ {s:L=>'A la urgencia de una clínica dental llegan en promedio '+L+' pacientes por hora',ev:'llegadas de pacientes',u:'horas',u1:'hora'},
+ {s:L=>'Un call center de una clínica dental recibe en promedio '+L+' llamadas por hora',ev:'llamadas',u:'horas',u1:'hora'},
+ {s:L=>'Al laboratorio dental llegan en promedio '+L+' pedidos por día',ev:'llegadas de pedidos',u:'días',u1:'día'}];
+
+/* ---------- Regresión lineal ---------- */
+const STAGES_RL=[
+ {k:'RL',t:'b',n:1,name:()=>'Regresión · pendiente b'},
+ {k:'RL',t:'a',n:1,name:()=>'Regresión · intercepto a'},
+ {k:'RL',t:'pred',n:1,name:()=>'Regresión · predicción ŷ'},
+ {k:'RL',t:'r',n:1,name:()=>'Regresión · correlación r y determinación r²'},
+ {k:'RL',t:'int',n:1,name:()=>'Regresión · interpretación'}];
+const RL_EDAD=[23,28,25,75,80,46,45,24,27,30,71,20,43,29,65,64,26,65,34,50,25,45,47,65,57,59,48,56,41,68,48,25,21,76,73,39,65,55,25,49,20,72,28,23,47,75,77,42,46,45];
+const RL_DESG=[.8,1,1.2,4.8,5,2.9,4.6,2.7,1.1,2.7,4.2,1.4,3.7,1,3.7,4.4,1.2,4.3,3.2,3.5,1.9,1.1,1.5,4.2,4,3.9,3.3,4.8,2.2,4.1,3.2,1.3,1.6,4.2,4.5,1.8,4.3,4.2,1.7,3.6,.3,4.9,1.3,2.2,1.6,4.9,4.9,4.1,2.8,1.8];
+const RLC=[
+ {x:'Horas semanales de cepillado',y:'Índice de placa',xu:'hora de cepillado',yu:'puntos de placa',xg:()=>rint(2,14),a:80,b:-3.2,e:5,yd:0,x0:[4,12]},
+ {x:'Vasos de bebida azucarada por semana',y:'Número de caries',xu:'vaso semanal',yu:'caries',xg:()=>rint(0,14),a:.8,b:.35,e:.9,yd:0,x0:[3,12]},
+ {x:'Edad (años)',y:'Desgaste dental (mm)',xu:'año de edad',yu:'mm de desgaste',xg:()=>rint(20,80),a:-.4,b:.065,e:.5,yd:1,x0:[30,70]},
+ {x:'Años de experiencia del odontólogo',y:'Tiempo de una endodoncia (min)',xu:'año de experiencia',yu:'minutos',xg:()=>rint(1,20),a:95,b:-2.1,e:6,yd:0,x0:[3,18]},
+ {x:'Dosis de anestesia (ml)',y:'Duración del efecto (min)',xu:'ml de anestesia',yu:'minutos',xg:()=>stepGrid(1,4,.5),a:12,b:22,e:7,yd:0,x0:[1.5,3.5]}];
+function rlStats(xs,ys){const n=xs.length,Sx=sum(xs),Sy=sum(ys),Sxy=sum(xs.map((x,i)=>x*ys[i])),Sxx=sum(xs.map(x=>x*x)),Syy=sum(ys.map(y=>y*y));
+ const den=n*Sxx-Sx*Sx,b=(n*Sxy-Sx*Sy)/den,a=Sy/n-b*Sx/n,r=(n*Sxy-Sx*Sy)/Math.sqrt(den*(n*Syy-Sy*Sy));return{n,Sx,Sy,Sxy,Sxx,Syy,b,a,r,mx:Sx/n,my:Sy/n}}
+function rlData(r){
+ if(r>=3&&Math.random()<.35)return{c:Object.assign({},RLC[2],{big:true}),xs:RL_EDAD.slice(),ys:RL_DESG.slice()};
+ for(let k=0;k<50;k++){const c=pick(RLC),n=r===1?5:r===2?rint(6,7):rint(7,9);const xs=[];let guard=0;while(xs.length<n&&guard++<500){const v=c.xg();if(!xs.includes(v))xs.push(v)}if(xs.length<4)continue;xs.sort((p,q)=>p-q);
+  const ys=xs.map(x=>{let y=c.a+c.b*x+(Math.random()*2-1)*c.e;y=Math.max(0,y);return rnd(y,c.yd)});const S=rlStats(xs,ys);if(isFinite(S.r)&&Math.abs(S.r)>.45)return{c,xs,ys}}
+ return rlData(r)}
+function rlTable(c,xs,ys){if(c.big)return'<p class="cnote">'+xs.length+' pacientes (usa 📋 Copiar datos para pegarlos en Excel).</p><div class="tblwrap" style="max-height:200px"><table class="bt"><tr><th>'+c.x+'</th><th>'+c.y+'</th></tr>'+xs.map((x,i)=>'<tr><td>'+fmt(x)+'</td><td>'+fmt(ys[i])+'</td></tr>').join('')+'</table></div>';
+ return'<div class="tblwrap" style="max-height:none"><table class="bt"><tr><th>'+c.x+' (x)</th>'+xs.map(x=>'<td>'+fmt(x)+'</td>').join('')+'</tr><tr><th>'+c.y+' (y)</th>'+ys.map(y=>'<td>'+fmt(y)+'</td>').join('')+'</tr></table></div>'}
+function plotRL(xs,ys,a,b,x0){const mnx=Math.min(...xs,x0??Infinity),mxx=Math.max(...xs,x0??-Infinity),mny=Math.min(...ys,a+b*mnx,a+b*mxx),mxy=Math.max(...ys,a+b*mnx,a+b*mxx);
+ const X=x=>50+(x-mnx)/((mxx-mnx)||1)*450,Y=y=>130-(y-mny)/((mxy-mny)||1)*110;
+ let h=xs.map((x,i)=>'<circle cx="'+X(x).toFixed(1)+'" cy="'+Y(ys[i]).toFixed(1)+'" r="4" fill="#7cc8ff"/>').join('');
+ h+='<line x1="'+X(mnx)+'" y1="'+Y(a+b*mnx).toFixed(1)+'" x2="'+X(mxx)+'" y2="'+Y(a+b*mxx).toFixed(1)+'" stroke="#ff5d6c" stroke-width="2.5"/>';
+ if(x0!=null)h+='<circle cx="'+X(x0).toFixed(1)+'" cy="'+Y(a+b*x0).toFixed(1)+'" r="6" fill="#ffc23d"/>';
+ return'<svg class="plot" viewBox="0 0 540 160"><line x1="45" y1="135" x2="510" y2="135" stroke="#5a6399"/><line x1="45" y1="10" x2="45" y2="135" stroke="#5a6399"/>'+h+'<text x="275" y="154" font-size="11" fill="#a3a9d6" text-anchor="middle">puntos = datos · línea roja = recta de regresión'+(x0!=null?' · amarillo = predicción':'')+'</text></svg>'}
+function rlSumGuide(S,c){return[gstep('n',S.n,'<b>Paso 1 ·</b> ¿Cuántos pares de datos hay (n)?','Cuenta las columnas (o filas) de la tabla.','Son '+S.n+'.'),
+ {lab:'Σx',val:S.Sx,tol:Math.max(.011,Math.abs(S.Sx)*.001),q:'<b>Paso 2 ·</b> Suma los x: '+M('\\sum x'),tip:'Suma la fila de '+c.x+'.',tip2:'Debe darte '+fmt(rnd(S.Sx,2))+'.'},
+ {lab:'Σy',val:S.Sy,tol:Math.max(.011,Math.abs(S.Sy)*.001),q:'<b>Paso 3 ·</b> Suma los y: '+M('\\sum y'),tip:'Suma la fila de '+c.y+'.',tip2:'Debe darte '+fmt(rnd(S.Sy,2))+'.'},
+ {lab:'Σxy',val:S.Sxy,tol:Math.max(.05,Math.abs(S.Sxy)*.001),q:'<b>Paso 4 ·</b> Multiplica cada x por su y y suma: '+M('\\sum xy'),tip:'Un producto por cada par.',tip2:'Debe darte '+fmt(rnd(S.Sxy,2))+'.'},
+ {lab:'Σx²',val:S.Sxx,tol:Math.max(.05,S.Sxx*.001),q:'<b>Paso 5 ·</b> Eleva cada x al cuadrado y suma: '+M('\\sum x^{2}'),tip:'Usa la tecla x².',tip2:'Debe darte '+fmt(rnd(S.Sxx,2))+'.'},
+ {lab:'b',val:S.b,tol:Math.max(.002,Math.abs(S.b)*.01),q:'<b>Paso 6 · Pendiente:</b> '+M('b='+MF('n\\sum xy−\\sum x\\sum y','n\\sum x^{2}−(\\sum x)^{2}')),tip:'Calcula primero el numerador y el denominador por separado.',tip2:'Numerador = '+fmt(rnd(S.n*S.Sxy-S.Sx*S.Sy,2))+' · denominador = '+fmt(rnd(S.n*S.Sxx-S.Sx*S.Sx,2))+'.'}]}
+const tolA=S=>Math.max(.05,Math.abs(S.a)*.02,Math.abs(S.b*S.mx)*.012);
+function genRL(t,r){const{c,xs,ys}=rlData(r);const S=rlStats(xs,ys);const head='<b>'+c.y+' según '+xN(c)+'.</b> Se registraron estos datos:'+rlTable(c,xs,ys)+copyBtn;
+ const copy=xs.map((x,i)=>fmt(x)+'\t'+fmt(ys[i])).join('\n');const bs=fmt(rnd(S.b,4)),as=fmt(rnd(S.a,3));
+ const sums='n = '+S.n+' · Σx = '+fmt(rnd(S.Sx,2))+' · Σy = '+fmt(rnd(S.Sy,2))+' · Σxy = '+fmt(rnd(S.Sxy,2))+' · Σx² = '+fmt(rnd(S.Sxx,2));
+ const bStep=M('b='+MF('n\\sum xy−\\sum x\\sum y','n\\sum x^{2}−(\\sum x)^{2}')+'='+MF(fmt(rnd(S.n*S.Sxy-S.Sx*S.Sy,2)),fmt(rnd(S.n*S.Sxx-S.Sx*S.Sx,2)))+'\\approx '+bs);
+ const aStep=M('a=\\bar{y}−b\\,\\bar{x}='+fmt(rnd(S.my,3))+'−('+bs+')('+fmt(rnd(S.mx,3))+')\\approx '+as);
+ const base={k:'RL',num:true,copy,plot:()=>plotRL(xs,ys,S.a,S.b)};
+ if(t==='b')return Object.assign(base,{text:head+'Calcule la <b>pendiente b</b> de la recta de regresión '+M('\\hat{y}=a+bx')+'.',ans:S.b,tol:Math.max(.002,Math.abs(S.b)*.01),show:bs,steps:[sums,bStep,'En Excel: <code>=PENDIENTE(rango_y; rango_x)</code>'],rule:'Interpretación: por cada '+c.xu+' adicional, '+yN(c)+' '+(S.b>0?'aumenta':'disminuye')+' en promedio '+fmt(rnd(Math.abs(S.b),3))+' '+c.yu+'.',g:{type:'PB',gs:rlSumGuide(S,c)}});
+ if(t==='a')return Object.assign(base,{text:head+'Calcule el <b>intercepto a</b> de la recta de regresión '+M('\\hat{y}=a+bx')+'.',ans:S.a,tol:tolA(S),show:as,steps:[sums,bStep,aStep,'En Excel: <code>=INTERSECCION.EJE(rango_y; rango_x)</code>'],rule:'a es el valor que predice la recta cuando x = 0 (a veces no tiene sentido práctico si x = 0 está fuera de los datos).',
+  g:{type:'PB',gs:rlSumGuide(S,c).concat([{lab:'Medias',val:S.my,tol:Math.max(.011,Math.abs(S.my)*.002),q:'<b>Paso 7 ·</b> Calcula la media de y: '+M('\\bar{y}='+MF('\\sum y','n')),tip:'Divide Σy por n.',tip2:'Calcula '+fmt(rnd(S.Sy,2))+' ÷ '+S.n+'.'},{lab:'a',val:S.a,tol:tolA(S),q:'<b>Paso 8 · Intercepto:</b> '+M('a=\\bar{y}−b\\,\\bar{x}')+', con '+M('\\bar{x}='+MF('\\sum x','n')+'='+fmt(rnd(S.mx,3))),tip:'Multiplica b por la media de x y réstalo a la media de y.',tip2:'Calcula '+fmt(rnd(S.my,3))+' − ('+bs+') × '+fmt(rnd(S.mx,3))+'.'}])}});
+ if(t==='pred'){const x0=c.big?pick([30,40,60,70]):stepGrid(c.x0[0],c.x0[1],(c.x0[1]-c.x0[0]<5)?.5:1),y0=S.a+S.b*x0;return Object.assign(base,{text:head+'Usando la recta de regresión, estime '+yN(c)+' cuando '+xN(c)+' es <b>'+fmt(x0)+'</b>.',ans:y0,tol:Math.max(.05,Math.abs(y0)*.02),show:fmt(rnd(y0,2)),plot:()=>plotRL(xs,ys,S.a,S.b,x0),
+  steps:[sums,bStep,aStep,M('\\hat{y}=a+b\\cdot '+fmt(x0)+'='+as+'+('+bs+')('+fmt(x0)+')\\approx '+fmt(rnd(y0,2))),'En Excel: <code>=PRONOSTICO.LINEAL('+fmt(x0)+'; rango_y; rango_x)</code>'],rule:'Para predecir, se reemplaza x en la recta. Es confiable solo dentro del rango de los datos (no extrapolar lejos).',
+  g:{type:'PB',gs:[{lab:'b',val:S.b,tol:Math.max(.002,Math.abs(S.b)*.01),q:'<b>Paso 1 · Pendiente b</b> (Excel: =PENDIENTE).',tip:M('b='+MF('n\\sum xy−\\sum x\\sum y','n\\sum x^{2}−(\\sum x)^{2}')),tip2:sums+'.'},{lab:'a',val:S.a,tol:tolA(S),q:'<b>Paso 2 · Intercepto a</b> = ȳ − b·x̄ (Excel: =INTERSECCION.EJE).',tip:'Medias: x̄ = '+fmt(rnd(S.mx,3))+', ȳ = '+fmt(rnd(S.my,3))+'.',tip2:'Calcula '+fmt(rnd(S.my,3))+' − ('+bs+') × '+fmt(rnd(S.mx,3))+'.'},{lab:'ŷ',val:y0,tol:Math.max(.05,Math.abs(y0)*.02),q:'<b>Paso 3 · Predicción:</b> reemplaza x = '+fmt(x0)+' en '+M('\\hat{y}=a+bx'),tip:'Multiplica b por '+fmt(x0)+' y súmale a.',tip2:'Calcula '+as+' + ('+bs+') × '+fmt(x0)+'.'}]}})}
+ if(t==='r'){const sq=r>=2&&Math.random()<.4;const v=sq?S.r*S.r:S.r;return Object.assign(base,{text:head+'Calcule el '+(sq?'<b>coeficiente de determinación r²</b> (en %).':'<b>coeficiente de correlación r</b>.'),ans:v,tol:sq?.006:.011,num:!sq,show:sq?fmt(rnd(v*100,1))+'%':fmt(rnd(v,3)),
+  steps:[sums+' · Σy² = '+fmt(rnd(S.Syy,2)),M('r='+MF('n\\sum xy−\\sum x\\sum y','\\sqrt{[n\\sum x^{2}−(\\sum x)^{2}]\\,[n\\sum y^{2}−(\\sum y)^{2}]}')+'\\approx '+fmt(rnd(S.r,3))),sq?M('r^{2}\\approx '+fmt(rnd(S.r*S.r,4)))+' → el '+fmt(rnd(S.r*S.r*100,1))+'% de la variación de y se explica por x':'Relación '+(Math.abs(S.r)>=.7?'fuerte':Math.abs(S.r)>=.4?'moderada':'débil')+' y '+(S.r>0?'positiva':'negativa'),'En Excel: <code>='+(sq?'COEFICIENTE.R2':'COEF.DE.CORREL')+'(rango_y; rango_x)</code>'],
+  rule:'r va de −1 a 1: el signo indica si la relación es positiva o negativa, y el tamaño qué tan fuerte es (cerca de ±1 = fuerte). r² dice qué porcentaje de la variación de y explica la recta.',
+  g:{type:'PB',gs:rlSumGuide(S,c).slice(0,5).concat([{lab:'Σy²',val:S.Syy,tol:Math.max(.05,S.Syy*.001),q:'<b>Paso 6 ·</b> Eleva cada y al cuadrado y suma: '+M('\\sum y^{2}'),tip:'Usa la tecla x².',tip2:'Debe darte '+fmt(rnd(S.Syy,2))+'.'},{lab:'r',val:S.r,tol:.011,q:'<b>Paso 7 ·</b> '+M('r='+MF('n\\sum xy−\\sum x\\sum y','\\sqrt{[n\\sum x^{2}−(\\sum x)^{2}][n\\sum y^{2}−(\\sum y)^{2}]}')),tip:'Calcula el numerador, los dos corchetes, multiplícalos y saca la raíz.',tip2:'Numerador = '+fmt(rnd(S.n*S.Sxy-S.Sx*S.Sy,2))+'.'}].concat(sq?[{lab:'r²',val:S.r*S.r,tol:.006,prob:true,q:'<b>Paso 8 ·</b> Eleva r al cuadrado.',tip:'r² = r × r.',tip2:'Calcula '+fmt(rnd(S.r,3))+'².'}]:[]))}})}
+ const kinds=[['pend','¿Cómo se interpreta la pendiente?'],['fuerza','¿Cómo es la relación entre las variables?'],['r2','¿Qué significa el r² de este modelo?']];const[kk,qq]=pick(kinds);let ch,ansC;
+ const B=fmt(rnd(Math.abs(S.b),3)),up=S.b>0,str=Math.abs(S.r)>=.7?'fuerte':Math.abs(S.r)>=.4?'moderada':'débil',R2=fmt(rnd(S.r*S.r*100,1));
+ if(kk==='pend'){ch=[{v:'ok',l:'Por cada '+c.xu+' adicional, '+yN(c)+' '+(up?'aumenta':'disminuye')+' en promedio '+B+' '+c.yu},{v:'w1',l:'Por cada '+c.xu+' adicional, '+yN(c)+' '+(up?'disminuye':'aumenta')+' en promedio '+B+' '+c.yu},{v:'w2',l:'Cuando '+xN(c)+' es 0, '+yN(c)+' vale '+B},{v:'w3',l:'El '+B+'% de los datos está sobre la recta'}]}
+ else if(kk==='fuerza'){const opts=['fuerte y positiva','fuerte y negativa','moderada y positiva','moderada y negativa','débil'];const right=str==='débil'?'débil':str+' y '+(S.r>0?'positiva':'negativa');ch=uniqStr([right].concat(opts.filter(o=>o!==right).sort(()=>Math.random()-.5).slice(0,3))).map(o=>({v:o===right?'ok':o,l:'Relación '+o}))}
+ else{ch=[{v:'ok',l:'El '+R2+'% de la variación de '+yN(c)+' se explica por '+xN(c)},{v:'w1',l:'El '+R2+'% de los pacientes tiene '+yN(c)+' alto'},{v:'w2',l:'La pendiente es '+fmt(rnd(S.r*S.r,3))},{v:'w3',l:'La predicción falla en un '+R2+'% de los casos'}]}
+ ch=ch.sort(()=>Math.random()-.5);
+ return Object.assign(base,{text:head+'La recta de regresión es '+M('\\hat{y}='+as+(S.b<0?'−':'+')+fmt(rnd(Math.abs(S.b),4))+'x')+' y el coeficiente de correlación es '+M('r='+fmt(rnd(S.r,3)))+'. '+qq,choices:ch,ansChoice:'ok',ans:0,tol:0,num:false,show:ch.find(x=>x.v==='ok').l,g:null,
+  steps:[kk==='pend'?'La pendiente b = '+fmt(rnd(S.b,4))+' es el cambio promedio de y por cada unidad de x.':kk==='fuerza'?'|r| = '+fmt(rnd(Math.abs(S.r),3))+' → '+str+' (≥ 0,7 fuerte; 0,4–0,7 moderada; < 0,4 débil). Signo '+(S.r>0?'positivo: suben juntas':'negativo: cuando una sube, la otra baja')+'.':'r² = r × r = '+fmt(rnd(S.r*S.r,4))+' → '+R2+'% de la variación de y se explica por la recta.'],
+  rule:'Siempre interpreta en las unidades del problema: "por cada … adicional, … aumenta/disminuye en promedio …".',hint:'Fíjate en el signo de b y de r, y en qué mide cada uno.'});
+}
+const uniqStr=a=>a.filter((v,i)=>a.indexOf(v)===i);
+const yN=c=>c.y.toLowerCase().replace(/\s*\(.*?\)/,''),xN=c=>c.x.toLowerCase().replace(/\s*\(.*?\)/,'');
+
+
+/* ---------- Modo prueba (Prueba 2) ---------- */
+let exam=null,exTimer=null;
+const asPart=(c,pts,lab)=>({q:(lab?'<b>'+lab+'</b> ':'')+c.text,ans:c.ans,tol:c.tol,alts:c.alts,num:c.num,choices:c.choices,ansChoice:c.ansChoice,pts,show:c.show,steps:c.steps,rule:c.rule,plot:c.plot,copy:c.copy});
+function exPois(r,pts){const c=pick(EXC_P),L=r===1?rint(2,6):pick([2,3,4,5,6]);const kind=pick(['eq','mas']);const k=kind==='eq'?rint(Math.max(0,L-2),L+2):rint(Math.max(1,L-1),L+2);
+ const p=kind==='eq'?pmf(L,k):1-cdfP(L,k);const tU=pick([10,15,20,30]),tt=tU/60,big=Math.random()<.5,e=Math.exp(-L*tt),pe=big?e:1-e;const half=pts/2;
+ const ctx=c.s(fmt(L))+' (proceso de Poisson).';
+ return{title:'Exponencial y Poisson',text:ctx,parts:[
+  {q:'<b>a)</b> ¿Cuál es la probabilidad de que en una '+c.u1+' lleguen '+(kind==='eq'?'exactamente ':'más de ')+k+'?',ans:p,tol:kind==='eq'?.002:.003,pts:half,show:f4(p),
+   steps:['Poisson con λ = '+fmt(L)+' por '+c.u1,kind==='eq'?M('P(X='+k+')='+MF('e^{−'+L+'}\\cdot '+L+'^{'+k+'}',k+'!')+'='+f4(p)):M('P(X>'+k+')=1−P(X\\le '+k+')=1−'+f4(cdfP(L,k))+'='+f4(p))],rule:'Para contar cuántos llegan se usa Poisson.'},
+  {q:'<b>b)</b> ¿Cuál es la probabilidad de que el tiempo entre dos '+c.ev+' consecutivas sea '+(big?'mayor':'menor')+' a '+tU+' minutos?',ans:pe,tol:.003,pts:half,show:f4(pe),
+   steps:['El tiempo entre llegadas es exponencial con λ = '+fmt(L)+' por '+c.u1,'t = '+tU+' min = '+M(MF(tU,60)+'='+fmt(rnd(tt,4)))+' '+c.u,M((big?'P(T>t)=e^{−λt}=':'P(T<t)=1−e^{−λt}=')+(big?'':'1−')+'e^{−'+L+'\\cdot '+fmt(rnd(tt,4))+'}='+f4(pe))],rule:'Para el tiempo entre llegadas se usa la exponencial con la misma λ, cuidando las unidades.'}]}}
+function exReg(r,pts){const{c,xs,ys}=rlData(2),S=rlStats(xs,ys);const x0=stepGrid(c.x0[0],c.x0[1],(c.x0[1]-c.x0[0]<5)?.5:1),y0=S.a+S.b*x0;
+ const w=pts===14?[3,3,3,3,2]:[2,2,2,2,2];const str=Math.abs(S.r)>=.7?'fuerte':Math.abs(S.r)>=.4?'moderada':'débil',right=str==='débil'?'débil':str+' y '+(S.r>0?'positiva':'negativa');
+ const opts=uniqStr([right,'fuerte y positiva','fuerte y negativa','moderada y positiva','moderada y negativa','débil']).slice(0,6);
+ const ch=uniqStr([right].concat(opts.filter(o=>o!==right).sort(()=>Math.random()-.5).slice(0,3))).sort(()=>Math.random()-.5).map(o=>({v:o===right?'ok':o,l:'Relación '+o}));
+ const sums='n = '+S.n+' · Σx = '+fmt(rnd(S.Sx,2))+' · Σy = '+fmt(rnd(S.Sy,2))+' · Σxy = '+fmt(rnd(S.Sxy,2))+' · Σx² = '+fmt(rnd(S.Sxx,2))+' · Σy² = '+fmt(rnd(S.Syy,2));
+ return{title:'Regresión lineal',text:'<b>'+c.y+' según '+xN(c)+'.</b>'+rlTable(c,xs,ys),copy:xs.map((x,i)=>fmt(x)+'\t'+fmt(ys[i])).join('\n'),parts:[
+  {q:'<b>a)</b> Calcule la pendiente b de la recta '+M('\\hat{y}=a+bx')+'.',ans:S.b,tol:Math.max(.002,Math.abs(S.b)*.01),num:true,pts:w[0],show:fmt(rnd(S.b,4)),steps:[sums,M('b='+MF('n\\sum xy−\\sum x\\sum y','n\\sum x^{2}−(\\sum x)^{2}')+'\\approx '+fmt(rnd(S.b,4)))]},
+  {q:'<b>b)</b> Calcule el intercepto a.',ans:S.a,tol:tolA(S),num:true,pts:w[1],show:fmt(rnd(S.a,3)),steps:[M('a=\\bar{y}−b\\,\\bar{x}='+fmt(rnd(S.my,3))+'−('+fmt(rnd(S.b,4))+')('+fmt(rnd(S.mx,3))+')\\approx '+fmt(rnd(S.a,3)))]},
+  {q:'<b>c)</b> Estime '+yN(c)+' cuando '+xN(c)+' es '+fmt(x0)+'.',ans:y0,tol:Math.max(.05,Math.abs(y0)*.02),num:true,pts:w[2],show:fmt(rnd(y0,2)),steps:[M('\\hat{y}='+fmt(rnd(S.a,3))+'+('+fmt(rnd(S.b,4))+')('+fmt(x0)+')\\approx '+fmt(rnd(y0,2)))]},
+  {q:'<b>d)</b> Calcule el coeficiente de correlación r.',ans:S.r,tol:.011,num:true,pts:w[3],show:fmt(rnd(S.r,3)),steps:[M('r='+MF('n\\sum xy−\\sum x\\sum y','\\sqrt{[n\\sum x^{2}−(\\sum x)^{2}][n\\sum y^{2}−(\\sum y)^{2}]}')+'\\approx '+fmt(rnd(S.r,3)))]},
+  {q:'<b>e)</b> ¿Cómo es la relación entre las variables?',choices:ch,ansChoice:'ok',pts:w[4],show:'Relación '+right,steps:['|r| = '+fmt(rnd(Math.abs(S.r),3))+' → '+str+'; signo '+(S.r>0?'positivo':'negativo')+'. Interpretación de b: por cada '+c.xu+' adicional, '+yN(c)+' '+(S.b>0?'aumenta':'disminuye')+' en promedio '+fmt(rnd(Math.abs(S.b),3))+' '+c.yu+'.']}],plot:()=>plotRL(xs,ys,S.a,S.b,x0)}}
+const EXAM_SPEC={
+ 1:{name:'Parte 1',items:[['Probabilidad',5,()=>genPB(pick(['cl','suma','ind','comb']),2)],['Probabilidad (condicional)',5,()=>genPB(pick(['cond','bayes']),2)],['Binomial',4,()=>genB('eq',2)],['Binomial',4,()=>genB(pick(['ge','le']),2)],['Poisson',4,()=>genP(pick(['eq','le','gt']),2)],['Normal',4,()=>genN(pick(['R','L']),2)],['Normal',4,()=>genN('C',2)],['Exponencial y Poisson',6,'EXP'],['Regresión lineal',14,'REG']]},
+ 2:{name:'Parte 2',items:[['Binomial',4,()=>genB(pick(['eq','ge','le']),2)],['Poisson',4,()=>genP(pick(['eq','le','gt']),2)],['Normal',6,'N2'],['Exponencial y Poisson',6,'EXP'],['Regresión lineal',10,'REG']]}};
+function buildExam(kind){const parts=kind===3?[1,2]:[kind];const qs=[];
+ parts.forEach(pp=>EXAM_SPEC[pp].items.forEach(([nm,pts,g])=>{let it;
+  if(g==='EXP')it=exPois(2,pts);else if(g==='REG')it=exReg(2,pts);
+  else if(g==='N2'){const a=genN(pick(['R','L']),2),b=genN('C',2);it={title:nm,text:'',parts:[asPart(a,pts/2,'a)'),asPart(b,pts/2,'b)')]}}
+  else{const c=g();it={title:nm,text:'',parts:[asPart(c,pts)],copy:c.copy}}
+  it.title=nm;it.pts=pts;it.sec=EXAM_SPEC[pp].name;qs.push(it)}));
+ return{kind,qs,total:sum(qs.map(q=>q.pts)),t0:Date.now(),done:false,ans:{}}}
+const notaCL=(p,P)=>{const e=.6*P;return rnd(p<e?1+3*p/e:4+3*(p-e)/(P-e),1)};
+const EXLIM=40*60000;
+const mmss=ms=>{const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+function startExam(kind){exam=buildExam(kind);cur=null;answered=false;qi=0;updZ(kind===1);
+ const nm=EXAM_SPEC[kind].name;$('sName').textContent='📝 Simulacro Prueba 2 · '+nm+' · '+exam.total+' pts';
+ clearInterval(exTimer);const tick=()=>{if(!exam||exam.done)return;const left=EXLIM-(Date.now()-exam.t0);if(left<=0){exam.timeout=true;gradeExam();return}$('sProg').textContent='⏱ quedan '+mmss(left);$('sProg').style.color=left<5*60000?'var(--bad)':''};exTimer=setInterval(tick,1000);tick();
+ STAGES.forEach((s,i)=>{const sg=$('seg'+i);if(sg){sg.firstChild.style.width='0%';sg.classList.remove('cur')}});
+ let h='<div class="fb hint" style="margin-top:0"><b>📝 '+nm+(kind===1?' · en sala':' · laboratorio con Excel')+'</b> · ⏱ 40 minutos (al llegar a 0 se entrega sola) · nota de 1 a 7 al 60%.<br>'+(kind===1?'Usa la 🧮 calculadora y la 📊 Tabla Z.':'Resuélvela con <b>Excel</b>: <code>=DISTR.BINOM.N(k; n; p; FALSO)</code> · <code>=POISSON.DIST(k; λ; FALSO)</code> · <code>=DISTR.NORM.N(x; μ; σ; VERDADERO)</code> · <code>=DISTR.EXP.N(t; λ; VERDADERO)</code> · <code>=PENDIENTE</code> · <code>=INTERSECCION.EJE</code> · <code>=COEF.DE.CORREL</code>. Usa 📋 Copiar datos para pegar las tablas.')+'</div>';
+ let sec='';
+ exam.qs.forEach((q,i)=>{if(q.sec!==sec){sec=q.sec;h+='<h3 style="margin:18px 0 6px">'+sec.toUpperCase()+' ('+sum(exam.qs.filter(x=>x.sec===sec).map(x=>x.pts))+' puntos)</h3>'}
+  h+='<div class="card exq" id="exq'+i+'" style="margin-top:10px"><div class="pills"><span class="pill">Pregunta '+(exam.qs.filter((x,j)=>j<=i&&x.sec===q.sec).length)+'</span><span class="pill">'+q.title+'</span><span class="pill x2">'+q.pts+' pts</span></div>'+(q.text?'<div class="q">'+q.text+'</div>':'')+(q.copy?'<div style="text-align:right;margin:-4px 0 8px"><button class="btn sm" data-excopy="'+i+'">📋 Copiar datos</button></div>':'');
+  q.parts.forEach((p,j)=>{h+='<div class="expart" id="exp'+i+'_'+j+'"><div class="q" style="font-size:16px;margin:6px 0 8px">'+p.q+(q.parts.length>1?' <span style="color:var(--mut);font-size:13px">('+p.pts+' pts)</span>':'')+'</div>';
+   if(p.choices)h+='<div class="choice" data-ex="'+i+'_'+j+'">'+p.choices.map(c=>'<button class="btn" data-v="'+c.v+'">'+c.l+'</button>').join('')+'</div>';
+   else h+='<div class="ansrow"><input type="text" class="exin" id="exa'+i+'_'+j+'" placeholder="Tu respuesta" autocomplete="off"></div>';
+   h+='<div class="exres"></div></div>'});
+  h+='</div>'});
+ h+='<div class="center" style="margin:18px 0 6px"><div class="err" id="exErr"></div><button class="btn pri" id="exSend" style="font-size:18px;padding:12px 28px">Entregar prueba ✓</button></div>';
+ $('main').innerHTML=h;window.scrollTo(0,0);
+ $('main').querySelectorAll('.choice[data-ex]').forEach(box=>box.querySelectorAll('.btn').forEach(b=>b.onclick=()=>{if(exam.done)return;box.querySelectorAll('.btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');exam.ans[box.dataset.ex]=b.dataset.v}));
+ $('main').querySelectorAll('[data-excopy]').forEach(b=>b.onclick=()=>copyText(exam.qs[+b.dataset.excopy].copy,(m,ok)=>{$('exErr').textContent=m;$('exErr').style.color=ok?'var(--ok)':''}));
+ $('main').querySelectorAll('.exin').forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter')e.preventDefault()}));
+ let confirmBlank=false;
+ $('exSend').onclick=()=>{let blank=0;exam.qs.forEach((q,i)=>q.parts.forEach((p,j)=>{const id=i+'_'+j;if(p.choices?!exam.ans[id]:!$('exa'+id).value.trim())blank++}));
+  if(blank&&!confirmBlank){confirmBlank=true;$('exErr').style.color='';$('exErr').textContent='Tienes '+blank+' respuesta'+(blank>1?'s':'')+' en blanco. Toca "Entregar" otra vez para entregar igual.';$('exSend').textContent='Entregar igual ✓';return}
+  gradeExam()};
+}
+function gradeExam(){exam.done=true;clearInterval(exTimer);const el=Date.now()-exam.t0;let got=0;const by={};
+ exam.qs.forEach((q,i)=>{let qp=0;q.parts.forEach((p,j)=>{const id=i+'_'+j;let ok,given;
+   if(p.choices){given=exam.ans[id];ok=given==='ok'||given===p.ansChoice;given=given?(p.choices.find(c=>c.v===given)||{}).l:'(en blanco)'}
+   else{const inp=$('exa'+id),raw=inp.value.trim();inp.disabled=true;const v=(p.num?parseNum:parse)(raw);ok=!isNaN(v)&&(p.alts||[p.ans]).some(a=>Math.abs(v-a)<=p.tol);given=raw||'(en blanco)'}
+   if(ok){qp+=p.pts}
+   const box=$('exp'+id).querySelector('.exres');
+   box.innerHTML='<div class="fb '+(ok?'ok':'bad')+'" style="margin-top:8px;padding:10px 12px"><b>'+(ok?'✅ Correcta · +'+p.pts+' pts':'❌ Incorrecta · 0 de '+p.pts+' pts')+'</b>'+(ok?'':'<br>Tu respuesta: '+given+' · Correcta: <b>'+p.show+'</b>')+
+    '<details style="margin-top:6px"><summary style="cursor:pointer">Ver desarrollo</summary><ol class="steps">'+(p.steps||[]).map(s=>'<li>'+s+'</li>').join('')+'</ol>'+(p.rule?'<div style="color:#d8dcff">📌 '+p.rule+'</div>':'')+(p.plot&&j===q.parts.length-1?p.plot():'')+(q.plot&&j===q.parts.length-1?q.plot():'')+'</details></div>'});
+  $('main').querySelectorAll('.choice[data-ex] .btn').forEach(b=>b.disabled=true);
+  got+=qp;by[q.title]=(by[q.title]||[0,0]);by[q.title][0]+=qp;by[q.title][1]+=q.pts;
+  const pill=$('exq'+i).querySelector('.pill.x2');pill.textContent=qp+' / '+q.pts+' pts';});
+ const nota=notaCL(got,exam.total);let bestN=0;try{bestN=parseFloat(localStorage.getItem('pdent_exam_'+exam.kind))||0;if(nota>bestN)localStorage.setItem('pdent_exam_'+exam.kind,nota)}catch(e){}
+ const weak=Object.entries(by).filter(([k,v])=>v[0]<v[1]*.6).map(([k])=>k);
+ const sumH='<div class="card" id="exSum" style="margin:0 0 14px;border-color:var(--gold)">'+(exam.timeout?'<p class="center" style="color:var(--bad);font-weight:800;margin:0">⏰ Se acabaron los 40 minutos: la prueba se entregó sola.</p>':'')+'<div class="center" style="font-size:40px">'+(nota>=4?'🎉':'📚')+'</div><h2 class="center" style="margin:4px 0">Nota: <span style="color:'+(nota>=4?'var(--ok)':'var(--bad)')+'">'+nota.toFixed(1).replace('.',',')+'</span></h2>'+
+  '<div class="sumgrid"><div class="stat center"><div class="l">Puntaje</div><div class="v">'+fmt(got)+' / '+exam.total+'</div></div><div class="stat center"><div class="l">Logro</div><div class="v">'+Math.round(got/exam.total*100)+'%</div></div><div class="stat center"><div class="l">Tiempo</div><div class="v">'+mmss(Math.min(el,EXLIM))+'</div></div></div>'+
+  '<table class="bt" style="width:100%"><tr><th>Tema</th><th>Puntos</th></tr>'+Object.entries(by).map(([k,v])=>'<tr><td>'+k+'</td><td>'+fmt(v[0])+' / '+v[1]+(v[0]<v[1]*.6?' ⚠️':' ✅')+'</td></tr>').join('')+'</table>'+
+  (weak.length?'<p class="center">Para reforzar: <b>'+weak.join(', ')+'</b>. Practícalos en su tema con el modo guiado 🧭.</p>':'<p class="center">¡Muy bien en todos los temas!</p>')+(bestN&&nota<=bestN?'<p class="center" style="color:var(--mut)">Tu mejor nota en este simulacro: '+fmt(Math.max(bestN,nota))+'</p>':nota>bestN&&bestN?'<p class="center" style="color:var(--gold)">⭐ ¡Mejor nota hasta ahora!</p>':'')+
+  '<div class="center" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn sm" id="exHome">← Volver al inicio</button><button class="btn pri" id="exAgain">Otro simulacro igual ▶</button></div><p class="center" style="color:var(--mut);font-size:13px;margin:8px 0 0">Abajo está cada pregunta corregida, con su desarrollo.</p></div>';
+ $('main').insertAdjacentHTML('afterbegin',sumH);$('exSend').parentNode.remove();window.scrollTo(0,0);
+ $('sProg').textContent='⏱ '+mmss(Math.min(el,EXLIM))+' · entregada';$('sProg').style.color='';
+ if(nota>=4)setTimeout(()=>boom(3),100);
+ $('exHome').onclick=()=>{exam=null;$('sProg').style.color='';startScreen()};$('exAgain').onclick=()=>startExam(exam.kind);
+}
+
+/* ---------- Binomial ---------- */
+const STAGES_B=[
+ {k:'B',t:'eq',n:2,name:()=>'Binomial · exactamente k (incluye "todos" y "ninguno")'},
+ {k:'B',t:'ge',n:2,name:r=>r===1?'Binomial · al menos k (suma hasta n)':'Binomial · al menos / más de k (suma hasta n)'},
+ {k:'B',t:'le',n:1,name:r=>r===1?'Binomial · a lo más k (suma desde 0)':'Binomial · a lo más / menos de k (suma desde 0)'}];
+const BC=[
+ {s:'Un odontólogo sabe que el {p}% de sus pacientes tratados para caries tienen éxito en el tratamiento. Si trata a {n} pacientes en un día,',o:'de ellos ',vp:'tengan éxito',vs:'tenga éxito',p:[60,95]},
+ {s:'Se sabe que el {p}% de los implantes dentales tienen éxito. Si se realizan {n} implantes,',o:'de ellos ',vp:'sean exitosos',vs:'sea exitoso',p:[75,95]},
+ {s:'El {p}% de los pacientes siguen las recomendaciones de higiene dental. Si un dentista tiene {n} pacientes,',o:'',vp:'sigan las recomendaciones',vs:'siga las recomendaciones',p:[50,85]},
+ {s:'En un consultorio dental, el {p}% de los tratamientos de ortodoncia tienen éxito. Si se realizan {n} tratamientos,',o:'',vp:'tengan éxito',vs:'tenga éxito',p:[70,95]},
+ {s:'El {p}% de los pacientes logran un blanqueamiento dental satisfactorio. Si se realizan {n} tratamientos,',o:'',vp:'sean satisfactorios',vs:'sea satisfactorio',p:[60,90]},
+ {s:'Un odontólogo tiene un historial donde el {p}% de sus empastes fallan en menos de un año. Si realiza {n} empastes,',o:'',vp:'fallen',vs:'falle',p:[5,20]},
+ {s:'El {p}% de los pacientes que visitan una clínica dental requieren una extracción. Si hoy se atenderán {n} pacientes,',o:'',vp:'necesiten extracción',vs:'necesite extracción',p:[20,40]},
+ {s:'Se sabe que el {p}% de los pacientes nuevos necesitan tratamiento de ortodoncia. Si se reciben {n} pacientes nuevos,',o:'',vp:'necesiten tratamiento',vs:'necesite tratamiento',p:[30,50]},
+ {s:'El {p}% de los niños que visitan un consultorio necesitan que se les extraigan dientes de leche. Si un día se atienden {n} niños,',o:'',vp:'necesiten extracción',vs:'necesite extracción',p:[15,35]}];
+const comb=(n,k)=>{let c=1;for(let j=1;j<=k;j++)c=c*(n-k+j)/j;return Math.round(c)};
+const bpmf=(n,p,k)=>comb(n,k)*Math.pow(p,k)*Math.pow(1-p,n-k);
+const BRULE={eq:'"Exactamente k": se usa la fórmula una sola vez, con ese k.',todos:'"Todos" es lo mismo que exactamente k = n.',ninguno:'"Ninguno" es lo mismo que exactamente k = 0.',
+ almenos:'"Al menos k" incluye el k: P(X = k) + P(X = k + 1) + … + P(X = n).',mas:'"Más de k" NO incluye el k: se suma desde P(X = k + 1) hasta P(X = n).',
+ alomas:'"A lo más k" incluye el k: P(X = 0) + P(X = 1) + … + P(X = k).',menos:'"Menos de k" NO incluye el k: se suma desde P(X = 0) hasta P(X = k − 1).'};
+let lastBctx='';
+function genB(t,r){
+ for(let tries=0;tries<120;tries++){
+  let c;do{c=pick(BC)}while(c.s===lastBctx);lastBctx=c.s;
+  const st=r===1?(c.p[1]-c.p[0]>=20?10:5):r===2?5:1;
+  const pc=stepGrid(Math.ceil(c.p[0]/st)*st,c.p[1],st);const p=pc/100;
+  const n=r===1?rint(4,6):r===2?rint(5,10):rint(6,15);
+  let kind,k,lo,hi;
+  if(t==='eq'){const u=Math.random();if(u<.2){kind='todos';k=n}else if(r>=2&&u<.3){kind='ninguno';k=0}else{kind='eq';k=rint(1,n-1)}lo=hi=k}
+  else if(t==='ge'){kind=r===1?'almenos':pick(['almenos','mas']);if(kind==='almenos'){k=rint(Math.max(1,n-(r===1?2:3)),n-1);lo=k}else{k=rint(Math.max(1,n-4),n-1);lo=k+1}hi=n}
+  else{kind=r===1?'alomas':pick(['alomas','menos']);if(kind==='alomas'){k=rint(1,r===1?2:3);hi=k}else{k=rint(1,4);hi=k-1}lo=0}
+  if(lo>hi||hi>n)continue;
+  let ans=0;for(let i=lo;i<=hi;i++)ans+=bpmf(n,p,i);
+  if(ans<.005||ans>.995)continue;
+  const verb=k===1&&kind!=='todos'?c.vs:c.vp;
+  const cond=kind==='todos'?'todos '+c.vp:kind==='ninguno'?'ninguno '+c.vs:({eq:'exactamente ',almenos:'al menos ',mas:'más de ',alomas:'a lo más ',menos:'menos de '})[kind]+k+' '+c.o+verb;
+  const text=c.s.replace('{p}',pc).replace('{n}',n)+' ¿cuál es la probabilidad de que '+cond+'?';
+  const ps=fmt(p),qs=fmt(rnd(1-p,4));const single=lo===hi;
+  const term=i=>'C('+n+','+i+') · '+ps+'^'+i+' · '+qs+'^'+(n-i);
+  let steps=['n = <b>'+n+'</b> intentos · p = <b>'+ps+'</b> (probabilidad de "éxito") · 1 − p = <b>'+qs+'</b>'];
+  if(single){const C=comb(n,k),a1=Math.pow(p,k),a2=Math.pow(1-p,n-k);
+   steps.push(M('P(X='+k+')=\\binom{'+n+'}{'+k+'}\\cdot '+ps+'^{'+k+'}\\cdot '+qs+'^{'+(n-k)+'}'));
+   steps.push('= '+C+' × '+f4(a1)+' × '+(a2<1e-4?a2.toExponential(3).replace('.',','):f4(a2))+' = <b>'+f4(ans)+'</b>');
+   steps.push('En Excel: <code>=DISTR.BINOM.N('+k+'; '+n+'; '+ps+'; FALSO)</code>')}
+  else{const ts=[];for(let i=lo;i<=hi;i++)ts.push('P('+i+') = '+f4(bpmf(n,p,i)));
+   steps.push('Te preguntan "'+cond.split(' ').slice(0,3).join(' ')+'…": '+BRULE[kind]);
+   steps.push('Términos: '+ts.join(' · '));
+   steps.push('Suma = <b>'+f4(ans)+'</b>');
+   steps.push('En Excel: <code>'+(hi===n?'=1 − DISTR.BINOM.N('+(lo-1)+'; '+n+'; '+ps+'; VERDADERO)':'=DISTR.BINOM.N('+hi+'; '+n+'; '+ps+'; VERDADERO)')+'</code>')}
+  return{g:{type:'B',n,p,k,lo,hi,kind,ans,cond},k:'B',text,ans,tol:single?.002:.003,steps,rule:BRULE[kind],plot:()=>plotB(n,p,lo,hi),show:f4(ans)};
+ }
+}
+function plotB(n,p,lo,hi){const vals=[];let mx=0;for(let i=0;i<=n;i++){const v=bpmf(n,p,i);vals.push(v);mx=Math.max(mx,v)}
+ const bw=480/(n+1);let h='';
+ vals.forEach((v,i)=>{const H=Math.max(1,v/mx*110),x=40+i*bw,on=i>=lo&&i<=hi;h+='<rect x="'+(x+bw*.12).toFixed(1)+'" y="'+(130-H).toFixed(1)+'" width="'+(bw*.76).toFixed(1)+'" height="'+H.toFixed(1)+'" rx="3" fill="'+(on?'#ff5d6c':'#5b8cff')+'" opacity="'+(on?'.9':'.45')+'"/><text x="'+(x+bw/2).toFixed(1)+'" y="146" text-anchor="middle" font-size="11" fill="#a3a9d6">'+i+'</text>'});
+ return'<svg class="plot" viewBox="0 0 540 160"><line x1="30" y1="130" x2="530" y2="130" stroke="#5a6399"/>'+h+'<text x="34" y="14" font-size="11" fill="#a3a9d6">Rojo = los valores de X que te piden (X va de 0 a n = '+n+')</text></svg>'}
+function guideB(g,c){const ps=fmt(g.p),qs=fmt(rnd(1-g.p,4)),n=g.n;
+ const S=[
+  {lab:'n',val:n,tol:.001,q:'<b>Paso 1 · Identificar n.</b> n es la cantidad de <b>intentos</b> (pacientes, tratamientos, implantes…). ¿Cuánto vale?',tip:'Busca la frase "si se realizan…", "si trata a…" o "si se atienden…".',tip2:'Es el número que va después de "si": '+n+'.'},
+  {lab:'p',val:g.p,tol:.001,prob:true,q:'<b>Paso 2 · Identificar p.</b> p es la probabilidad de "éxito" (de lo que te preguntan). Escríbela como decimal: 80% = 0,8.',tip:'Es el porcentaje que da el enunciado, dividido por 100.',tip2:'El enunciado dice '+Math.round(g.p*100)+'%.'}];
+ const single=g.lo===g.hi;
+ if(single){const k=g.k,C=comb(n,k),a1=Math.pow(g.p,k),a2=Math.pow(1-g.p,n-k);
+  S.push({lab:'k',val:k,tol:.001,q:'<b>Paso 3 · Identificar k.</b> k es la cantidad de éxitos por la que te preguntan'+(g.kind==='todos'?' ("todos" significa que todos los intentos salen bien)':g.kind==='ninguno'?' ("ninguno" significa cero)':'')+'.',tip:BRULE[g.kind],tip2:g.kind==='todos'?'Si son todos, k = n.':g.kind==='ninguno'?'Ninguno = 0.':'Fíjate en "'+g.cond+'".'});
+  S.push({lab:'C(n,k)',val:C,tol:.001,q:'<b>Paso 4 · Combinaciones</b> '+M('\\binom{n}{k}='+MF('n!','k!\\,(n−k)!'))+'. Cuenta de cuántas formas se pueden ordenar los éxitos. En la calculadora puedes usar la tecla <b>nCr</b>: '+n+' nCr '+k+'.',tip:'Recuerda que C(n, 0) = C(n, n) = 1.',tip2:'Calcula '+n+'! ÷ ('+k+'! × '+(n-k)+'!).'});
+  S.push({lab:'p^k',val:a1,tol:Math.max(.0005,a1*.005),prob:true,q:'<b>Paso 5 · Calcula p^k</b>: la probabilidad de éxito elevada a la cantidad de éxitos.',tip:k===0?'Cualquier número elevado a 0 da 1.':'Usa la tecla xʸ.',tip2:'Calcula '+ps+'^'+k+'.'});
+  S.push({lab:'(1 − p)^(n − k)',val:a2,tol:Math.max(.0005,a2*.005),prob:true,q:'<b>Paso 6 · Calcula (1 − p)^(n − k)</b>: la probabilidad de fracaso elevada a la cantidad de fracasos.',tip:'Primero calcula 1 − p y n − k. '+(n-k===0?'Ojo: si n − k = 0, el resultado es 1.':''),tip2:'Calcula '+qs+'^'+(n-k)+'.'});
+  S.push({lab:'Probabilidad',val:g.ans,tol:.002,prob:true,q:'<b>Paso 7 · Junta todo:</b> multiplica los pasos 4, 5 y 6.',tip:'C(n, k) × p^k × (1 − p)^(n − k).',tip2:'Calcula '+C+' × '+f4(a1)+' × '+f4(a2)+'.'});
+  return S}
+ S.push({lab:'Desde X =',val:g.lo,tol:.001,q:'<b>Paso 3 · ¿Desde qué valor de X sumas?</b> Te preguntan "'+g.cond+'". Piensa si ese número se incluye o no.',tip:BRULE[g.kind],tip2:'Hay que partir en X = '+g.lo+'.'});
+ S.push({lab:'Hasta X =',val:g.hi,tol:.001,q:'<b>Paso 4 · ¿Hasta qué valor de X sumas?</b> Recuerda que X puede ir de 0 a n = '+n+'.',tip:BRULE[g.kind],tip2:'Hay que llegar hasta X = '+g.hi+'.'});
+ for(let i=g.lo;i<=g.hi;i++){const v=bpmf(n,g.p,i);S.push({lab:'P(X = '+i+')',val:v,tol:.0006,prob:true,q:'<b>Paso '+(S.length+1)+' · Calcula P(X = '+i+')</b> = C('+n+', '+i+') · '+ps+'^'+i+' · '+qs+'^'+(n-i)+'.',tip:'Puedes escribirlo de una vez en la calculadora: '+n+' nCr '+i+' × '+ps+' ^ '+i+' × '+qs+' ^ '+(n-i)+'.',tip2:'C('+n+', '+i+') = '+comb(n,i)+'. Multiplícalo por '+ps+'^'+i+' y por '+qs+'^'+(n-i)+'.'})}
+ S.push({lab:'Probabilidad',val:g.ans,tol:.003,prob:true,q:'<b>Paso '+(S.length+1)+' · Suma</b> todos los P(X = …) que calculaste.',tip:'Suma los resultados de los pasos anteriores.',tip2:'Son '+(g.hi-g.lo+1)+' términos: de P('+g.lo+') a P('+g.hi+').'});
+ return S}
+
+const RLEN=()=>PLAN.length;
+/* ---------- pantallazo de fórmulas ---------- */
+const mini=(svg,cap)=>'<div class="mini">'+svg+'<div class="cap">'+cap+'</div></div>';
+function cheatHTML(t){
+ if(t==='U')return '<h3>📏 Distribución uniforme</h3><div class="fbox">'+M('P='+MF('\\text{tramo pedido}','b−a'),1)+'</div><p class="cnote">Todos los valores entre a y b son igual de probables. La probabilidad es la fracción del rango que ocupa el tramo.</p>'+
+  '<div class="cheat">'+mini(plotU(10,30,10,20),'"Menos de x": '+M(MF('x−a','b−a')))+mini(plotU(10,30,22,30),'"Más de x": '+M(MF('b−x','b−a')))+mini(plotU(10,30,15,25),'"Entre x₁ y x₂": '+M(MF('x_{2}−x_{1}','b−a')))+'</div>';
+ if(t==='N')return '<h3>🔔 Distribución normal</h3><div class="fbox">'+M('Z='+MF('x−μ','σ'),1)+'</div><p class="cnote">La 📊 Tabla Z siempre entrega el área a la <b>izquierda</b>: P(Z &lt; z), y solo trae Z positivos. Si Z es negativo, se busca sin el signo y se usa el espejo.</p>'+
+  '<div class="cheat">'+mini(plotN(-4,1,[[1,'x']]),'"Menos de", Z positivo: <b>tabla directo</b>')+mini(plotN(-4,-1,[[-1,'x']]),'"Menos de", Z negativo: <b>1 − tabla</b>')+mini(plotN(1,4,[[1,'x']]),'"Más de", Z positivo: <b>1 − tabla</b>')+mini(plotN(-1,1.3,[[-1,'x₁'],[1.3,'x₂']]),'"Entre": '+M('P(Z<Z_{2})−P(Z<Z_{1})'))+'</div>';
+ const b3=i=>i===3,le=i=>i<=2,gt=i=>i>2;
+ if(t==='P')return '<h3>🔢 Distribución de Poisson</h3><div class="fbox">'+M('P(X=k)='+MF('e^{−λ}\\cdot λ^{k}','k!'),1)+'</div><p class="cnote"><b>λ</b> = el promedio del enunciado · <b>k</b> = el número que preguntan · 0! = 1 · Excel: <code>=POISSON.DIST(k; λ; FALSO)</code> (con VERDADERO suma desde 0 hasta k)</p>'+
+  '<div class="cheat">'+mini(plotP(3,4,b3),'"Exactamente 3": la fórmula una vez')+mini(plotP(3,4,le),'"A lo más 2": P(0) + P(1) + P(2)<br>"Menos de 3" es lo mismo')+mini(plotP(3,4,gt),'"Más de 2": 1 − [P(0) + P(1) + P(2)]<br>"Al menos 3" es lo mismo')+'</div>';
+ if(t==='B')return '<h3>🎯 Distribución binomial</h3><div class="fbox">'+M('P(X=k)=\\binom{n}{k}\\,p^{k}\\,(1−p)^{n−k}',1)+'</div><p class="cnote"><b>n</b> = intentos · <b>p</b> = probabilidad de éxito (80% = 0,8) · <b>k</b> = éxitos que preguntan · '+M('\\binom{n}{k}='+MF('n!','k!\\,(n−k)!'))+' → tecla <b>nCr</b> · Excel: <code>=DISTR.BINOM.N(k; n; p; FALSO)</code></p>'+
+  '<div class="cheat">'+mini(plotB(6,.7,4,4),'"Exactamente 4": la fórmula una vez')+mini(plotB(6,.7,5,6),'"Al menos 5": P(5) + P(6)<br>"Más de 4" es lo mismo')+mini(plotB(6,.7,0,2),'"A lo más 2": P(0) + P(1) + P(2)<br>"Menos de 3" es lo mismo')+'</div><p class="cnote">"Todos" = exactamente n · "Ninguno" = exactamente 0</p>';
+ if(t==='PB')return '<h3>🃏 Probabilidades básicas</h3><div class="fbox">'+M('P(A)='+MF('\\text{casos favorables}','\\text{casos totales}'),1)+'</div>'+
+  '<div class="flist">'+[['Complemento ("no")','P(\\overline{A})=1−P(A)'],['Regla de la suma ("o")','P(A\\cup B)=P(A)+P(B)−P(A\\cap B)'],['Independientes ("y")','P(A\\cap B)=P(A)\\cdot P(B)'],['"Al menos uno"','1−P(\\text{ninguno})'],['Condicional ("si ya sé A")','P(B\\mid A)='+MF('P(A\\cap B)','P(A)')],['Bayes (condicional al revés)','P(A\\mid B)='+MF('P(B\\mid A)\\cdot P(A)','P(B)')],['Elegir al azar (sin reemplazo)',MF('\\binom{a}{x}\\cdot\\binom{b}{y}','\\binom{N}{m}')]].map(([l,f])=>'<div class="fl"><span>'+l+'</span>'+M(f)+'</div>').join('')+'</div>'+
+  '<div class="cheat">'+mini(venn('union'),'"A o B": todo lo pintado')+mini(venn('inter'),'"A y B": solo la parte común')+mini(venn('cond'),'"B dado A": la parte común dividida por A')+mini(venn('none'),'"Ni A ni B": 1 − P(A o B)')+'</div>';
+ if(t==='ED'){const ex=[2,3,3,4,5,5,5,6,7,9];return '<h3>📊 Estadística descriptiva</h3><div class="flist">'+[['Media','\\bar{x}='+MF('\\sum x_{i}','n')],['Mediana (datos ordenados)','\\text{posición}\\,\\,'+MF('n+1',2)],['Moda','\\text{el dato que más se repite}'],['Rango','R=\\text{máx}−\\text{mín}'],['Desviación estándar muestral','s=\\sqrt{'+MF('\\sum (x_{i}−\\bar{x})^{2}','n−1')+'}'],['Coeficiente de variación','CV='+MF('s','\\bar{x}')+'\\cdot 100\\%'],['Cuartiles (Excel CUARTIL.INC)','\\text{posición}\\,\\,(n−1)\\cdot p+1'],['Tabla de frecuencias','\\bar{x}='+MF('\\sum x_{i}f_{i}','n')],['Intervalos: marca de clase','m='+MF('L_{inf}+L_{sup}',2)]].map(([l,f])=>'<div class="fl"><span>'+l+'</span>'+M(f)+'</div>').join('')+'</div>'+
+  '<p class="cnote">Excel: <code>=PROMEDIO</code> · <code>=MEDIANA</code> · <code>=MODA.UNO</code> · <code>=DESVEST.M</code> · <code>=CUARTIL.INC(rango; 1)</code> · <code>=MAX−MIN</code></p>'+
+  '<div class="cheat">'+mini(plotBox(ex),'Diagrama de caja: mín, Q1, mediana, Q3 y máx')+mini(plotFreq(['0','1','2','3','4'],[3,7,9,4,2],i=>i===2),'Tabla de frecuencias: la moda es la barra más alta')+'</div>'}
+ if(t==='EX')return '<h3>⏳ Distribución exponencial</h3><div class="fbox">'+M('f(x)=λ\\,e^{−λx}',1)+'</div><div class="flist">'+[['"Menos de t"','P(X<t)=1−e^{−λt}'],['"Más de t"','P(X>t)=e^{−λt}'],['"Entre a y b"','P(a<X<b)=e^{−λa}−e^{−λb}'],['Media','\\mu='+MF(1,'λ')+'\\,\\,\\,\\text{(si te dan la media: }λ='+MF(1,'\\text{media}')+')']].map(([l,f])=>'<div class="fl"><span>'+l+'</span>'+M(f)+'</div>').join('')+'</div>'+
+  '<p class="cnote"><b>Poisson ↔ exponencial:</b> si llegan en promedio λ pacientes por hora (Poisson: <i>cuántos</i> llegan), el <b>tiempo entre llegadas</b> es exponencial con la misma λ. Ojo con las unidades: 15 minutos = 15/60 = 0,25 horas. Excel: <code>=DISTR.EXP.N(t; λ; VERDADERO)</code> da P(X &lt; t).</p>'+
+  '<div class="cheat">'+mini(plotE(1,0,1,4),'"Menos de t": '+M('1−e^{−λt}'))+mini(plotE(1,1,99,4),'"Más de t": '+M('e^{−λt}'))+mini(plotE(1,.5,1.5,4),'"Entre": '+M('e^{−λa}−e^{−λb}'))+'</div>';
+ if(t==='RL'){const xs=[2,4,5,7,9,11],ys=[74,66,64,57,51,44],S=rlStats(xs,ys);return '<h3>📈 Regresión lineal</h3><div class="fbox">'+M('\\hat{y}=a+bx',1)+'</div><div class="flist">'+[['Pendiente','b='+MF('n\\sum xy−\\sum x\\sum y','n\\sum x^{2}−(\\sum x)^{2}')],['Intercepto','a=\\bar{y}−b\\,\\bar{x}'],['Correlación (−1 a 1)','r='+MF('n\\sum xy−\\sum x\\sum y','\\sqrt{[n\\sum x^{2}−(\\sum x)^{2}][n\\sum y^{2}−(\\sum y)^{2}]}')],['Determinación','r^{2}\\cdot 100\\%\\,\\text{= % de la variación de y explicada}']].map(([l,f])=>'<div class="fl"><span>'+l+'</span>'+M(f)+'</div>').join('')+'</div>'+
+  '<p class="cnote"><b>Interpretar b:</b> "por cada unidad más de x, y aumenta (o disminuye) en promedio b". <b>Fuerza de r:</b> |r| ≥ 0,7 fuerte · 0,4 a 0,7 moderada · menor a 0,4 débil. Excel: <code>=PENDIENTE(y; x)</code> · <code>=INTERSECCION.EJE(y; x)</code> · <code>=COEF.DE.CORREL(y; x)</code> · <code>=COEFICIENTE.R2(y; x)</code> · <code>=PRONOSTICO.LINEAL(x0; y; x)</code></p>'+
+  '<div class="cheat">'+mini(plotRL(xs,ys,S.a,S.b,8),'Recta de regresión y una predicción (amarillo). Aquí b es negativa: relación negativa.')+'</div>'}
+ return '';
+}
+function showCheat(){
+ $('sName').textContent='📘 Repaso antes de jugar';$('sProg').textContent=TOPIC_INFO[topic][0];
+ $('main').innerHTML='<h2 class="center" style="margin:0 0 4px">📘 Fórmulas y gráficos</h2><p class="center" style="color:var(--mut);margin:0 0 6px">En rojo está lo que hay que calcular en cada caso.</p>'+cheatHTML(topic)+
+  '<div class="rstrip"><span>✅ <b>+10</b></span><span>❌ <b>−5</b></span><span>🔥 3 seguidas → <b>×2</b></span><span>💡 Pista <b>−3</b></span><span>🧭 Guiado <b>½</b></span></div>'+
+  '<div class="center" style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn sm" id="cBack">← Elegir otro tema</button><button class="btn pri" id="go2" style="font-size:18px;padding:12px 28px">¡Empezar ronda! ▶</button></div>';
+ $('cBack').onclick=startScreen;$('go2').onclick=()=>{qi=0;rPts=0;rHits=0;next()};
+ window.scrollTo(0,0);
+}
+
+
+document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(!b||!cur||!cur.copy)return;copyText(cur.copy.replace(/,/g,','),(m,ok)=>{$('err').textContent=m;$('err').style.color=ok?'var(--ok)':''})});
+
+const STAGES_MIX=[
+ Object.assign({},STAGES_PB[0],{n:1}),Object.assign({},STAGES_PB[3],{n:1}),
+ Object.assign({},STAGES_B[0],{n:1}),Object.assign({},STAGES_B[1],{n:1}),
+ Object.assign({},STAGES_P[0],{n:1}),
+ Object.assign({},STAGES_UN[3],{n:1}),Object.assign({},STAGES_UN[5],{n:1}),
+ Object.assign({},STAGES_EX[3],{n:1}),
+ Object.assign({},STAGES_RL[2],{n:1}),Object.assign({},STAGES_RL[3],{n:1})];
 
 /* ---------- tabla Z ---------- */
 function buildTable(){let h='<tr><th>z</th>';for(let c=0;c<10;c++)h+='<th>0.0'+c+'</th>';h+='</tr>';
@@ -534,7 +1295,7 @@ $('zgo').onclick=lookup;$('zin').addEventListener('keydown',e=>{if(e.key==='Ente
 $('zin').addEventListener('input',()=>$('zerr').textContent='');
 addEventListener('resize',()=>{if(running)fitC()});
 
-buildStages();buildTable();hud(false);progress();setGuidedBtn();startScreen();
+buildStages();buildTable();hud(false);progress();setGuidedBtn();setTopic('PB');startScreen();
 </script>
 </body>
 </html>
