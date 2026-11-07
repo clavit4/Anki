@@ -91,6 +91,15 @@ follow the same pattern: drop it in `games/` untouched, add one button that
 reuses existing styling, wire a plain navigation, and don't fold it into
 the shared-scope app.
 
+Already updated once (Nov 2026): the uncle sent a much bigger second
+version (1301 lines, up from 540 — added six more topics beyond the
+original Uniform/Normal, a topic-picker screen, a formula-review step, and
+a timed exam-simulation mode). Same filename, so the update was a pure
+file swap — no edits anywhere else. When a new version lands, re-verify
+it's still side-effect-free (no `fetch`/`XMLHttpRequest`/external
+`<script src>`/`eval`) before overwriting, since it's still third-party
+content accepted on trust, not authored or reviewed line-by-line here.
+
 ## File-by-file map
 
 | File | Responsibility |
