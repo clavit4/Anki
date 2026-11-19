@@ -339,3 +339,17 @@ If the thing you remembered asking for and not getting is one of the two
     the same way as the original (no external network calls, no
     eval of untrusted input, same localStorage-only pattern) and
     tested end-to-end with Playwright before shipping.
+
+## Nov 19 — a second standalone page: Tibia
+
+80. ✅ Uploaded another standalone HTML file ("Tibia Timers" — a
+    respawn/cooldown timer tool themed for the game Tibia, chimes via
+    Web Audio API, custom icon upload, localStorage-persisted timer
+    list) and asked for a "Tibia" button linking to it, same as
+    ELISA. Implemented identically: `games/tibia.html` (byte-for-byte
+    as given), a button reusing `.deck-upload-btn`, wired in
+    `06-deck-list.js` with a plain navigation, placed between ELISA
+    and the heatmap so the heatmap keeps its last-element status.
+    Confirmed safe (only external call is the same Google-Fonts
+    pattern already established for Yuji Syuku) and tested end-to-end
+    with Playwright — added a timer, started it, confirmed it rang.

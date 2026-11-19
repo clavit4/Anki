@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tibia Timers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#1a120b; --panel:#2e2013; --edge:#7a5a2e; --gold:#e6c36a; --text:#efe2c6; --muted:#a89572; --green:#3fa34d; --red:#b53a2e; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; background:radial-gradient(ellipse at top,#2c1d10,var(--bg) 60%); color:var(--text); font-family:system-ui,-apple-system,sans-serif; padding:16px 12px 40px; }
+  main { width:min(100%,480px); margin:0 auto; }
+  h1 { font-family:'Cinzel',Georgia,serif; font-weight:700; font-size:26px; letter-spacing:.04em; text-align:center; color:var(--gold); margin:0; }
+  header { display:flex; align-items:center; justify-content:center; gap:10px; margin:6px 0 16px; }
+  #icon { display:flex; background:none; border:0; padding:0; cursor:pointer; }
+  #icon img { width:40px; height:47px; object-fit:contain; image-rendering:pixelated; }
+  .remind { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-bottom:14px; }
+  .remind span { font-family:'Cinzel',Georgia,serif; font-size:13px; font-weight:500; padding:5px 10px; border:1px solid var(--edge); border-radius:999px; background:var(--panel); color:var(--gold); }
+  .bar-top { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; align-items:center; }
+  .bar-top .lbl { color:var(--muted); font-size:13px; margin-right:2px; }
+  button { font:inherit; cursor:pointer; border:1px solid var(--edge); border-radius:8px; background:#3d2a18; color:var(--text); padding:8px 12px; }
+  button:active { transform:translateY(1px); }
+  .spacer { flex:1; }
+  .card { background:var(--panel); border:2px solid var(--edge); border-radius:12px; padding:14px; margin-bottom:12px; box-shadow:inset 0 0 0 1px #000, 0 4px 14px rgba(0,0,0,.4); }
+  .card.ring { animation:pulse .6s 4; border-color:var(--gold); }
+  @keyframes pulse { 0%,100% { box-shadow:inset 0 0 0 1px #000, 0 0 0 rgba(230,195,106,0); } 50% { box-shadow:inset 0 0 0 1px #000, 0 0 22px rgba(230,195,106,.8); } }
+  .row { display:flex; gap:8px; align-items:center; }
+  .row + .row { margin-top:10px; }
+  input, select { font:inherit; background:var(--bg); color:var(--text); border:1px solid var(--edge); border-radius:8px; padding:7px 9px; min-width:0; }
+  input.name { flex:1; font-family:'Cinzel',Georgia,serif; font-size:17px; color:var(--gold); }
+  .fld { display:flex; flex-direction:column; gap:5px; width:100%; }
+  .fl { color:var(--muted); font-size:13px; }
+  .fl small { font-size:11px; opacity:.85; }
+  .ms { display:flex; gap:6px; align-items:center; color:var(--muted); }
+  .ms input { width:72px; text-align:center; }
+  .icon { padding:7px 10px; }
+  .clock { text-align:center; margin:10px 0 6px; }
+  .clock .lbl { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.12em; }
+  .left { font-size:52px; font-weight:300; font-variant-numeric:tabular-nums; line-height:1.1; }
+  .prog { height:8px; background:#120c07; border:1px solid var(--edge); border-radius:6px; overflow:hidden; margin-top:6px; }
+  .prog i { display:block; height:100%; width:100%; background:var(--green); transition:width .25s linear; }
+  .msg { min-height:20px; font-size:14px; color:var(--gold); margin-top:8px; font-weight:600; }
+  label { display:flex; align-items:center; gap:6px; color:var(--muted); font-size:14px; }
+  .durfmt { color:var(--text); font-variant-numeric:tabular-nums; }
+  select { flex:1; }
+  .go { width:100%; margin-top:12px; padding:13px; font-size:17px; font-weight:700; background:var(--green); border-color:#2b7a36; color:#fff; }
+  .go.running { background:var(--red); border-color:#8a2a20; }
+  .note { text-align:center; color:var(--muted); font-size:12px; margin-top:14px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <button id="icon" type="button" aria-label="Change icon" title="Tap to change the icon"><svg viewBox="0 0 48 56" width="40" height="47" aria-hidden="true">
+      <rect x="19" y="3" width="10" height="7" rx="2" fill="#8a5a2b"/>
+      <path d="M19 10h10v8c0 2 1 3 3 5 5 4 8 9 8 16 0 9-7 15-16 15S8 48 8 39c0-7 3-12 8-16 2-2 3-3 3-5z" fill="#2a1e3d" stroke="#e6c36a" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M10 37c0 8 6 14 14 14s14-6 14-14c-5-2-9 2-14 0s-9-2-14 0z" fill="#8f4fe0"/>
+      <ellipse cx="17" cy="41" rx="2" ry="4" fill="#fff" opacity=".35"/>
+    </svg></button>
+    <h1>Tibia Timers</h1>
+  </header>
+  <input id="iconFile" type="file" accept="image/*" hidden>
+  <div class="bar-top">
+    <button id="addItem">+ Add item</button>
+    <span class="spacer"></span>
+    <button id="startAll">Start all</button>
+    <button id="stopAll">Stop all</button>
+  </div>
+  <div id="list"></div>
+  <div class="note">Keep this tab open and your phone awake, or the alarms can pause.</div>
+</main>
+<script>
+(function () {
+  var SOUNDS = [
+    { name: 'Stargaze I',   notes: [1318.51, 1174.66, 987.77, 783.99, 987.77, 1174.66, 1567.98] },
+    { name: 'Stargaze II',  notes: [987.77, 880, 739.99, 587.33, 739.99, 880, 1174.66] },
+    { name: 'Stargaze III', notes: [1046.5, 880, 783.99, 659.25, 783.99, 880, 1318.51] },
+    { name: 'Stargaze IV',  notes: [1567.98, 1396.91, 1174.66, 987.77, 1174.66, 1396.91, 1760] },
+    { name: 'Stargaze V',   notes: [1174.66, 987.77, 880, 659.25, 880, 1046.5, 1396.91] },
+    { name: 'Stargaze VI',  notes: [880, 783.99, 659.25, 523.25, 659.25, 783.99, 1046.5] }
+  ];
+  var TEMPLATE =
+    '<div class="row">' +
+      '<input class="name" maxlength="24" aria-label="Timer name">' +
+      '<button class="icon del" title="Remove timer">✕</button>' +
+    '</div>' +
+    '<div class="clock">' +
+      '<div class="lbl">Time left</div>' +
+      '<div class="left">0:00</div>' +
+      '<div class="prog"><i></i></div>' +
+      '<div class="msg"></div>' +
+    '</div>' +
+    '<div class="row"><div class="fld"><span class="fl">Total time of the item</span>' +
+      '<span class="ms"><input class="tm" type="number" min="0" max="1440" inputmode="numeric" aria-label="Total minutes"> min ' +
+      '<input class="ts" type="number" min="0" max="59" inputmode="numeric" aria-label="Total seconds"> sec</span></div></div>' +
+    '<div class="row"><div class="fld"><span class="fl">Time left now <small>(optional, for an item already in use; clears after Start)</small></span>' +
+      '<span class="ms"><input class="sm" type="number" min="0" max="1440" inputmode="numeric" placeholder="0" aria-label="Minutes left"> min ' +
+      '<input class="ss" type="number" min="0" max="59" inputmode="numeric" placeholder="0" aria-label="Seconds left"> sec</span></div></div>' +
+    '<div class="row">' +
+      '<select class="snd" aria-label="Sound"></select>' +
+      '<button class="icon prev" title="Preview sound">🔊</button>' +
+      '<label><input type="checkbox" class="rep"> Repeat</label>' +
+    '</div>' +
+    '<button class="go">Start</button>';
+
+  var list = document.getElementById('list');
+  var timers = [];
+  var ctx = null;
+
+  function getCtx() {
+    if (!ctx) { var AC = window.AudioContext || window.webkitAudioContext; ctx = new AC(); }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  // Stargaze-style chime: 4 notes stepping down, then rising. Echo between notes, cut off at the end.
+  function chime(si) {
+    try {
+      var c = getCtx(), t0 = c.currentTime + 0.05, notes = SOUNDS[si].notes;
+      var master = c.createGain();
+      master.gain.setValueAtTime(0.35, t0);
+      master.gain.setValueAtTime(0.35, t0 + 0.95);
+      master.gain.linearRampToValueAtTime(0.0001, t0 + 1.25);
+      master.connect(c.destination);
+      var delay = c.createDelay(); delay.delayTime.value = 0.15;
+      var fb = c.createGain(); fb.gain.value = 0.35;
+      var wet = c.createGain(); wet.gain.value = 0.4;
+      delay.connect(fb); fb.connect(delay); delay.connect(wet); wet.connect(master);
+      notes.forEach(function (f, i) {
+        var t = t0 + i * 0.1;
+        [[1, 0.5], [2, 0.18], [3.01, 0.08]].forEach(function (p) {
+          var o = c.createOscillator(), g = c.createGain();
+          o.type = 'sine'; o.frequency.value = f * p[0];
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.exponentialRampToValueAtTime(p[1], t + 0.012);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + 0.7 / p[0] + 0.15);
+          o.connect(g); g.connect(master); g.connect(delay);
+          o.start(t); o.stop(t + 1.3);
+        });
+      });
+    } catch (e) {}
+  }
+
+  function fmt(s) {
+    s = Math.max(0, Math.ceil(s));
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
+    return (h ? h + ':' + String(m).padStart(2, '0') : String(m)) + ':' + String(x).padStart(2, '0');
+  }
+
+  function save() {
+    try {
+      localStorage.setItem('tibia-timers', JSON.stringify(timers.map(function (t) {
+        return { name: t.name, dur: t.dur, sound: t.sound, repeat: t.repeat };
+      })));
+    } catch (e) {}
+  }
+  function load() {
+    try {
+      var s = JSON.parse(localStorage.getItem('tibia-timers') || 'null');
+      return Array.isArray(s) && s.length ? s : null;
+    } catch (e) { return null; }
+  }
+
+  function nextSound() {
+    for (var i = 0; i < SOUNDS.length; i++) {
+      if (!timers.some(function (t) { return t.sound === i; })) return i;
+    }
+    return timers.length % SOUNDS.length;
+  }
+
+  function draw(t, left) {
+    t.leftEl.textContent = fmt(left);
+    t.barEl.style.width = Math.max(0, Math.min(100, (left / t.dur) * 100)) + '%';
+  }
+
+  function firstRound(t) { return (t.startSec > 0) ? Math.min(t.startSec, t.dur) : t.dur; }
+  function showIdle(t) { draw(t, firstRound(t)); }
+  function lockInputs(t, lock) { [t.tm, t.ts, t.sm, t.ss].forEach(function (i) { i.disabled = lock; }); }
+  function setMS(mEl, sEl, total, always) {
+    if (!always && !total) { mEl.value = ''; sEl.value = ''; return; }
+    mEl.value = Math.floor(total / 60); sEl.value = total % 60;
+  }
+  function readMS(mEl, sEl) {
+    return (parseInt(mEl.value, 10) || 0) * 60 + (parseInt(sEl.value, 10) || 0);
+  }
+
+  function start(t) {
+    getCtx();
+    t.running = true;
+    var first = firstRound(t);
+    t.startSec = 0; setMS(t.sm, t.ss, 0, false);
+    t.endAt = Date.now() + first * 1000;
+    t.go.textContent = 'Stop'; t.go.classList.add('running');
+    lockInputs(t, true);
+    t.msgEl.textContent = '';
+    draw(t, first);
+  }
+
+  function stop(t, expired) {
+    t.running = false;
+    t.go.textContent = 'Start'; t.go.classList.remove('running');
+    lockInputs(t, false);
+    if (expired) { draw(t, 0); } else { showIdle(t); t.msgEl.textContent = ''; }
+  }
+
+  function alertCard(t) {
+    t.msgEl.textContent = '⏰ ' + t.name + ' ran out. Put it on again!';
+    t.el.classList.remove('ring'); void t.el.offsetWidth; t.el.classList.add('ring');
+    clearTimeout(t.msgTimer);
+    t.msgTimer = setTimeout(function () {
+      t.el.classList.remove('ring');
+      if (t.running) t.msgEl.textContent = '';
+    }, 6000);
+  }
+
+  function addTimer(cfg) {
+    var t = {
+      name: cfg.name || 'Timer',
+      dur: Math.min(86400, Math.max(1, parseInt(cfg.dur, 10) || 300)),
+      startSec: 0,
+      sound: (cfg.sound >= 0 && cfg.sound < SOUNDS.length) ? cfg.sound : nextSound(),
+      repeat: cfg.repeat !== false,
+      running: false, endAt: 0, msgTimer: null
+    };
+    var el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = TEMPLATE;
+    t.el = el;
+    t.nameEl = el.querySelector('.name');
+    t.leftEl = el.querySelector('.left');
+    t.barEl = el.querySelector('.prog i');
+    t.msgEl = el.querySelector('.msg');
+    t.tm = el.querySelector('.tm'); t.ts = el.querySelector('.ts');
+    t.sm = el.querySelector('.sm'); t.ss = el.querySelector('.ss');
+    t.sndEl = el.querySelector('.snd');
+    t.repEl = el.querySelector('.rep');
+    t.go = el.querySelector('.go');
+
+    SOUNDS.forEach(function (s, i) {
+      var o = document.createElement('option'); o.value = i; o.textContent = s.name; t.sndEl.appendChild(o);
+    });
+    t.nameEl.value = t.name;
+    setMS(t.tm, t.ts, t.dur, true);
+    setMS(t.sm, t.ss, 0, false);
+    t.sndEl.value = t.sound;
+    t.repEl.checked = t.repeat;
+    showIdle(t);
+
+    t.nameEl.addEventListener('input', function () { t.name = t.nameEl.value || 'Timer'; save(); });
+    function onTotal() {
+      var v = readMS(t.tm, t.ts);
+      if (v >= 1) { t.dur = Math.min(86400, v); showIdle(t); save(); }
+    }
+    function onStart() { t.startSec = Math.max(0, readMS(t.sm, t.ss)); showIdle(t); }
+    [t.tm, t.ts].forEach(function (i) { i.addEventListener('input', onTotal); });
+    [t.sm, t.ss].forEach(function (i) { i.addEventListener('input', onStart); });
+    t.sndEl.addEventListener('change', function () { t.sound = parseInt(t.sndEl.value, 10); save(); chime(t.sound); });
+    t.repEl.addEventListener('change', function () { t.repeat = t.repEl.checked; save(); });
+    el.querySelector('.prev').addEventListener('click', function () { chime(t.sound); });
+    t.go.addEventListener('click', function () { t.running ? stop(t) : start(t); });
+    el.querySelector('.del').addEventListener('click', function () {
+      clearTimeout(t.msgTimer);
+      timers.splice(timers.indexOf(t), 1);
+      el.remove(); save();
+    });
+
+    timers.push(t);
+    list.appendChild(el);
+    return t;
+  }
+
+  setInterval(function () {
+    var now = Date.now();
+    timers.forEach(function (t) {
+      if (!t.running) return;
+      var left = (t.endAt - now) / 1000;
+      if (left <= 0) {
+        chime(t.sound);
+        alertCard(t);
+        if (t.repeat) {
+          t.endAt += t.dur * 1000;
+          if (t.endAt <= now) t.endAt = now + t.dur * 1000;
+          left = (t.endAt - now) / 1000;
+        } else { stop(t, true); return; }
+      }
+      draw(t, left);
+    });
+  }, 250);
+
+  document.getElementById('addItem').addEventListener('click', function () {
+    var t = addTimer({ name: 'New item', dur: 300 });
+    save();
+    t.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    t.nameEl.focus(); t.nameEl.select();
+  });
+  document.getElementById('startAll').addEventListener('click', function () {
+    timers.forEach(function (t) { if (!t.running) start(t); });
+  });
+  document.getElementById('stopAll').addEventListener('click', function () {
+    timers.forEach(function (t) { if (t.running) stop(t); });
+  });
+
+  var iconBox = document.getElementById('icon'), defaultIcon = iconBox.innerHTML;
+  var fileIn = document.getElementById('iconFile');
+  function setIcon(url) {
+    if (!url) { iconBox.innerHTML = defaultIcon; return; }
+    var img = document.createElement('img'); img.alt = ''; img.src = url;
+    iconBox.innerHTML = ''; iconBox.appendChild(img);
+  }
+  try {
+    var savedIcon = localStorage.getItem('tibia-icon');
+    if (savedIcon && savedIcon.indexOf('data:image/') === 0) setIcon(savedIcon);
+  } catch (e) {}
+  var pressT = null, longDone = false;
+  iconBox.addEventListener('click', function () {
+    if (longDone) { longDone = false; return; }
+    fileIn.click();
+  });
+  // Hold the icon for about a second to go back to the default potion.
+  iconBox.addEventListener('pointerdown', function () {
+    longDone = false;
+    pressT = setTimeout(function () {
+      longDone = true; setIcon(null);
+      try { localStorage.removeItem('tibia-icon'); } catch (e) {}
+    }, 1000);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) {
+    iconBox.addEventListener(ev, function () { clearTimeout(pressT); });
+  });
+  iconBox.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  fileIn.addEventListener('change', function () {
+    var f = fileIn.files && fileIn.files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      var im = new Image();
+      im.onload = function () {
+        var k = Math.min(1, 128 / Math.max(im.width, im.height));
+        var cv = document.createElement('canvas');
+        cv.width = Math.max(1, Math.round(im.width * k));
+        cv.height = Math.max(1, Math.round(im.height * k));
+        cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+        var url = cv.toDataURL('image/png');
+        setIcon(url);
+        try { localStorage.setItem('tibia-icon', url); } catch (e) {}
+        fileIn.value = '';
+      };
+      im.src = String(r.result);
+    };
+    r.readAsDataURL(f);
+  });
+
+  var saved = load();
+  if (saved) { saved.forEach(function (c) { addTimer(c); }); }
+  else { addTimer({ name: 'Ring', dur: 300, sound: 0 }); }
+})();
+</script>
+</body>
+</html>

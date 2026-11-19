@@ -8,6 +8,7 @@ const deckUploadBtnEl = document.getElementById('deckUploadBtn');
 const deckFileInputEl = document.getElementById('deckFileInput');
 const deckUploadErrorEl = document.getElementById('deckUploadError');
 const elisaBtnEl = document.getElementById('elisaBtn');
+const tibiaBtnEl = document.getElementById('tibiaBtn');
 
 function renderDeckList() {
   deckListEl.innerHTML = '';
@@ -117,6 +118,12 @@ deckFileInputEl.addEventListener('change', handleDeckFileSelected);
 // the SPA, same as following any other link.
 elisaBtnEl.addEventListener('click', () => {
   window.location.href = 'games/elisa.html';
+});
+
+// games/tibia.html -- same pattern: a separate static page, plain
+// navigation, not part of state/showScreen.
+tibiaBtnEl.addEventListener('click', () => {
+  window.location.href = 'games/tibia.html';
 });
 
 async function handleDeckFileSelected(event) {

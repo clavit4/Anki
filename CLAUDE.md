@@ -68,37 +68,49 @@ Consequences that matter for future edits:
 - No TypeScript, no JSX, no npm dependencies at all. `'use strict';` is the
   first line of every file — keep that convention on any new file.
 
-## The ELISA game link
+## Standalone game pages (games/)
 
-`games/elisa.html` is a **deliberate exception** to everything above — it's
-a third-party, self-contained single-file HTML game (inline `<style>` and
-`<script>`, no dependencies, not even a shared favicon), given as-is by the
-user (built by their uncle for their cousin Elisa — a probability/statistics
-quiz with a dental-word-problems theme) and committed byte-for-byte unmodified.
-It is **not** part of the 14-file shared global scope: it isn't in
-`index.html`'s script list, defines its own `$`/`state`/etc. identifiers
-freely since it runs in total isolation, and has its own independent
-`<title>`/viewport/everything. The only integration point is one button on
-the deck-select screen (`#elisaBtn` in `index.html`, styled by reusing the
+`games/` holds **deliberate exceptions** to everything above — third-party,
+self-contained single-file HTML pages (inline `<style>` and `<script>`, no
+dependencies beyond at most the same Google-Fonts pattern used for
+`--font-kanji`), given as-is by the user and committed byte-for-byte
+unmodified. None of them are part of the 14-file shared global scope: not
+in `index.html`'s script list, free to define their own `$`/`state`/etc.
+identifiers since each runs in total isolation, each with its own
+independent `<title>`/viewport/everything. The only integration point per
+page is one button on the deck-select screen, styled by reusing the
 existing `.deck-upload-btn` class rather than adding new CSS, wired in
-`06-deck-list.js` with a plain `window.location.href = 'games/elisa.html'`
+`06-deck-list.js` with a plain `window.location.href = 'games/<file>.html'`
 — a full page navigation *away* from the Anki SPA, same as clicking any
-ordinary link, not a `state`/`showScreen()` transition). It's positioned
-*before* `#activityHeatmap` in the DOM specifically so the heatmap keeps its
-earlier, explicitly-requested status as the last element on the home
-screen. If the user ever hands over another one-off static page like this,
-follow the same pattern: drop it in `games/` untouched, add one button that
-reuses existing styling, wire a plain navigation, and don't fold it into
-the shared-scope app.
+ordinary link, not a `state`/`showScreen()` transition. All such buttons
+sit *before* `#activityHeatmap` in the DOM specifically so the heatmap
+keeps its earlier, explicitly-requested status as the last element on the
+home screen; new ones get added in the order the user hands them over,
+each one further down (ELISA first, then Tibia). When the user hands over
+another one-off static page like this, follow the same pattern: drop it in
+`games/` untouched, add one button that reuses existing styling, wire a
+plain navigation, and don't fold it into the shared-scope app.
 
-Already updated once (Nov 2026): the uncle sent a much bigger second
-version (1301 lines, up from 540 — added six more topics beyond the
-original Uniform/Normal, a topic-picker screen, a formula-review step, and
-a timed exam-simulation mode). Same filename, so the update was a pure
-file swap — no edits anywhere else. When a new version lands, re-verify
-it's still side-effect-free (no `fetch`/`XMLHttpRequest`/external
-`<script src>`/`eval`) before overwriting, since it's still third-party
-content accepted on trust, not authored or reviewed line-by-line here.
+Current pages:
+
+- `games/elisa.html` (`#elisaBtn`) — built by the user's uncle for their
+  cousin Elisa: a probability/statistics quiz with a dental-word-problems
+  theme. Already updated once (Nov 2026): the uncle sent a much bigger
+  second version (1301 lines, up from 540 — added six more topics beyond
+  the original Uniform/Normal, a topic-picker screen, a formula-review
+  step, and a timed exam-simulation mode). Same filename, so the update
+  was a pure file swap — no edits anywhere else.
+- `games/tibia.html` (`#tibiaBtn`) — a respawn/cooldown timer tool themed
+  for the game Tibia: add named timers with a duration, each rings (Web
+  Audio API chime) and optionally repeats; timer list persists in
+  `localStorage['tibia-timers']`, a custom icon in
+  `localStorage['tibia-icon']`.
+
+When a new version of an existing page lands, or a brand-new page is
+handed over, re-verify it's still side-effect-free (no
+`fetch`/`XMLHttpRequest`/external `<script src>`/`eval`) before
+overwriting/adding, since it's third-party content accepted on trust, not
+authored or reviewed line-by-line here.
 
 ## File-by-file map
 
